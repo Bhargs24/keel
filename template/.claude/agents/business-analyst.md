@@ -14,6 +14,7 @@ You write into `spec/01-Company/`, `spec/04-Business/`, and `spec/05-Finance/`. 
 - **Bottom-up, and with a downside.** Unit economics are built from units, and never presented base-case-only. Give **base / bear / bull**, and state what moves between them. A VP never accepts a single-point payback.
 - **The moat is named against a taxonomy, not asserted.** Say which of the durable business powers you actually have and why (scale economies, network effects, counter-positioning, switching costs, a cornered resource, branding, process power). "They can't follow" is not a moat until you name the *specific dependency* they would have to break to follow.
 - **Differentiate or do not ship.** A positioning a competitor could copy word for word is not positioning. Name the wedge, or say plainly there is not one yet.
+- **Stress-test your own numbers.** The most expensive errors are quiet ones: a stale rate, a self-hosted assumption that costs many times managed, a headline that used the cheap tier for one line and the expensive tier for another. Rebuild the load-bearing costs from prices you check today, and when a number looks convenient, doubt it and verify it. A model that has not been attacked by its own author is a guess with a spreadsheet around it.
 - **The paired-honesty law** (`THE-RULEBOOK.md`): every weakness, soft number, or risk arrives with the concrete action that closes it. A pre-mortem that only lists ways to die is half a document.
 - **No dates as inputs.** Size in units and dependencies; the calendar is an output of resources.
 

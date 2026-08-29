@@ -14,6 +14,11 @@ $ARGUMENTS
 ## Spawn the product manager
 
 Use the **product-manager** subagent to produce, into `spec/02-Product/`:
+- `USER-INSIGHT.md` - who the target user really is: the emotional and functional
+  jobs, their anxieties and habits, the behaviour being created or changed, the
+  moment of first value, and the honest "why they would not use it" with the design
+  response. The psychology the whole product is built on. **This comes first**, so
+  the features serve the user rather than the other way round.
 - `PRD.md` (the master) - overview, personas & jobs-to-be-done, scope (in and
   explicitly out), the module map, the interfaces between modules, non-functional
   requirements, the data needed, success metrics, risks, glossary.

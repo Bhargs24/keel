@@ -39,6 +39,7 @@ Keep this current. It is how `/status` knows which phase you are in, and how a g
 | `04-Business/UNIT-ECONOMICS.md` | one customer, fully costed | company | ☐ |
 | `04-Business/GTM.md` | the first ten and the first thousand customers | company | ☐ |
 | `05-Finance/COST-TO-RUN.md` | the real monthly run cost at a stated scale | company | ☐ |
+| `02-Product/USER-INSIGHT.md` | the target user's psychology and the behaviour to create | **both** | ☐ |
 | `02-Product/PRD.md` | the master PRD | **both** | ☐ |
 | `02-Product/prd/M*.md` | the module specs, at requirements depth | **both** | ☐ |
 | `02-Product/USER-STORIES.md` | stories + acceptance criteria per persona | **both** | ☐ |

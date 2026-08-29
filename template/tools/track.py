@@ -504,6 +504,7 @@ DOC_REGISTER = [
     ("Discover", "spec/04-Business/UNIT-ECONOMICS.md", "company"),
     ("Discover", "spec/04-Business/GTM.md", "company"),
     ("Discover", "spec/05-Finance/COST-TO-RUN.md", "company"),
+    ("Define", "spec/02-Product/USER-INSIGHT.md", "all"),
     ("Define", "spec/02-Product/PRD.md", "all"),
     ("Define", "spec/02-Product/USER-STORIES.md", "all"),
     ("Define", "spec/02-Product/SUCCESS-METRICS.md", "all"),

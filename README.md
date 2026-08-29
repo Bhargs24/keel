@@ -42,21 +42,29 @@ Most AI tools help you generate a prototype in minutes. Keel helps you build a *
 
 ```mermaid
 flowchart LR
-    I([idea]) --> D
-    subgraph RESEARCH [" the specialists do the thinking "]
+    I([Your idea]) --> D
+    subgraph R [the specialists do the thinking]
       direction LR
-      D["Discover<br/><sub>business, market, money</sub>"] --> P["Define<br/><sub>the product, the PRD</sub>"] --> DS["Design<br/><sub>brief, system, mockups</sub>"] --> A["Architect<br/><sub>stack, data, build plan</sub>"]
+      D[1 Discover] --> P[2 Define] --> DS[3 Design] --> A[4 Architect]
     end
-    A --> F{"Feasibility<br/>GO / REVISE / NO-GO"}
+    A --> F{5 Feasibility}
     F -->|revise| D
-    F -->|go| PL["Plan<br/><sub>load the tracker</sub>"]
-    PL --> B["Build loop<br/><sub>write code, review, audit, test</sub>"]
-    B --> S["Secure<br/><sub>prove tenant isolation</sub>"]
-    S --> SH([Ship])
+    F -->|GO| PL[6 Plan] --> B[7 Build] --> S[8 Secure] --> SH([Ship])
     B -.->|next task| B
 ```
 
-Each box is a step. The research steps each spawn a **specialist AI subagent** that does the work and writes a real document, not a stub. Then the build loop writes and ships the actual code. Between the plan and the build sits a **feasibility gate** that checks all three plans together: is the product coherent with the business, is it buildable with your tools, can you afford to run it? If not, it says `REVISE` and tells you exactly what to fix. And whenever Keel finds a weakness, in your idea, your product, or your code, **it never leaves you there. It always hands you the fix.**
+| Step | What happens |
+|---|---|
+| **1 · Discover** | The business case, or for a project, what already exists and how yours is genuinely better |
+| **2 · Define** | The product spec: the target user's psychology, then every screen and every state |
+| **3 · Design** | A distinctive design system and real screen mockups, never a template |
+| **4 · Architect** | A justified tech stack, the data model, and a dependency-ordered build plan |
+| **5 · Feasibility** | An honest audit of all three plans together. **GO / REVISE / NO-GO** |
+| **6 · Plan** | The build roadmap becomes a tracked, ordered backlog |
+| **7 · Build** | Keel writes and tests the real code, one task at a time |
+| **8 · Secure** | It proves no user can read another user's data, then ships |
+
+The research steps each spawn a **specialist AI subagent** that writes a real document, not a stub. The feasibility gate checks all three plans together: is the product coherent with the business, is it buildable with your tools, can you afford to run it? If not, it says `REVISE` and tells you exactly what to fix. And whenever Keel finds a weakness, in your idea, your product, or your code, **it never leaves you there. It always hands you the fix.**
 
 ---
 
@@ -184,8 +192,8 @@ Prompt-to-app builders are great for a quick demo, then you hit the wall: no rea
 
 A complete, professional document set plus the working product:
 
-- **Business:** the company narrative, positioning, market and competitor analysis, unit economics (with a downside case), a pre-mortem, and the real monthly cost to run.
-- **Product:** a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, user stories, success metrics, and every screen state.
+- **Business:** the company narrative, positioning against a real moat (the 7 Powers, not hand-waving), market and competitor analysis, unit economics stress-tested with a downside case, a pre-mortem, and the real monthly cost to run, rebuilt from prices checked today rather than trusted.
+- **Product:** it starts with the person, the target user's psychology and the behaviour the product has to create, not a feature list. Then a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, success metrics, and every screen state, so the product is built around how people actually think and act.
 - **Design:** a design brief, a design system (colors, type, components), and real HTML mockups of the key screens.
 - **Technical:** the architecture, a justified tech stack, the data model, the accounts to set up, and a dependency-ordered build roadmap.
 - **The product itself:** production-grade code, tests that cover the risk, and a security proof, built task by task and tracked in git.
@@ -200,7 +208,7 @@ Each is a focused AI mind with a clean context and one job, defined in `.claude/
 |---|---|
 | **business-analyst** | the narrative, business model, unit economics, the moat, a pre-mortem |
 | **market-researcher** | market sizing, the competitor field, the wedge, incumbent-response war-gaming |
-| **product-manager** | the PRD, prioritized testable requirements, jobs-to-be-done, every screen state |
+| **product-manager** | the target user's psychology and behaviour, then the PRD, prioritized testable requirements, and every screen state |
 | **design-lead** | the design brief, the design system, real screen mockups |
 | **tech-architect** | architecture, stack, data model, the build roadmap |
 | **feasibility-auditor** | the cross-check of all three plans, with a GO / REVISE / NO-GO verdict |
@@ -276,6 +284,16 @@ That is exactly who it is built for, alongside professional teams. The installer
 - **Product managers and designers** who want a spec, a plan, and a build that follows them.
 - **Engineers and small teams** who want AI speed without losing quality, ownership, or security.
 - **Anyone hitting the wall** with a prompt-to-app tool and needing to reach real production.
+
+---
+
+## Why I built Keel
+
+I'm **Bhargav**. Before this, I shipped a product on my own, end to end: two mobile apps live on the App Store and Google Play, a backend, three web consoles, five languages in production, used by real students, in about three months. I did every side of it myself, the business, the product, and the engineering, and took it from an idea all the way to something people used.
+
+Doing that alone taught me where the difficulty actually is. When AI can write code this fast, building stops being the bottleneck. The hard part, the part that decides whether what you ship is any good, is knowing **what** to build and **why**: the business, the product and the person it is for, the technical shape, and the order to build it in. The tools out there turn a spec into code brilliantly, and every one of them assumes you already wrote that spec. Most people have not, and the people who need it most are often the least sure what a good one contains.
+
+So I built Keel to be the thing I wish I had had: it does that thinking with you, whether you are a seasoned engineer or someone who has never written a line of code, and then it keeps the build honest against it, all the way to production. It carries the product and business judgment I learned building solo, so you do not have to learn it the slow way too.
 
 ---
 
