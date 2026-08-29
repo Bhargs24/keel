@@ -1,0 +1,44 @@
+# Ownership map · read by tools/ownership_check.py
+#
+# One rule per line:  <path-prefix>  <owner>
+# Owners: any key from tracker/people.toml (upper-cased) | SHARED | GENERATED
+#
+#   <PERSON>    they own it. Nobody else changes it without a crossing note
+#               (docs/00-RULES/OWNERSHIP-PROTOCOL.md).
+#   SHARED      anyone may change it. Still reviewed.
+#   GENERATED   nobody hand-edits it, ever. It is produced by a generator.
+#
+# Longest matching prefix wins, so a subdirectory can belong to someone else
+# than its parent. Use that: it is how you make an ownership split visible in
+# the directory tree, which is the only way it can be checked.
+#
+# Changing this file is itself a crossing: it needs both owners to approve.
+
+# --- generated, never hand-edited -------------------------------------------
+packages/shared                      GENERATED
+
+# --- example: one service split by subpackage -------------------------------
+services/api/handlers                ALEX
+services/api                         ALEX
+services/worker                      ALEX
+
+apps/web                             SAM
+apps/console                         SAM
+infra                                SAM
+
+# --- gates and infrastructure -----------------------------------------------
+tools                                ALEX
+.github                              ALEX
+Makefile                             ALEX
+
+# --- shared working areas ---------------------------------------------------
+docs                                 SHARED
+tracker                              SHARED
+bench                                SHARED
+spikes                               SHARED
+fixtures                             SHARED
+README.md                            SHARED
+
+# --- files two sessions reliably conflict on: change alone, never in parallel
+CLAUDE.md                            SHARED
+docs/10-STATUS/NOW.md                SHARED

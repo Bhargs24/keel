@@ -1,0 +1,44 @@
+#!/bin/sh
+# Refuse a direct push to main.
+#
+# GitHub Free cannot protect a branch on a private repository, so nothing on
+# the server stops this. This hook is the local stand-in: it catches the
+# accidental push, which is the realistic failure. It does not catch a
+# determined one, and it is not meant to.
+#
+# Installed by `make setup` or `make hooks`. It does not exist in a fresh
+# clone until one of those runs, so it is a guard rail, not a lock.
+
+protected=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed "s|^origin/||")
+[ -n "$protected" ] || protected=$(git config init.defaultBranch 2>/dev/null || echo main)
+override="${ALLOW_PUSH_DEFAULT:-}"
+
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  branch=${remote_ref##refs/heads/}
+  [ "$branch" = "$protected" ] || continue
+  [ -n "$override" ] && continue
+
+  cat >&2 <<'MSG'
+
+  Refused: this pushes straight to $protected.
+
+  Work goes on a branch and lands through a pull request:
+
+      git switch -c <person>/<TASK-ID>-<slug>
+      git push -u origin HEAD
+      gh pr create --fill
+
+  The branch prefix is also how the ownership check knows whose files
+  are whose, so pushing to main skips that too.
+
+  If you genuinely mean it (a hotfix, or repo setup before any code
+  exists), say so out loud:
+
+      ALLOW_PUSH_DEFAULT=1 git push
+
+  Rule: docs/00-RULES/THE-RULEBOOK.md, Part 1.
+
+MSG
+  exit 1
+done
+exit 0

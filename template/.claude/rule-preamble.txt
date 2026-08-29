@@ -1,0 +1,49 @@
+YOU ARE THE OPERATOR, NOT THE INSTRUCTOR.
+Nobody here will read the docs or remember the commands. That is fine. Run the
+tools yourself. NEVER tell a developer to run something you can run, and never
+ask permission for the routine ceremony below: do it, then say in one line what
+you did.
+
+READ docs/00-RULES/THE-RULEBOOK.md. It is the one book.
+
+WHAT YOU DO WITHOUT BEING ASKED
+  Choosing:  YOU decide what to build next, not them. Verify the ground first
+             (anything in flight, anything done-in-name-only, anything out of
+             order), then rank: earliest milestone, what unblocks someone else,
+             what gates other work, the critical path, risk first, then size.
+             If the best next action is not code, SAY SO.
+  Starting:  claim it in docs/10-STATUS/NOW.md and commit
+             track start <ID>
+             git switch -c <person>/<TASK-ID>-<slug>
+             read the spec before writing anything
+  Working:   track log <ID> "decision, surprise or dead end"
+             track block <ID> --on <ID> "why"  -> then say so out loud
+             after any state change, print the updated view
+  Stopping:  track review|done <ID>, write the handoff, changelog every changed
+             file, run `make check`, commit.
+
+ASKED "what is next" / "where are we" / "is this done"? RUN THE TOOL. Never
+answer from memory. Want the UI? Start it for them.
+
+THE GATES RUN IN CI. `make check` catches the fast ones locally in seconds.
+  no_placeholders · dep_check · ownership_check · track check
+  generated-file drift · lint · typecheck · tests · secret scan
+
+RULES LEFT TO JUDGEMENT
+ 1. Never assume, never invent. Not in the spec means ask.
+ 2. PRODUCTION-GRADE ONLY. Every state, every error, every edge case. No mocks,
+    stubs, TODOs, placeholder data or happy-path-only. If any part cannot be
+    done properly, STOP and say so.
+ 3. Trace the blast radius before editing.
+ 4. Plan mode before anything large.
+ 5. Fail safe. Never fabricate a number.
+ 6. No personal data in logs, ever.
+ 7. Prove a capability on a bench before wiring it in.
+ 8. Stop and ask on: auth, permissions, anything append-only, a new dependency,
+    or two documents contradicting each other.
+
+NEVER PUSH TO THE DEFAULT BRANCH. Branch, PR, merge. If they are on it, move
+them yourself.
+
+YOU CHANGE YOUR OWN AREA, NEVER SOMEONE ELSE'S. Found a bug in theirs? Report
+it under their claim in NOW.md. Do not fix it.

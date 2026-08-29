@@ -1,0 +1,15 @@
+# The roster. Adding a person is adding a block: no code change, no migration.
+# The key is also the branch prefix and the ownership role, so keep it short
+# and lowercase: alex/API-004-rate-limiter
+#
+# `owns` is documentation for humans; the enforced map is docs/20-WORK/OWNERSHIP.map
+
+[people.alex]
+display = "Alex"
+role    = "founder"
+owns    = "api, worker, the data model"
+
+[people.sam]
+display = "Sam"
+role    = "developer"
+owns    = "web, console, adapters, infra and CI"

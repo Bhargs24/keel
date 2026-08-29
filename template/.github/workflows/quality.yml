@@ -1,0 +1,92 @@
+name: quality gates
+
+# Docs-only changes skip the code pipeline entirely. Most commits early on are
+# documents, and running four toolchains to check a markdown edit is how CI
+# earns a reputation for wasting time.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  # Everything here is pure Python and finishes in seconds. It is also
+  # everything `make check` runs locally, so this should never be the first
+  # place you learn something is wrong.
+  fast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: no placeholder code
+        run: python tools/no_placeholders.py
+
+      - name: module boundaries
+        run: python tools/dep_check.py
+
+      - name: ownership boundary
+        run: python tools/ownership_check.py ${{ github.event.pull_request.base.sha || 'origin/main' }}
+
+      - name: tracker is consistent
+        run: python tools/track.py check
+
+      - name: no secrets committed
+        run: |
+          if git log -p -1 | grep -nEi '^\+.*(api[_-]?key|secret|password|token)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"']{12,}'; then
+            echo "A secret appears in this diff. Rotate it, do not just remove it."
+            exit 1
+          fi
+
+  # Only runs when code changed. Each language is set up only if that language
+  # actually has source, so an empty directory never fails the build.
+  code:
+    runs-on: ubuntu-latest
+    needs: fast
+    if: |
+      github.event_name == 'push' ||
+      contains(join(github.event.pull_request.labels.*.name), 'code') ||
+      true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: what changed
+        id: changed
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          FILES=$(git diff --name-only "$BASE" HEAD || true)
+          echo "$FILES"
+          grep -qE '^(services|apps|packages)/' <<< "$FILES" && echo "code=yes" >> $GITHUB_OUTPUT || echo "code=no" >> $GITHUB_OUTPUT
+          grep -qE '^services/core-api/.*\.go$'  <<< "$FILES" && echo "go=yes"   >> $GITHUB_OUTPUT || true
+          grep -qE '^services/ai/.*\.py$'        <<< "$FILES" && echo "py=yes"   >> $GITHUB_OUTPUT || true
+          grep -qE '^apps/(web|console)/.*\.tsx?$' <<< "$FILES" && echo "ts=yes" >> $GITHUB_OUTPUT || true
+
+      - uses: actions/setup-go@v5
+        if: steps.changed.outputs.go == 'yes'
+        with: { go-version: "1.23" }
+      - uses: actions/setup-python@v5
+        if: steps.changed.outputs.py == 'yes'
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        if: steps.changed.outputs.ts == 'yes'
+        with: { node-version: "22" }
+
+      - name: generated files in sync
+        if: steps.changed.outputs.code == 'yes'
+        run: |
+          make gen
+          git diff --exit-code -- packages/shared \
+            || (echo "packages/shared is out of sync. Run 'make gen' and commit."; exit 1)
+
+      - name: lint
+        if: steps.changed.outputs.code == 'yes'
+        run: make lint
+
+      - name: typecheck
+        if: steps.changed.outputs.code == 'yes'
+        run: make typecheck
+
+      - name: tests
+        if: steps.changed.outputs.code == 'yes'
+        run: make test
