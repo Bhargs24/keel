@@ -123,7 +123,7 @@ cd ~/my-product
 python tools/keel.py
 ```
 
-Your browser opens to a friendly cockpit: a progress rail from Idea to Ship, one plain-English "your next step" card with the exact words to copy, and every document Keel writes, readable in the browser. **Open the guide, do the step it shows, refresh, repeat, until you have shipped.**
+Your browser opens to a friendly cockpit: a progress rail from Idea to Ship, one plain-English "your next step" card with the exact words to copy, and every document Keel writes, readable in the browser. It even explains itself, with a short "how this works" panel built in. **Do the step it shows, and the page moves to the next one on its own. No refresh, no remembering commands. Keep going until you have shipped.**
 
 ### The developer way (install as a Claude Code plugin)
 
@@ -291,11 +291,15 @@ That is exactly who it is built for, alongside professional teams. The installer
 
 ## Why I built Keel
 
-I'm **Bhargav**. Before this, I shipped a product on my own, end to end: two mobile apps live on the App Store and Google Play, a backend, three web consoles, five languages in production, used by real students, in about three months. I did every side of it myself, the business, the product, and the engineering, and took it from an idea all the way to something people used.
+I'm **Bhargav**, and I have taken a product from an empty folder to real users on my own. In about three months I shipped an edtech product solo, end to end: two mobile apps live on the App Store and Google Play, a backend API, three web consoles, and a content engine behind them, five languages in production, used by real students. Not a prototype. A deployed product with everything a real one has, and I built every side of it myself: the business case, the product, the design, and the engineering.
 
-Doing that alone taught me where the difficulty actually is. When AI can write code this fast, building stops being the bottleneck. The hard part, the part that decides whether what you ship is any good, is knowing **what** to build and **why**: the business, the product and the person it is for, the technical shape, and the order to build it in. The tools out there turn a spec into code brilliantly, and every one of them assumes you already wrote that spec. Most people have not, and the people who need it most are often the least sure what a good one contains.
+Then I did the part almost everyone skips. Before a line of the next version existed, I wrote its specification: a product spec of **180 screens, each with its real states** (loading, empty, error, permission-denied, not just the happy path); **290 build steps put in dependency order** so nothing is ever built before the thing it needs, checked mechanically to **zero ordering violations**; and **every screen traced end to end** to the step that builds it, so nothing gets discovered missing in production. Around half a million words of it. I rebuilt the financial model from prices I checked that day and caught my own earlier numbers understating the true cost to run by **6.7x**.
 
-So I built Keel to be the thing I wish I had had: it does that thinking with you, whether you are a seasoned engineer or someone who has never written a line of code, and then it keeps the build honest against it, all the way to production. It carries the product and business judgment I learned building solo, so you do not have to learn it the slow way too.
+That is the experience Keel is built from. Not that I can ship, but that I know what a product actually needs, across business, product, and technical, and how much rigor each part deserves. A weekend project should not carry a competitor analysis; a funded startup skipping its unit economics is negligent. A product is not a feature list, it is whether the person you built it for will actually use the thing. Working all of that out end to end, alone, is slow and expensive.
+
+And it taught me where the real difficulty now sits. When AI writes code this fast, building stops being the bottleneck. The hard part, the part that decides whether what you ship is any good, is knowing **what** to build and **why**, for the person you are building it for, and in what order. Every AI tool out there turns a spec into code brilliantly, and every one assumes you already wrote the spec. Most people have not, and the people who need it most are the least sure what a good one contains.
+
+So I built Keel to be the thing I wish I had had: it does that thinking with you, whether you are a seasoned engineer or have never written a line of code, and then it keeps the build honest against it, all the way to production. It carries the product and business judgment I learned the slow, solo way, so you do not have to.
 
 ---
 
@@ -316,6 +320,8 @@ So I built Keel to be the thing I wish I had had: it does that thinking with you
 **Give it an idea. Watch it become a plan you can build, and then the product itself.**
 
 Open source (MIT). Star it, use it, contribute.
+
+Built by **[Bhargav](#why-i-built-keel)**, who took a product from idea to real users, solo, end to end, and built Keel so the next person does not have to learn it the slow way.
 
 *AI product builder · idea to production · AI founding team · spec-driven development · works with Claude Code and Cursor*
 
