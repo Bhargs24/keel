@@ -2,29 +2,31 @@
 
 # Keel
 
-### From an idea to a product you can ship. Properly.
+### Build a real product from one idea, with an AI founding team.
 
-**Keel is an AI founding team that lives in your terminal.** You give it one idea. It runs the real 0 to 1 work, business case, market and competitor research, a proper product spec, a distinctive design, the technical architecture, a feasibility audit, and a dependency-ordered build plan, and then it builds the thing under quality gates that will not let it cut corners.
+**Keel is an open-source AI product builder that takes you from an idea to a shipped, production-grade product.** It does the market research, writes the business case, defines the product spec, designs the screens, plans the build, then writes and ships the actual code, tested and secured, by driving the AI coding tool you already use (Claude Code, Cursor, Codex, and more).
 
-All you need is a subscription to an AI coding tool you already use (Claude Code, Cursor, Codex, anything that can run commands and read files).
-
-**And it is easy.** A friendly step-by-step guide shows you the one next thing to do, in plain English, all the way from your idea to a shipped product. You never have to remember a command. The hard machinery stays in the back.
+It is the tool for the part everyone skips: **knowing what to build and why, in what order, and proving it actually works before real users arrive.** And it is easy enough for a non-technical founder and rigorous enough for a senior engineer.
 
 </div>
 
+<p align="center">
+<a href="#install-it-start-here"><b>Install</b></a> ·
+<a href="#use-it"><b>Use it</b></a> ·
+<a href="#how-keel-compares"><b>Compare</b></a> ·
+<a href="#faq"><b>FAQ</b></a> ·
+<a href="https://github.com/Bhargs24/keel"><b>GitHub</b></a>
+</p>
+
 ---
 
-## Contents
+## What is Keel?
 
-- [The magic-wand loop](#the-magic-wand-loop)
-- [Install it (start here)](#install-it-start-here)
-- [Use it](#use-it)
-- [What you get](#what-you-get)
-- [The commands](#the-commands)
-- [The specialists](#the-specialists)
-- [Security you can prove](#-trespass-security-you-can-prove)
-- [The ideas it is built on](#the-ideas-it-is-built-on)
-- [What this is not](#what-this-is-not)
+Keel is a free, open-source system that turns a one-sentence idea into a complete, buildable, shippable product. Think of it as an **AI founding team in your terminal**: a business analyst, a market researcher, a product manager, a designer, a software architect, a QA engineer, and a security auditor, each an AI specialist that does its part of the 0 to 1 work and hands you a real deliverable.
+
+Most AI tools help you generate a prototype in minutes. Keel helps you build a **real product**: one that is planned, designed, tested, secure, and grounded in an actual business case, using the AI coding tool you already pay for as the engine. You bring the idea and the decisions. Keel does everything else and tells you the single next step at every point.
+
+**Keywords:** AI app builder, idea to MVP, idea to production, build a startup with AI, AI product manager, spec-driven development, AI market research, PRD generator, vibe coding done right, Claude Code workflow, Cursor workflow, open-source AI developer tool.
 
 ---
 
@@ -40,13 +42,27 @@ flowchart LR
     A --> F{"Feasibility<br/>GO / REVISE / NO-GO"}
     F -->|revise| D
     F -->|go| PL["Plan<br/><sub>load the tracker</sub>"]
-    PL --> B["Build loop<br/><sub>work, review, audit, test</sub>"]
+    PL --> B["Build loop<br/><sub>write code, review, audit, test</sub>"]
     B --> S["Secure<br/><sub>prove tenant isolation</sub>"]
     S --> SH([Ship])
     B -.->|next task| B
 ```
 
-Each box is a step. The research steps each spawn a **specialist subagent** that does the work and writes a real document, not a stub. Between the plan and the build sits a **feasibility gate** that checks all three plans together: is the product coherent with the business, is it buildable with the tools you have, and can you afford to run it? If not, it says `REVISE` and tells you exactly what to fix. And whenever Keel finds a weakness, in your idea, your product, or your code, **it never leaves you there. It always hands you the fix.** That is a rule, not a mood.
+Each box is a step. The research steps each spawn a **specialist AI subagent** that does the work and writes a real document, not a stub. Then the build loop writes and ships the actual code. Between the plan and the build sits a **feasibility gate** that checks all three plans together: is the product coherent with the business, is it buildable with your tools, can you afford to run it? If not, it says `REVISE` and tells you exactly what to fix. And whenever Keel finds a weakness, in your idea, your product, or your code, **it never leaves you there. It always hands you the fix.**
+
+---
+
+## Does Keel actually write the code?
+
+**Yes.** Keel is not just a planner. Once the plan passes the feasibility gate, Keel drives your AI coding tool through the entire build: it picks the next task, writes production-grade code (real data paths, every state, every error, no mocks or TODOs), writes the tests, proves the security, and moves to the next task. It writes the whole product.
+
+What makes Keel different from using a coding agent on its own is the judgment around the code:
+
+- it **works out what to build and why** (the business case and the product spec),
+- it **builds in the right order** (a dependency-ordered plan, so nothing is built before the thing it needs),
+- and it **proves the result is real** (`/audit` verifies "done" against a written definition of done, and `/secure` proves no user can read another user's data).
+
+Raw coding agents write code fast and guess at the rest. Keel removes the guessing.
 
 ---
 
@@ -54,13 +70,11 @@ Each box is a step. The research steps each spawn a **specialist subagent** that
 
 ### What you need first
 
-1. **Python 3.10 or newer.** Check with `python --version`. If you do not have it, get it from [python.org](https://www.python.org/downloads/) (on the first screen, tick "Add Python to PATH").
-2. **An AI coding tool.** [Claude Code](https://claude.com/claude-code) is the smoothest fit. Cursor, Codex, or any tool that can read files and run commands also works.
-3. **Git.** Keel uses it for history and safety. Get it from [git-scm.com](https://git-scm.com/downloads) if `git --version` fails. (The installer can set up your project for you if this is missing.)
+1. **Python 3.10 or newer.** Check with `python --version`. Get it from [python.org](https://www.python.org/downloads/) (tick "Add Python to PATH" on the first screen).
+2. **An AI coding tool.** [Claude Code](https://claude.com/claude-code) is the smoothest fit. Cursor, Codex, or any tool that reads files and runs commands also works.
+3. **Git.** From [git-scm.com](https://git-scm.com/downloads) if `git --version` fails. (Keel's installer can set your project up if this is missing.)
 
 ### The easiest way (recommended for everyone)
-
-**1. Get Keel and run the installer.** In a terminal:
 
 ```bash
 git clone https://github.com/Bhargs24/keel
@@ -68,174 +82,172 @@ cd keel
 python install.py ~/my-product      # the folder for your new product
 ```
 
-The installer is a concierge. It creates the folder if it does not exist, sets up version control for you, asks "is it just you building this?" (no jargon), and offers to open the guide. Answer the questions and say yes.
+The installer is a concierge: it creates the folder, sets up version control, asks "is it just you building this?" with no jargon, and offers to open the guide.
 
-**2. Open the guide.** It shows you the next step, always:
+Then open the **guide**, which shows you the next step at every point:
 
 ```bash
 cd ~/my-product
 python tools/keel.py
 ```
 
-Your browser opens to a friendly cockpit: a progress rail from Idea to Ship, one plain-English "your next step" card with the exact words to copy, and every document Keel writes, readable in the browser.
+Your browser opens to a friendly cockpit: a progress rail from Idea to Ship, one plain-English "your next step" card with the exact words to copy, and every document Keel writes, readable in the browser. **Open the guide, do the step it shows, refresh, repeat, until you have shipped.**
 
-**3. Follow the steps.** Open your AI coding tool in that folder, paste the step the guide shows you, press enter. Come back, refresh the guide, do the next step. That is the whole loop.
-
-### The developer way (install as a plugin)
-
-If you use Claude Code and want the commands available directly:
+### The developer way (install as a Claude Code plugin)
 
 ```
 /plugin marketplace add Bhargs24/keel
 /plugin install keel
 ```
 
-Then run `python install.py <your-repo>` once to lay down the project structure (`spec/`, `docs/`, `tools/`, the tracker), and use the commands in that repo.
+Then run `python install.py <your-repo>` once to lay down the project structure, and use the commands in that repo.
 
-> **On Windows?** Everything works. Where older guides say `make check`, use `python tools/run.py check` instead. Keel prefers the Python runner everywhere so nothing depends on tools you may not have.
+> **On Windows?** Everything works. Use `python tools/run.py check` wherever older docs say `make check`. Keel prefers the Python runner so nothing depends on tools you may not have.
 
 ---
 
 ## Use it
 
-### The one thing to understand
+**You do not drive the tools. Keel does.** You say what you want in plain words; it picks the next step, runs it, and tells you in one line what happened. When something is genuinely your call (a name, a budget, a real trade-off), it asks. Otherwise it proceeds.
 
-**You do not drive the tools. Claude does.** You say what you want in plain words; it picks the next step, runs it, and tells you in one line what happened. When something is genuinely your call (a name, a budget, a real trade-off), it asks. Otherwise it proceeds. Your job is the decisions, not the administration.
-
-### The whole thing, in three moves
+**The whole thing, in three moves:**
 
 1. **Give it your idea.** In the guide, or by typing `/keel "your idea in a sentence"` in your AI tool.
-2. **Approve each step.** Keel researches the business, defines the product, designs it, plans the build, and audits whether it all holds together, pausing at each gate to show you what it found and ask before it goes on.
-3. **When it says GO, it builds** the thing, task by task, testing and securing as it goes. Ask `/next` any time to see what is next.
+2. **Approve each step.** Keel researches the business, defines the product, designs it, plans the build, and audits whether it holds together, pausing at each gate to show you what it found.
+3. **When it says GO, it builds** the product, task by task, testing and securing as it goes. Ask `/next` any time to see what is next.
 
-### If you already have a spec
+**Already have a spec?** Drop your documents into `spec/`, run `/plan`, then `/work`.
 
-Drop your documents into `spec/`, run `/plan` to load the build plan, and `/work` to start building.
-
-### The three commands to remember
-
-> **`/start`** when you sit down. **`/next`** to find out what to do. **`/wrap`** when you stop.
-
-Everything else, Claude reaches for on your behalf.
+**The three commands to remember:** `/start` when you sit down, `/next` to find out what to do, `/wrap` when you stop. Everything else, Keel reaches for on your behalf.
 
 ---
 
-## What you get
+## How Keel compares
 
-| | |
-|---|---|
-| **A team of specialists** | Business analyst, market researcher, product manager, design lead, tech architect, feasibility auditor, code reviewer, QA, security auditor, as subagents, each with its own brief and its own quality bar |
-| **A friendly guide** | A step-by-step cockpit that hides the complexity and shows you the one next thing, plus every document Keel writes, readable in your browser |
-| **A real document set** | The company narrative, positioning, market and competitor analysis, unit economics (with a downside), cost-to-run, a master PRD with prioritized testable requirements, a design system with mockups, the technical design, and a dependency-ordered build roadmap |
-| **Feasibility before you build** | The three plans are audited alone and together. Coherent, buildable, affordable. A `GO / REVISE / NO-GO` verdict with reasons and fixes |
-| **Weakness always with a fix** | The paired-honesty law: every gap Keel names arrives with the concrete action that closes it. It is never only a critic |
-| **A tracker that is just files in git** | One markdown file per task. No database, no account. It refuses to start a task whose dependencies are not done |
-| **"What do I do next?", answered** | `/next` decides, and it is allowed to say the best next move is not code. `/status` tells you which phase you are in |
-| **Gates that run themselves** | No placeholder code, module boundaries, ownership, dependency integrity, secret scanning, and per-language lint/type/test, the same locally and in CI |
-| **Security you can prove** | `/secure` runs **trespass**, a formal analyzer that proves no user can read another user's data, or hands you the exact query that breaks it |
-| **Serious code-quality rules** | Production-grade-or-nothing, hard size limits, an error-code taxonomy, a reuse discipline, and a real debugging protocol (root cause before fix, reproduce first) |
+| | Prompt-to-app builders<br/><sub>(Lovable, Bolt, v0, Base44)</sub> | A raw AI coding agent<br/><sub>(Claude Code, Cursor alone)</sub> | **Keel** |
+|---|:---:|:---:|:---:|
+| Writes working code | Prototype | Yes | **Yes, production-grade** |
+| Market and competitor research | No | No | **Yes** |
+| A real product spec (PRD) | No | No | **Yes** |
+| A distinctive design system | Partial | No | **Yes** |
+| Feasibility audit before building | No | No | **Yes** |
+| Dependency-ordered build plan | No | No | **Yes** |
+| Verifies "done" is really done | No | No | **Yes (`/audit`)** |
+| Proves security (no data leaks) | No | No | **Yes (`trespass`)** |
+| Uses the AI tool you already pay for | No (locked in) | Yes | **Yes** |
+| Open source, yours to keep | No | No | **Yes (MIT)** |
+
+Prompt-to-app builders are great for a quick demo, then you hit the wall: no real spec, no plan, no proof it works, and you are locked into their platform. A raw coding agent writes code fast but guesses at what to build and whether it is right. **Keel gives you the whole path, and you own it.**
 
 ---
 
-## The commands
+## What Keel produces
 
-Three you will use constantly, the rest when you want them.
+A complete, professional document set plus the working product:
 
-### The pipeline
-
-| Command | What it does | Spawns |
-|---|---|---|
-| **`/keel "<idea>"`** | Capture the idea, clarify only what blocks progress, start the pipeline | orchestrator |
-| **`/discover`** | The business case: narrative, positioning, market and competitor analysis, unit economics, cost-to-run | business-analyst, market-researcher |
-| **`/define`** | The product: a master PRD, module specs, user stories, success metrics, flows | product-manager |
-| **`/design`** | The look and feel: a design brief, a design system, real screen mockups covering every state | design-lead |
-| **`/architect`** | The build: architecture, tech stack, data model, tools and accounts, the build roadmap | tech-architect |
-| **`/feasibility`** | Audits the three plans, alone and together | feasibility-auditor |
-| **`/plan`** | Turns the build roadmap into tracker tasks with dependencies | |
-
-### The build loop
-
-| Command | What it does |
-|---|---|
-| **`/start`** | Where things stand, what the last session did, what is ready. Stops without starting anything |
-| **`/work`** | Decides what to build next, verifies the ground, then runs the ceremony on your yes |
-| **`/next`** | Just the recommendation, what to do next and why. Allowed to say "not code" |
-| **`/spec`** | What the specification actually says about a step, screen, or topic |
-| **`/review`** | The gap between green CI and actually right: spec drift, silent failure, PII in logs |
-| **`/audit`** | Is what we marked done actually done? Clause by clause, and it moves failures back |
-| **`/test`** | Runs the suite, reads the failures, tells you what is actually broken |
-| **`/secure`** | Proves tenant isolation with trespass, then a security review of the rest |
-| **`/ship`** | The production-readiness gate, then deploy |
-| **`/wrap`** | Honest state to the tracker, handoff, changelogs, checks, commit |
-| **`/status`**, **`/board`** | Where the whole project is, and the developer board |
+- **Business:** the company narrative, positioning, market and competitor analysis, unit economics (with a downside case), a pre-mortem, and the real monthly cost to run.
+- **Product:** a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, user stories, success metrics, and every screen state.
+- **Design:** a design brief, a design system (colors, type, components), and real HTML mockups of the key screens.
+- **Technical:** the architecture, a justified tech stack, the data model, the accounts to set up, and a dependency-ordered build roadmap.
+- **The product itself:** production-grade code, tests that cover the risk, and a security proof, built task by task and tracked in git.
 
 ---
 
 ## The specialists
 
-Each is a focused mind with a clean context and one job, defined in `.claude/agents/`.
+Each is a focused AI mind with a clean context and one job, defined in `.claude/agents/`.
 
-| Agent | Owns | Refuses to |
-|---|---|---|
-| **business-analyst** | the narrative, business model, unit economics (with a downside), the moat, a pre-mortem | invent a market size or a moat that isn't there |
-| **market-researcher** | market sizing, the competitor field, the wedge, incumbent-response war-gaming | copy a competitor without saying why you win |
-| **product-manager** | the PRD, prioritized testable requirements, JTBD, every screen state | leave a state, error, or requirement unspecified or untestable |
-| **design-lead** | the design brief, the design system, real screen mockups | ship the generic AI-default look, or mock only the happy path |
-| **tech-architect** | architecture, stack, data model, the build roadmap | pick a stack it can't justify, or a plan with steps out of order |
-| **feasibility-auditor** | the cross-check of all three plans | pass a plan for want of checking, or issue a GO on a base case only |
-| **code-reviewer** | the gap a grep can't find, before a push | approve a change that builds something adjacent to the spec |
-| **qa** | tests that cover the risk, not just the happy path | call a thing tested when the risk isn't |
-| **security-auditor** | the permission and data boundaries | assert isolation when trespass can prove it |
+| Agent | Owns |
+|---|---|
+| **business-analyst** | the narrative, business model, unit economics, the moat, a pre-mortem |
+| **market-researcher** | market sizing, the competitor field, the wedge, incumbent-response war-gaming |
+| **product-manager** | the PRD, prioritized testable requirements, jobs-to-be-done, every screen state |
+| **design-lead** | the design brief, the design system, real screen mockups |
+| **tech-architect** | architecture, stack, data model, the build roadmap |
+| **feasibility-auditor** | the cross-check of all three plans, with a GO / REVISE / NO-GO verdict |
+| **code-reviewer** | the gap a grep cannot find, before a push |
+| **qa** | tests that cover the risk, not just the happy path |
+| **security-auditor** | the permission and data boundaries |
 
 ---
 
 ## trespass: security you can prove
 
-Broken access control, one user able to read or delete another user's data, is the single most common way AI-built apps leak, and the one class ordinary scanners **structurally cannot catch**, because catching it needs to know who is *supposed* to see what.
+Broken access control, one user able to read or delete another user's data, is the single most common way AI-built apps leak, and the one class ordinary scanners cannot catch, because catching it needs to know who is *supposed* to see what.
 
-Keel ships **trespass**, a formal analyzer for Postgres / Supabase row-level security. It compiles every policy into logic and either **proves** no tenant can reach another's rows, or hands you the exact query that shows they can:
+Keel ships **trespass**, a formal analyzer for Postgres and Supabase row-level security. It compiles every policy into logic and either **proves** no user can reach another's rows, or hands you the exact query that shows they can:
 
 ```
 VULNERABLE  critical   [tenant-read]
   Your policy:  user_id = auth.uid() OR is_public
-  Counterexample (from the solver):
-      session  auth.uid() = attacker
-      row      user_id = victim, is_public = true
-  Reproduce it:  select * from documents;   -- returns victim's rows to attacker
+  Reproduce it:  select * from documents;   -- returns another user's rows
 ```
 
-It is written from scratch on the standard library (a purpose-built SMT solver for the row-level-security fragment), validated against Z3 and against a real Postgres, it runs in the gates and in `/secure`, and it fails your build when a policy leaks. Details and its 441-test suite: [`tools/trespass/README.md`](template/tools/trespass/README.md).
+Written from scratch on the standard library, validated against Z3 and a real Postgres, it runs in the gates and in `/secure`, and it fails your build when a policy leaks. Details: [`tools/trespass/README.md`](template/tools/trespass/README.md).
+
+---
+
+## FAQ
+
+**Is Keel free?**
+Yes. Keel is open source under the MIT license. You only pay for the AI coding tool you already use (like Claude Code or Cursor).
+
+**Do I need to know how to code to use Keel?**
+No. The guided cockpit shows you the one next step in plain English and gives you the exact words to paste. Keel does the technical work; you make the decisions it surfaces. It is also rigorous enough for professional engineers.
+
+**Does Keel write the actual code, or just documents?**
+Both. It writes the full business and product plan, and then it writes and ships the actual product code, tested and secured, by driving your AI coding tool.
+
+**What AI tools does Keel work with?**
+Claude Code fits most smoothly (Keel installs as a plugin). It also works with Cursor, Codex, and any AI coding tool that can read files and run commands.
+
+**How is Keel different from Lovable, Bolt, v0, or Replit?**
+Those generate a prototype from a prompt, then leave you at the wall with no spec, no plan, and no proof it works, locked into their platform. Keel does the research, the spec, the design, the plan, and the proof, and builds with the tool you already own, on code you keep.
+
+**How is it different from just using Claude Code or Cursor directly?**
+A coding agent writes code fast but guesses at what to build and whether it is right. Keel adds the founding-team judgment: what to build, why, in what order, and proof that it works, with a feasibility gate before a line of code.
+
+**Can Keel build a SaaS app? A mobile app? An MVP?**
+Yes. Keel is stack-agnostic. The architect chooses and justifies the right technology for your product, whether that is a web app, a SaaS, a mobile app, or an API.
+
+**Does it work on Windows?**
+Yes, fully. Use `python tools/run.py check` where docs mention `make`.
+
+**Is my idea and code private?**
+Yes. Everything lives in your own git repository on your machine. Keel stores nothing.
+
+**Can a solo, non-technical founder really ship with this?**
+That is exactly who it is built for, alongside professional teams. The installer, the guide, and the "tell me the next step" design assume you do not know the commands, and never make you feel like you should.
+
+---
+
+## Who Keel is for
+
+- **Founders and indie hackers** turning an idea into a fundable, buildable, shippable product.
+- **Product managers and designers** who want a spec, a plan, and a build that follows them.
+- **Engineers and small teams** who want AI speed without losing quality, ownership, or security.
+- **Anyone hitting the wall** with a prompt-to-app tool and needing to reach real production.
 
 ---
 
 ## The ideas it is built on
 
-You can throw away every file here and keep these.
-
-1. **Anything a person must remember is a rule that will eventually be broken.** So a rule must run, be checked, or be short enough to hold. The test for any new rule: *can this be a check?* If yes, it must be.
+1. **Anything a person must remember is a rule that will eventually be broken.** So a rule must run, be checked, or be short enough to hold.
 2. **The AI is the operator, not the instructor.** It never tells you to run a command it can run itself.
-3. **Every weakness travels with its fix.** The tool can tell you your idea is weak because it never leaves you there.
-4. **Choosing what to build next is a machine's job.** `/next` ranks the candidates and shows the reason, and is allowed to say the answer is not code.
-5. **"Done" is verified, not declared.** `/audit` walks a task against its written definition of done; its fourth verdict is *CANNOT VERIFY*, so nothing passes for want of checking.
+3. **Every weakness travels with its fix.** Keel can tell you your idea is weak because it never leaves you there.
+4. **Choosing what to build next is a machine's job.** `/next` ranks the candidates and shows the reason.
+5. **"Done" is verified, not declared.** `/audit` walks a task against its written definition of done.
 6. **"Secure" is proven, not assumed.** `/secure` proves the permission boundary rather than trusting it.
-7. **Feasibility is a gate, not a hope.** The business, the product, and the build are audited together before a line of code is written on top of them.
-
----
-
-## What this is not
-
-**Not a code generator.** It orchestrates the one you already pay for. It is the judgment around it: what to build, why, in what order, and whether it is actually right.
-
-**Not opinionated about your stack.** The architect chooses and justifies; the gates are language-agnostic.
-
-**Not a substitute for thinking.** It does the 0 to 1 legwork and holds the quality bar. You still make the calls it surfaces.
+7. **Feasibility is a gate, not a hope.** The business, the product, and the build are audited together before you build on them.
 
 ---
 
 <div align="center">
 
-**Give it an idea. Watch it become a plan you can build, and then the thing itself.**
+**Give it an idea. Watch it become a plan you can build, and then the product itself.**
 
-MIT licensed. Contributions welcome.
+Open source (MIT). Star it, use it, contribute.
+
+*AI product builder · idea to production · AI founding team · spec-driven development · works with Claude Code and Cursor*
 
 </div>
