@@ -82,6 +82,28 @@ Raw coding agents write code fast and guess at the rest. Keel removes the guessi
 
 ---
 
+## Production quality, enforced (not hoped for)
+
+Most AI tools will hand you code full of mock data, `TODO`s, and happy-path-only functions, and call it done. Keel will not. Quality here is enforced by gates that **fail the build**, not by good intentions.
+
+**Gates that run on every change:**
+
+| Gate | What it refuses to let through |
+|---|---|
+| `no_placeholders` | mock data, stubs, `TODO`s, placeholder or demo code |
+| `dep_check` | a module importing across a boundary, or a circular dependency |
+| `ownership_check` | a change reaching into code it does not own |
+| `trespass` | a database policy that lets one user read another user's rows |
+| tracker integrity | a build plan that has drifted from the actual work |
+
+**Laws the code is written against**, in rulebooks the AI reads every session: every error is typed with a stable, greppable code (`VAL_`, `AUTH_`, `NOTFOUND_`, `DEP_`, and so on) and never silently swallowed; no personal data in logs, ever; functions stay small and single-purpose; the same logic is never pasted twice, so a fix is made in one place; a bug is root-caused and reproduced before it is called fixed; and secrets are scanned on every write.
+
+The judgement a linter cannot make is done by a **code-reviewer** specialist before a push: spec drift, silent failures, a missing empty or error state, a test that only covers the happy path. Every weakness it finds arrives with the fix that closes it. That is a law here, not a courtesy.
+
+This is the line between code you can demo and code you can ship.
+
+---
+
 ## Works with any AI tool (open or closed)
 
 Keel is built in layers, and only the top one is tied to a specific tool:
@@ -195,6 +217,11 @@ Prompt-to-app builders are great for a quick demo, then you hit the wall: no rea
 ## What Keel produces
 
 **A complete, professional document set, plus the working product.** Every document is written to a hard rigor standard: deep and exhaustive, not a summary; researched, with every external claim cited inline (source, URL, date) and a Sources list; written to the real professional format for that artifact. This is the difference between Keel and a chatbot that hands you an outline: it writes the actual document.
+
+<p align="center">
+<img src="assets/cockpit-full.png" alt="The Keel cockpit on a real project: the whole document map from Discover through Architect, with the Discover set complete and cited" width="620">
+<br><sub>A real run: the whole document map, from the business case through the technical plan, each one Keel writes and you can read in the guide.</sub>
+</p>
 
 - **Business:** the company narrative, vision and values, positioning against a real moat (the 7 Powers, not hand-waving), market and competitor analysis, unit economics stress-tested with a downside case, a defensibility analysis, a pre-mortem, a financial model (P&L, burn, runway), a fundraise ask, and the real monthly cost to run, rebuilt from prices checked today.
 - **Product:** it starts with the person, the target user's psychology and the behaviour the product has to create, not a feature list. Then a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, success metrics, a product roadmap, real-world scenarios, and every screen state, so the product is built around how people actually think and act.
