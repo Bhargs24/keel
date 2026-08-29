@@ -209,7 +209,8 @@ def row(t: Task, tasks, show_owner=True):
 def cmd_status(a):
     tasks = load_all()
     if not tasks:
-        die("no tasks yet. Run: python tools/track.py seed")
+        die("no tasks yet. Run /plan to load the build roadmap into tasks, "
+            "or add one: python tools/track.py --as <you> add <ID> --title \"...\"")
     counts = {s: sum(1 for t in tasks.values() if t.status == s) for s in STATUSES}
     total = len(tasks)
     pct = round(100 * counts["done"] / total) if total else 0
