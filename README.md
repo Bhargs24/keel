@@ -178,6 +178,31 @@ Then run `python install.py <your-repo>` once to lay down the project structure,
 
 **The three commands to remember:** `/start` when you sit down, `/next` to find out what to do, `/wrap` when you stop. Everything else, Keel reaches for on your behalf.
 
+**And you never have to memorize the rest.** The guide shows every command and what it does, right on the screen, with a marker on the one you are up to:
+
+<p align="center">
+<img src="assets/keel-commands.png" alt="The Keel cockpit's command reference: every command grouped into the pipeline, the build loop, and anytime, each with a plain-English description, and a you-are-here marker on the current step" width="720">
+</p>
+
+Twenty commands, three groups: the **pipeline** (`/keel` through `/plan`), the **build loop** (`/work`, `/review`, `/audit`, `/test`, `/equip`, `/secure`, `/ship`, and more), and the **anytime** navigation (`/status`, `/board`). The full reference with what each spawns is in [`docs/01-INDUCTION/COMMANDS.md`](template/docs/01-INDUCTION/COMMANDS.md).
+
+---
+
+## A tracker that knows what is next
+
+Keel ships a real, dependency-aware task tracker (plain Python, file-per-task in git, no dependencies). `/plan` loads your build roadmap into it; from then on the build loop leans on it:
+
+```text
+$ python tools/track.py status
+Progress   1/3 done (33%)   todo 2  doing 0  blocked 0  review 0  done 1
+
+$ python tools/track.py next
+Ready now
+  TODO   T-002   Build the login flow     # T-003 stays hidden: it depends on this
+```
+
+`next` only ever surfaces a task whose dependencies are met, so nothing is built before the thing it needs, and finishing one unlocks the next automatically. `/board` opens the same thing as a visual board in your browser.
+
 ---
 
 ## Easy by design

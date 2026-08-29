@@ -112,6 +112,38 @@ PHASE_STAGE = {
     "Design done": 4, "Architect done": 5, "Feasibility done": 6, "Building": 6,
 }
 
+# The whole toolset, shown in the cockpit so nothing is hidden. Grouped the way
+# docs/01-INDUCTION/COMMANDS.md groups them. You never have to memorise these
+# (Keel reaches for them for you), but you can always see what exists and why.
+COMMANDS = [
+    ("The pipeline: from idea to build-ready", [
+        ('/keel "your idea"', "Capture the idea and start the pipeline"),
+        ("/discover", "Research the market, the competitors, and the business case"),
+        ("/define", "Write the full product spec, every screen and every state"),
+        ("/design", "A distinctive design system and real screen mockups"),
+        ("/architect", "The tech stack, the data model, and the build roadmap"),
+        ("/feasibility", "Audit all three plans together: GO, REVISE, or NO-GO"),
+        ("/plan", "Load the roadmap into the tracker as ordered tasks"),
+    ]),
+    ("The build loop", [
+        ("/start", "Load the rules and brief you on where things stand"),
+        ("/next", "Decide the single best next thing to do, and why"),
+        ("/work", "Claim, branch, read the spec, then build the next task"),
+        ("/spec <topic>", "Show exactly what the spec says about something"),
+        ("/review", "Catch what green tests miss, before a push"),
+        ("/audit <id>", "Check that 'done' is really done, clause by clause"),
+        ("/test", "Run the tests and say what actually broke"),
+        ("/equip", "Find and vet open-source tools, skills, and MCP servers"),
+        ("/secure", "Prove no user can read another user's data"),
+        ("/ship", "The production-readiness gate, then deploy"),
+        ("/wrap", "Save honest state and a handoff before you stop"),
+    ]),
+    ("Anytime", [
+        ("/status", "Which phase the project is in, and what is next"),
+        ("/board", "The task board, in your browser"),
+    ]),
+]
+
 
 def state() -> dict:
     phase, nxt_cmd, why = track.detect_phase()
@@ -136,6 +168,7 @@ def state() -> dict:
         "journey": JOURNEY,
         "step": step,
         "docs": docs,
+        "commands": COMMANDS,
         "build": {"done": done, "total": len(tasks)} if tasks else None,
     }
 
@@ -347,6 +380,17 @@ color:var(--bg);padding:9px 16px;border-radius:9px;font-size:13px;opacity:0;tran
 .how.collapsed .how-body{display:none}
 @keyframes flash{0%{background:var(--accent-soft)}100%{background:var(--panel)}}
 .card.advanced{animation:flash 1.4s ease-out}
+/* command reference: the whole toolset, shown not hidden */
+.cmds{margin-top:6px}
+.cmdgrp{margin-bottom:16px}
+.cmdgrp .glabel{font-weight:600;font-size:14px;margin-bottom:8px}
+.cmdrow{display:flex;align-items:baseline;gap:14px;padding:8px 13px;border:1px solid var(--line);
+  border-radius:9px;background:var(--panel);margin-bottom:6px}
+.cmdrow code{font:600 13px ui-monospace,monospace;color:var(--accent);white-space:nowrap;min-width:140px}
+.cmdrow small{font-size:13px;color:var(--ink);line-height:1.4}
+.cmdrow.now{border-color:var(--accent);background:var(--accent-soft)}
+.cmdrow .badge{margin-left:auto;font-size:11px;color:var(--accent);font-weight:700;
+  white-space:nowrap;letter-spacing:.03em;text-transform:uppercase}
 </style>
 
 <div class=wrap>
@@ -369,6 +413,7 @@ color:var(--bg);padding:9px 16px;border-radius:9px;font-size:13px;opacity:0;tran
   <div class=rail id=rail></div>
   <div class=card id=step></div>
   <div id=produced></div>
+  <div id=commands></div>
   <div class=foot>You do the step above in your AI tool. This page notices the moment it is done and shows you the next one, by itself. Keel keeps the hard parts in the back so you don't have to think about them.</div>
 </div>
 <div id=reader><div class=rhead><b id=rpath></b><button onclick="closeReader()">close</button></div>
@@ -425,6 +470,20 @@ async function load(){
       `</div></div>`;
   }
   $('#produced').innerHTML=h;
+  // the full command reference, so the whole toolset is visible, never hidden
+  const nowcmd=(st.command||'').split(' ')[0];
+  let ch='<h3>Every command, and what it does</h3><div class=cmds>';
+  (s.commands||[]).forEach(([label,rows])=>{
+    ch+=`<div class=cmdgrp><div class=glabel>${label}</div>`;
+    rows.forEach(([cmd,desc])=>{
+      const isnow = cmd.split(' ')[0]===nowcmd;
+      ch+=`<div class="cmdrow ${isnow?'now':''}"><code>${cmd.replace(/</g,'&lt;')}</code>`
+        +`<small>${desc}</small>${isnow?'<span class=badge>you are here</span>':''}</div>`;
+    });
+    ch+='</div>';
+  });
+  ch+='</div>';
+  $('#commands').innerHTML=ch;
 }
 function copyCmd(c){navigator.clipboard&&navigator.clipboard.writeText(c);toast('Copied. Paste it into your AI tool.');}
 async function openDoc(path){
