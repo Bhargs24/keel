@@ -141,7 +141,7 @@ python tools/ownership_check.py
 | fail, generated | `packages/shared` was hand-edited. Fix the schema instead |
 | fail, no role | branch does not start a key from `tracker/people.toml` |
 
-**Longest matching prefix wins**, so `services/api/handlers` (one owner) beats `services/api` (another). This is why the AI plane is split into subpackages: **the ownership split has to be visible in the directory tree, or it cannot be checked.**
+**Longest matching prefix wins**, so `services/api/handlers` (one owner) beats `services/api` (another). This is the mechanism: **an ownership split has to be visible in the directory tree, or it cannot be checked.**
 
 An unmapped new path defaults to `SHARED`, so the check never blocks genuinely new work. **Map it as soon as it has an owner.**
 
