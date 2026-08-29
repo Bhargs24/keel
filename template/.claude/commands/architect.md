@@ -8,7 +8,9 @@ argument-hint: [optional focus, e.g. "just the data model"]
 $ARGUMENTS
 
 **Gate check first.** The PRD must exist (`spec/02-Product/PRD.md`). If it
-doesn't, stop and run `/define`.
+doesn't, stop and run `/define`. If `spec/06-Design/DESIGN-SYSTEM.md` exists, read
+it — the frontend stack choice must account for the design system; if it doesn't,
+note that design hasn't run and choose the UI layer conservatively.
 
 ## Spawn the architect
 

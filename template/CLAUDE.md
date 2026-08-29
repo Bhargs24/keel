@@ -15,7 +15,8 @@ This repository is run with **Keel**: an idea is taken to a shipped product thro
 | **Idea** | `/keel "<idea>"` | Capture the idea, clarify only what blocks progress, and start the pipeline |
 | **1 · Discover** | `/discover` | The **business-analyst** and **market-researcher** produce `spec/01-Company`, `spec/04-Business`, `spec/05-Finance` |
 | **2 · Define** | `/define` | The **product-manager** produces `spec/02-Product` — the PRD and its modules |
-| **3 · Architect** | `/architect` | The **tech-architect** produces `spec/03-Technical` — design, stack, data model, and the **build roadmap** |
+| **2.5 · Design** | `/design` | The **design-lead** produces `spec/06-Design` — the design brief, the design system, and real screen mockups |
+| **3 · Architect** | `/architect` | The **tech-architect** produces `spec/03-Technical` — stack, data model, and the **build roadmap** |
 | **4 · Feasibility** | `/feasibility` | The **feasibility-auditor** checks the three plans, alone and together: coherent, buildable, affordable to run. **GO / REVISE / NO-GO** |
 | **5 · Plan** | `/plan` | Load the build roadmap into the tracker as tasks with dependencies |
 | **6 · Build** | `/start` `/work` `/spec` `/review` `/audit` `/test` | The build loop. Claude decides the next task; the developer approves |

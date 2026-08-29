@@ -17,6 +17,7 @@ Run in order the first time; after that, `/status` tells you which one is next.
 | **`/keel "<idea>"`** | Captures the idea, clarifies only what blocks progress, starts the pipeline | — | — |
 | **`/discover`** | The business case: narrative, positioning, market & competitor analysis, unit economics, cost-to-run | business-analyst · market-researcher | Is there a real, differentiated, viable business? |
 | **`/define`** | The product: a master PRD, module specs, user stories, success metrics, flows | product-manager | Does it completely solve the business problem? |
+| **`/design`** | The look and feel: a design brief, a design system, real screen mockups covering every state | design-lead | Is the design distinctive and complete? |
 | **`/architect`** | The build: architecture, tech stack, data model, tools & accounts, the dependency-ordered build roadmap | tech-architect | Is it buildable with the chosen tools? |
 | **`/feasibility`** | Audits the three plans, alone and together | feasibility-auditor | **GO / REVISE / NO-GO** |
 | **`/plan`** | Loads the build roadmap into the tracker as tasks with dependencies | — | The build begins |
@@ -58,6 +59,7 @@ The front of the pipeline is run by these, defined in `.claude/agents/`. You don
 | **business-analyst** | narrative, positioning, business model, unit economics | invent a market size or a moat that isn't there |
 | **market-researcher** | market sizing, the competitor field, the wedge | copy a competitor without saying why you win |
 | **product-manager** | the PRD, user stories, metrics, every screen state | leave a state, error, or edge case unspecified |
+| **design-lead** | the design brief, the design system, screen mockups | ship the generic AI-default look, or mock only the happy path |
 | **tech-architect** | architecture, stack, data model, the build roadmap | pick a stack it can't justify, or a plan out of order |
 | **feasibility-auditor** | the cross-check of all three plans | pass a plan for want of checking |
 | **code-reviewer** | what a grep can't find, before a push | approve something adjacent to the spec |

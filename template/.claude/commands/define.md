@@ -39,4 +39,7 @@ When done:
   the beachhead is, and the biggest gap the PM flagged.
 - **The gate:** the product must completely solve the business problem for the
   beachhead. If the PM flagged a real coverage gap, the next action is to close
-  it, not to move on. Otherwise, propose `/architect` and wait for the yes.
+  it, not to move on. Otherwise, propose `/design` next — the design turns these
+  screens and states into a look and feel before the architect picks the frontend
+  stack. (If the product has little UI, or the visual design is already fixed,
+  skip straight to `/architect` and say so.) Wait for the yes.

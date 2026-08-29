@@ -21,7 +21,7 @@ flowchart LR
     I([💡 your idea]) --> D
     subgraph RESEARCH [" the specialists do the thinking "]
       direction LR
-      D["🔎 Discover<br/><sub>business · market · money</sub>"] --> P["📐 Define<br/><sub>the product · the PRD</sub>"] --> A["🏗️ Architect<br/><sub>stack · data · build plan</sub>"]
+      D["🔎 Discover<br/><sub>business · market · money</sub>"] --> P["📐 Define<br/><sub>the product · the PRD</sub>"] --> DS["🎨 Design<br/><sub>brief · system · mockups</sub>"] --> A["🏗️ Architect<br/><sub>stack · data · build plan</sub>"]
     end
     A --> F{"⚖️ Feasibility<br/>GO / REVISE / NO-GO"}
     F -->|revise| D
@@ -74,6 +74,7 @@ Three you'll use constantly, the rest when you want them.
 | **`/keel "<idea>"`** | Capture the idea, clarify only what blocks progress, start the pipeline | orchestrator |
 | **`/discover`** | The business case: narrative, positioning, market & competitor analysis, unit economics, cost-to-run | business-analyst · market-researcher |
 | **`/define`** | The product: a master PRD, module specs, user stories, success metrics, flows | product-manager |
+| **`/design`** | The look and feel: a design brief, a design system (tokens + components), and real screen mockups covering every state | design-lead |
 | **`/architect`** | The build: architecture, tech stack, data model, tools & accounts, and the dependency-ordered **build roadmap** | tech-architect |
 | **`/feasibility`** | Audits the three plans, alone and together. **GO / REVISE / NO-GO** | feasibility-auditor |
 | **`/plan`** | Turns the build roadmap into tracker tasks with dependencies | — |
@@ -105,6 +106,7 @@ The front of the pipeline is run by subagents, each defined in `.claude/agents/`
 | **business-analyst** | the narrative, positioning, business model, unit economics | invent a market size or a moat that isn't there |
 | **market-researcher** | TAM/SAM/SOM, the competitor field, the wedge | copy a competitor without saying why you win |
 | **product-manager** | the PRD, user stories, success metrics, every screen state | leave a state, an error, or an edge case unspecified |
+| **design-lead** | the design brief, the design system, real screen mockups | ship the generic AI-default look, or mock only the happy path |
 | **tech-architect** | architecture, stack, data model, the build roadmap | choose a stack it can't justify, or a plan with steps out of order |
 | **feasibility-auditor** | the cross-check of all three plans | pass a plan for want of checking — its verdict can be NO-GO |
 | **code-reviewer** | the gap a grep can't find, before a push | approve a change that builds something adjacent to the spec |
@@ -145,6 +147,7 @@ spec/
                    · BUILD-ROADMAP · tools & accounts checklist
   04-Business/     market analysis · competitor analysis · GTM · business model & pricing · unit economics
   05-Finance/      cost-to-run model · financial model · fundraise ask
+  06-Design/       design brief · design system (tokens + components) · screen mockups
 
 docs/
   00-RULES/        the one book, and the depth behind it (code · delivery · testing · docs · ownership)

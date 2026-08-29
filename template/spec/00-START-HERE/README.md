@@ -12,6 +12,7 @@ The pipeline fills this folder in order. Nothing here is written by hand in a hu
 | `01-Company/` | the canonical narrative, vision/mission/values, one-pager, positioning | business-analyst | Discover |
 | `02-Product/` | the master **PRD**, the per-module specs (`prd/`), user stories, success metrics, flows | product-manager | Define |
 | `03-Technical/` | technical design, tech stack, data model, tools & accounts, the **build roadmap** | tech-architect | Architect |
+| `06-Design/` | the design brief, the design system (tokens + components), screen mockups | design-lead | Design |
 | `04-Business/` | market analysis, competitor analysis, GTM, business model, unit economics | market-researcher + business-analyst | Discover |
 | `05-Finance/` | cost-to-run, financial model, the fundraise ask | business-analyst | Discover |
 
@@ -37,6 +38,9 @@ Keep this current. It is how `/status` knows which phase the project is in, and 
 | `02-Product/USER-STORIES.md` | stories + acceptance criteria per persona | ☐ |
 | `02-Product/SUCCESS-METRICS.md` | the north-star and the metrics under it | ☐ |
 | `02-Product/FLOWS.md` | the critical journeys, incl. the unhappy paths | ☐ |
+| `06-Design/DESIGN-BRIEF.md` | the art direction: thesis, palette, type, layout | ☐ |
+| `06-Design/DESIGN-SYSTEM.md` | the tokens and component inventory | ☐ |
+| `06-Design/mockups/*.html` | real screen mockups covering every state | ☐ |
 | `03-Technical/TECHNICAL-DESIGN.md` | the system, its boundaries, its failure posture | ☐ |
 | `03-Technical/TECH-STACK.md` | every choice, justified | ☐ |
 | `03-Technical/DATA-MODEL.md` | entities, tenancy columns, the event catalogue | ☐ |

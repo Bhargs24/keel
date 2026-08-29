@@ -19,6 +19,7 @@ This repository turns an idea into a shipped product through eight steps. Each h
 | Idea | `/keel` | — | The idea, and the few unknowns that block it, captured |
 | 1 · Discover | `/discover` | business-analyst, market-researcher | `spec/01-Company`, `spec/04-Business`, `spec/05-Finance`. **Gate: is there a real, differentiated, viable business?** |
 | 2 · Define | `/define` | product-manager | `spec/02-Product`. **Gate: does the product solve the business problem, completely?** |
+| 2.5 · Design | `/design` | design-lead | `spec/06-Design` — brief, design system, screen mockups. **Gate: is the design distinctive and complete (every state)?** |
 | 3 · Architect | `/architect` | tech-architect | `spec/03-Technical` + the build roadmap. **Gate: is it buildable with the chosen tools?** |
 | 4 · Feasibility | `/feasibility` | feasibility-auditor | `docs/50-AUDITS`. **Gate: GO / REVISE / NO-GO** |
 | 5 · Plan | `/plan` | — | The build roadmap, loaded into the tracker |
