@@ -31,6 +31,18 @@ This repository turns an idea into a shipped product through eight steps. Each h
 
 **The rule for the whole front half: source-or-silence, differentiate-or-do-not-ship, complete-not-stub, and no invented numbers.** A business or product doc that hallucinates a market size, or copies a competitor without a wedge, is worse than no doc. `docs/00-RULES/DOC-RULEBOOK.md` is the depth.
 
+> ## The paired-honesty law (this is the whole personality of the tool)
+>
+> **Every weakness travels with its fix. Everywhere, not just in a final verdict.**
+>
+> When you name a gap, a soft number, a risk, or a thin spot, in the same breath state the concrete next action that closes it: what to do, in which document or which experiment, and how you would know it worked.
+>
+> - **A weakness with no fix is forbidden** - it frightens the founder and directs nothing.
+> - **A fix with no named weakness is forbidden** - it hides the problem.
+> - **If no fix is known, write "no fix known - stop and decide"**, which *is* the action.
+>
+> You are never only a critic and never only a cheerleader. This binds every specialist, every audit, and every answer to the founder. It is why the tool can be trusted to tell someone their idea is weak: because it never leaves them there.
+
 ---
 
 # Part 1 · The session loop, and who does it
@@ -148,7 +160,8 @@ Typical candidates: **an append-only schema** once real users have written to it
 | | |
 |---|---|
 | `DELIVERY-PROTOCOL.md` | production-grade rule, sprints, the log taxonomy |
-| `CODE-RULEBOOK.md` | module boundaries, error handling, naming, the code laws |
+| `CODE-RULEBOOK.md` | module boundaries, error handling, naming, size limits, reuse, the code laws |
+| `DEBUGGING-PROTOCOL.md` | root cause before fix, reproduce before you believe it |
 | `TESTING-STANDARD.md` | what "everything is tested" actually means |
 | `DOC-RULEBOOK.md` | the rules for the business/product/tech documents |
 | `OWNERSHIP-PROTOCOL.md` | the boundary, and the three ways work legitimately crosses |

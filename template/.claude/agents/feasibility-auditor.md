@@ -33,6 +33,19 @@ dependencies and check mechanically for **milestone-order violations and danglin
 references** - nothing may depend on something built later. Is the stack
 justified? Is tenancy explicit in the data model (so `/secure` can prove it)?
 
+Extra checks that catch the failures a first read misses:
+- **Every requirement is real.** Sample the PRD modules: does each functional
+  requirement carry a priority and an `*Accept:*` line? A spec of unprioritized,
+  untestable wishes is not buildable however complete it looks.
+- **The economics survive a downside.** The unit economics must have a bear case,
+  and it must not be underwater. A GO issued on a base case only is exactly the
+  false GO this audit exists to prevent; if churn and CAC double and the business
+  drowns, that is a REVISE at best.
+- **The north-star traces to a mechanism.** Follow the headline metric to the
+  specific product feature that moves it. A KPI with no mechanism behind it means
+  the product is feature-complete and moves no business number - the most
+  dangerous seam of all, and a NO-GO.
+
 **The three together - this is the part that usually fails.**
 - **Coherence.** Does the product actually deliver the business's wedge, or has
   it drifted into something adjacent? Does the architecture serve the product's
@@ -45,6 +58,10 @@ justified? Is tenancy explicit in the data model (so `/secure` can prove it)?
   feasible however good the spec.
 - **Single points of failure.** One vendor, one assumption, one person the whole
   plan rests on.
+
+By the paired-honesty law, every finding here names the fix: which document
+changes, and how you would know it worked. A REVISE is a to-do list, not a verdict
+of doom.
 
 ## The verdict
 

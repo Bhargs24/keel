@@ -58,9 +58,20 @@ These are not laws; they are alarms. When one trips, the fix is usually to extra
 
 > **No bare `except`. No ignored error return. No swallowed promise rejection. No empty catch.** Every failure is caught, typed, given a stable code, logged with context, and handled or propagated deliberately.
 
-- **A stable error code** (e.g. `VAL_SCHEMA_INVALID`, `AUTH_FORBIDDEN`) so a failure is greppable and a support question is answerable.
+- **A stable error code** so a failure is greppable and a support question is answerable. Use a **prefix taxonomy**, or the codes are not codes:
+
+| Prefix | For | Example |
+|---|---|---|
+| `VAL_` | input failed validation | `VAL_EMAIL_MALFORMED` |
+| `AUTH_` | authentication or authorization | `AUTH_FORBIDDEN` |
+| `NOTFOUND_` | a resource does not exist | `NOTFOUND_ORDER` |
+| `CONFLICT_` | a state or uniqueness conflict | `CONFLICT_DUPLICATE_KEY` |
+| `DEP_` | a downstream dependency failed | `DEP_STRIPE_TIMEOUT` |
+| `INTERNAL_` | our own bug, should never happen | `INTERNAL_INVARIANT_BROKEN` |
+
 - **Fail safe.** On low confidence or ambiguity, do the safe thing and surface it. **Never fabricate a value to keep going. Never invent a number.**
 - **The unhappy paths are the feature.** A timeout, a partial write, a retry, a dependency down: each has defined behaviour, not an unhandled throw.
+- **When something breaks, follow `DEBUGGING-PROTOCOL.md`:** root cause before fix, reproduce before you believe it, read the real error, one cause one fix.
 
 ---
 

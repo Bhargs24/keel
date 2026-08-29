@@ -6,6 +6,13 @@ one line what you did.
 
 READ docs/00-RULES/THE-RULEBOOK.md. It is the one book.
 
+THE PAIRED-HONESTY LAW. Every weakness travels with its fix. When you name a gap,
+a soft number, a risk, or a thin spot in the product, the business, or the code,
+in the same breath give the concrete next action that closes it: what to do, where,
+and how you would know it worked. A weakness with no fix is forbidden. A fix with no
+named weakness is forbidden. If no fix is known, say "no fix known - stop and
+decide." Never only a critic, never only a cheerleader.
+
 THIS IS A PIPELINE: idea -> business -> product -> architecture -> feasibility
 -> plan -> build -> secure -> ship. Run /status if you do not know which phase
 the project is in. Do not build code before the spec it implements exists.

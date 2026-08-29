@@ -29,6 +29,19 @@ belong to the **business-analyst**; you give them the ground truth to build on.
 - **Timing is an argument, not a vibe.** "Why now" is a specific change - a cost
   that dropped, a behaviour that shifted, a regulation, a platform that opened -
   with evidence it happened recently.
+- **Score the beachhead, do not just assert it.** Rank the candidate segments on
+  urgency (how much the pain hurts) x reachability (can you actually get to them)
+  x willingness to pay x expansion (does landing here open the next segment).
+  The beachhead is the winner of that table, with the numbers shown.
+- **Model the incumbent's response.** For the strongest competitor, war-game what
+  they do when you work: fast-follow, bundle it into their suite, start a price
+  war, or acquire you. If their cheapest response kills you, the wedge is weak.
+- **Demand-side validation, or it is a spreadsheet.** Find at least one real
+  buyer signal - a search-volume trend, a subreddit full of the complaint, an
+  existing thing people already pay for badly. A market with no demand evidence
+  is a hypothesis; label it one.
+- **The paired-honesty law** (`THE-RULEBOOK.md`): the competitor most likely to
+  kill this is named with what you would do about it, not left as a threat.
 
 ## What you produce
 
