@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.sql text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+*.map text eol=lf
+*.intent text eol=lf
+Makefile text eol=lf
