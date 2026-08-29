@@ -10,6 +10,8 @@ Data lives in tracker/tasks/<ID>.md, one file per task: a small header, then
 an append-only log. People live in tracker/people.toml.
 
     track status                     what is done, doing, blocked, in review
+    track phase                      which pipeline phase, and the next command
+    track docs                       the pipeline document set, as a live checklist
     track next [--for NAME]          tasks you can start now, deps satisfied
     track blocked                    who is waiting on whom, across people
     track mine [--for NAME]          your board
@@ -464,6 +466,94 @@ def cmd_check(a):
     return 0
 
 
+SPEC = ROOT / "spec"
+DOCS = ROOT / "docs"
+
+# The document set the pipeline produces, in the order it is produced, each tied
+# to the phase that writes it. `track docs` checks these against what exists.
+DOC_REGISTER = [
+    ("Discover", "spec/01-Company/COMPANY-NARRATIVE.md"),
+    ("Discover", "spec/01-Company/POSITIONING.md"),
+    ("Discover", "spec/01-Company/ONE-PAGER.md"),
+    ("Discover", "spec/04-Business/MARKET-ANALYSIS.md"),
+    ("Discover", "spec/04-Business/COMPETITOR-ANALYSIS.md"),
+    ("Discover", "spec/04-Business/BUSINESS-MODEL.md"),
+    ("Discover", "spec/04-Business/UNIT-ECONOMICS.md"),
+    ("Discover", "spec/04-Business/GTM.md"),
+    ("Discover", "spec/05-Finance/COST-TO-RUN.md"),
+    ("Define", "spec/02-Product/PRD.md"),
+    ("Define", "spec/02-Product/USER-STORIES.md"),
+    ("Define", "spec/02-Product/SUCCESS-METRICS.md"),
+    ("Define", "spec/02-Product/FLOWS.md"),
+    ("Design", "spec/06-Design/DESIGN-BRIEF.md"),
+    ("Design", "spec/06-Design/DESIGN-SYSTEM.md"),
+    ("Architect", "spec/03-Technical/TECHNICAL-DESIGN.md"),
+    ("Architect", "spec/03-Technical/TECH-STACK.md"),
+    ("Architect", "spec/03-Technical/DATA-MODEL.md"),
+    ("Architect", "spec/03-Technical/TOOLS-AND-ACCOUNTS.md"),
+    ("Architect", "spec/03-Technical/BUILD-ROADMAP.md"),
+]
+
+
+def _exists(rel: str) -> bool:
+    return (ROOT / rel).exists()
+
+
+def _has_audit(kind: str) -> bool:
+    d = DOCS / "50-AUDITS"
+    return d.exists() and any(kind in p.name for p in d.glob("*.md"))
+
+
+def detect_phase() -> tuple[str, str, str]:
+    """Return (phase, next command, one-line reason), from what exists on disk.
+
+    This is the single source of truth the /status and /next commands lean on, so
+    the phase is a fact about the repository, never a guess."""
+    if load_all():
+        return ("Building", "/next", "the tracker has tasks; the build loop is running")
+    if _has_audit("feasibility"):
+        return ("Feasibility done", "/plan", "a feasibility audit exists but no tasks are loaded")
+    if _exists("spec/03-Technical/BUILD-ROADMAP.md"):
+        return ("Architect done", "/feasibility", "the build roadmap exists but hasn't been audited")
+    if _exists("spec/06-Design/DESIGN-BRIEF.md"):
+        return ("Design done", "/architect", "the design exists; the technical plan is next")
+    if _exists("spec/02-Product/PRD.md"):
+        return ("Define done", "/design", "the PRD exists; design is next (or skip to /architect)")
+    if _exists("spec/01-Company/COMPANY-NARRATIVE.md"):
+        return ("Discover done", "/define", "the business case exists; define the product")
+    if SPEC.exists() and any(SPEC.rglob("*.md")):
+        return ("Discovering", "/discover", "the business case is in progress")
+    return ("Pre-Discover", "/keel", "no documents yet; start with the idea")
+
+
+def cmd_phase(a):
+    phase, nxt, why = detect_phase()
+    print(f"\n{paint('Phase', 'b')}   {paint(phase, 'doing')}")
+    print(f"  {why}")
+    print(f"  next: {paint(nxt, 'b')}\n")
+
+
+def cmd_docs(a):
+    """The doc register as a live checklist: which pipeline documents exist."""
+    by_phase: dict[str, list[tuple[str, bool]]] = {}
+    for phase, rel in DOC_REGISTER:
+        by_phase.setdefault(phase, []).append((rel, _exists(rel)))
+    have = sum(1 for _, rel in DOC_REGISTER if _exists(rel))
+    total = len(DOC_REGISTER)
+    print(f"\n{paint('Document set', 'b')}   {have}/{total} written")
+    for phase in ("Discover", "Define", "Design", "Architect"):
+        rows = by_phase.get(phase, [])
+        if not rows:
+            continue
+        done = sum(1 for _, ok in rows if ok)
+        print(f"\n  {paint(phase, 'b')}  {done}/{len(rows)}")
+        for rel, ok in rows:
+            mark = paint("[x]", "done") if ok else paint("[ ]", "todo")
+            name = rel.split("spec/", 1)[-1]
+            print(f"    {mark}  {name}")
+    print()
+
+
 def cmd_render(a):
     tasks = load_all()
     people = load_people()
@@ -567,6 +657,8 @@ def main():
         return s
 
     add("status", cmd_status)
+    add("phase", cmd_phase)
+    add("docs", cmd_docs)
     add("next", cmd_next, (("--for",), dict(dest="for_", metavar="NAME")))
     add("blocked", cmd_blocked)
     add("mine", cmd_mine, (("--for",), dict(dest="for_", metavar="NAME")))

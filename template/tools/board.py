@@ -44,9 +44,14 @@ def snapshot() -> dict:
             "ready": t.status == "todo" and not blockers,
             "log": [l[2:] for l in t.log_lines],
         })
+    phase, nxt, why = track.detect_phase()
+    docs = [{"phase": ph, "path": rel.split("spec/", 1)[-1],
+             "done": (track.ROOT / rel).exists()} for ph, rel in track.DOC_REGISTER]
     return {"tasks": out,
             "people": [{"id": k, "display": v.get("display", k),
-                        "role": v.get("role", "")} for k, v in people.items()]}
+                        "role": v.get("role", "")} for k, v in people.items()],
+            "phase": {"name": phase, "next": nxt, "why": why},
+            "docs": docs}
 
 
 def act(tid: str, body: dict) -> dict:
@@ -219,6 +224,12 @@ padding:2px 6px;border-radius:5px}
 color:var(--bg);padding:10px 18px;border-radius:9px;font-size:13px;opacity:0;
 transition:.2s;pointer-events:none;z-index:20;max-width:80vw}
 #toast.on{opacity:1}
+.pipe{display:flex;gap:6px;align-items:center;margin-top:10px;flex-wrap:wrap;font-size:12px}
+.pipe .step{padding:3px 10px;border-radius:20px;background:var(--line);color:var(--dim);white-space:nowrap}
+.pipe .step.done{background:var(--done);color:#fff}
+.pipe .step.on{background:var(--v);color:#fff;font-weight:600}
+.pipe .sep{color:var(--line)}
+.pipe .why{color:var(--dim);margin-left:6px}
 </style>
 
 <header>
@@ -232,6 +243,7 @@ transition:.2s;pointer-events:none;z-index:20;max-width:80vw}
     <span class=dim>I am</span>
     <select id=me></select>
   </div>
+  <div class=pipe id=pipe></div>
   <div class=bar id=bar></div>
   <div class=tabs>
     <button data-v=board class=on>Board</button>
@@ -256,7 +268,7 @@ function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.background=bad
 
 async function load(){
   const r=await fetch('/api/state');const d=await r.json();
-  S.tasks=d.tasks;S.people=d.people;
+  S.tasks=d.tasks;S.people=d.people;S.phase=d.phase;S.docs=d.docs||[];
   const opts=p=>p.map(x=>`<option value="${x.id}">${esc(x.display)}</option>`).join('');
   if(!$('#me').options.length){
     $('#me').innerHTML='<option value="">choose…</option>'+opts(S.people);
@@ -281,9 +293,27 @@ function card(t){
     <span>${esc(t.milestone)}</span>${bl}</div></div>`;
 }
 
+const PIPE=['Discover','Define','Design','Architect','Feasibility','Build'];
+const PHASE_AT={'Pre-Discover':0,'Discovering':0,'Discover done':1,'Define done':2,
+  'Design done':3,'Architect done':4,'Feasibility done':5,'Building':5};
+
+function renderPipe(){
+  const el=$('#pipe'); if(!el) return;
+  const ph=S.phase||{name:'Pre-Discover',next:'/keel',why:''};
+  const cur=PHASE_AT[ph.name]??0;
+  const dn=(S.docs||[]).filter(x=>x.done).length, tot=(S.docs||[]).length;
+  const steps=PIPE.map((s,i)=>{
+    const cls=i<cur?'done':(i===cur?'on':'');
+    return `<span class="step ${cls}">${s}</span>`;
+  }).join('<span class=sep>›</span>');
+  el.innerHTML=steps+`<span class=why>${esc(ph.why||'')} · next <b>${esc(ph.next||'')}</b>`
+    +(tot?` · docs ${dn}/${tot}`:'')+`</span>`;
+}
+
 function render(){
   const ts=S.tasks.filter(match), done=S.tasks.filter(t=>t.status==='done').length;
   $('#count').textContent=`${done} of ${S.tasks.length} done`;
+  renderPipe();
   $('#bar').innerHTML=ORDER.map(s=>{const n=S.tasks.filter(t=>t.status===s).length;
     return n?`<i style="width:${100*n/S.tasks.length}%;background:var(--${s})" title="${s}: ${n}"></i>`:''}).join('');
 

@@ -9,9 +9,10 @@ the ceremony, so it's safe to ask any time.
 
 ## Decide
 
-1. **Which phase are we in?** (Use the detection in `/status`.) If the pipeline
-   isn't through feasibility yet, the next action is the next phase — say which
-   and why.
+1. **Which phase are we in?** Run `python tools/track.py phase` — it tells you the
+   phase and the next command. If the pipeline isn't through feasibility yet, the
+   next action is the next phase; run `python tools/track.py docs` to see exactly
+   which documents are missing.
 2. **If we're building**, verify the ground before recommending more:
    - Anything `doing` or `blocked`? That's the answer — finish it, unblock it, or
      hand it over. Two half-finished things are worth less than one finished one.

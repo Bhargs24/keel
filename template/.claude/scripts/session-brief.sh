@@ -26,6 +26,12 @@ if [ -f docs/10-STATUS/NOW.md ]; then
   sed -n '/^## Claims/,/^## /p' docs/10-STATUS/NOW.md | grep '^|' | head -8 | sed 's/^/  /'
 fi
 
+if [ -f tools/track.py ]; then
+  echo
+  echo "── pipeline phase ──"
+  python tools/track.py phase 2>/dev/null | sed -n '2,4p' | sed 's/^/  /'
+fi
+
 if [ -d tracker/tasks ]; then
   echo
   echo "── tracker ──"
