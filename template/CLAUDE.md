@@ -22,7 +22,10 @@ This repository is run with **Keel**: an idea is taken to a shipped product thro
 | **6 · Build** | `/start` `/work` `/spec` `/review` `/audit` `/test` | The build loop. Claude decides the next task; the developer approves |
 | **7 · Secure** | `/secure` | **trespass** proves tenant isolation on the database; the security-auditor reviews the rest |
 | **8 · Ship** | `/ship` | The production-readiness gate, then deploy |
+| **Anytime** | `/equip` | The **tool-scout** finds and vets the open-source tools, skills, and MCP servers that would help, and wires in the safe ones |
 | **Always** | `/status` `/next` `/board` `/wrap` | Where things stand, what to do next, the board, and closing a session cleanly |
+
+**Works with any AI tool.** Best in Claude Code (native plugin). For any other tool, `AGENTS.md` is the universal entry point and the commands are prompt files; the tracker, gates, security proof, and guide are plain Python and identical everywhere.
 
 **You do not have to run the phases in order for a returning user.** Run `/status` and it tells you which phase the project is in and what the next action is.
 

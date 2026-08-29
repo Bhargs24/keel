@@ -74,6 +74,22 @@ Raw coding agents write code fast and guess at the rest. Keel removes the guessi
 
 ---
 
+## Works with any AI tool (open or closed)
+
+Keel is built in layers, and only the top one is tied to a specific tool:
+
+| Layer | What it is | Tool it needs |
+|---|---|---|
+| **The brains** | the rulebook, the pipeline, the specs, the laws | none, they are just Markdown |
+| **The tools** | the tracker, the quality gates, the security proof (trespass), the guide cockpit | just Python, works with **no AI at all** |
+| **The integration** | slash commands, specialist agents, hooks, the plugin | **best in Claude Code** (native), works elsewhere via `AGENTS.md` |
+
+So: **best with Claude Code**, where the commands, agents, hooks, and security gate are native. But it works with **any AI coding tool**, Cursor, Codex, Aider, Cline, Windsurf, Gemini CLI, open-source or closed, because every command is a prompt file the AI reads, and the repo ships an `AGENTS.md` (the emerging cross-tool standard) plus a Cursor rules file as the universal entry point. And the tracker, the gates, the security proof, and the guide run with no AI at all. Nothing here is locked to one vendor.
+
+## Your project's own toolkit, found and vetted for you
+
+You should not have to know which open-source tools, skills, or MCP servers your project needs. **`/equip`** sends a **tool-scout** to find them, for your exact stack: the MCP servers the AI can use, the Claude Code skills and plugins, the dev and quality tools, the libraries. It **vets every one for safety** (what it does, what it can access, whether it touches your data or secrets) and recommends a small, focused set, because piling on twenty tools just costs the AI focus. Anything that could touch your data or credentials is never added without your explicit yes. The vetted list lives in your repo, and the safe tools get wired in for you.
+
 ## Install it (start here)
 
 ### What you need first
@@ -191,6 +207,7 @@ Each is a focused AI mind with a clean context and one job, defined in `.claude/
 | **code-reviewer** | the gap a grep cannot find, before a push |
 | **qa** | tests that cover the risk, not just the happy path |
 | **security-auditor** | the permission and data boundaries |
+| **tool-scout** | finding and vetting the open-source tools, skills, and MCP servers your project needs |
 
 ---
 
@@ -221,8 +238,11 @@ No. The guided cockpit shows you the one next step in plain English and gives yo
 **Does Keel write the actual code, or just documents?**
 Both. It writes the full business and product plan, and then it writes and ships the actual product code, tested and secured, by driving your AI coding tool.
 
-**What AI tools does Keel work with?**
-Claude Code fits most smoothly (Keel installs as a plugin). It also works with Cursor, Codex, and any AI coding tool that can read files and run commands.
+**What AI tools does Keel work with? Open source or closed?**
+Any of them. Claude Code fits most smoothly (Keel installs as a plugin, with native commands, agents, and hooks). It also works with Cursor, Codex, Aider, Cline, Windsurf, Gemini CLI, and any other AI coding tool, open-source or closed, because the commands are prompt files and the repo ships a universal `AGENTS.md` plus a Cursor rules file. The tracker, the quality gates, the security proof, and the guide are plain Python and work with no AI at all. Nothing is locked to one vendor.
+
+**Does Keel find and set up the right open-source tools for my project?**
+Yes. `/equip` sends a tool-scout to find the MCP servers, skills, and libraries your specific stack needs, vets each one for safety (what it can access, whether it touches your data), recommends a small focused set, and wires in the safe ones. Anything that could reach your data or secrets is never added without your explicit yes.
 
 **How is Keel different from Lovable, Bolt, v0, or Replit?**
 Those generate a prototype from a prompt, then leave you at the wall with no spec, no plan, and no proof it works, locked into their platform. Keel does the research, the spec, the design, the plan, and the proof, and builds with the tool you already own, on code you keep.

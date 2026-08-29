@@ -37,5 +37,6 @@ Use the **tech-architect** subagent to produce, into `spec/03-Technical/`:
 - Update the doc register.
 - Give a **short, plain recap** (2 to 4 lines, no jargon): the good news, the one thing to watch with its fix, and the single next step. The full detail is in the documents and the guide (`python tools/keel.py`) - point there, do not paste it. The recap covers: the stack in a line, the milestone
   spine, the total developer-weeks, and the riskiest technical assumption.
+- **Tooling:** now that the stack is known, `/equip` can find and vet the open-source tools, skills, and MCP servers the project needs (optional, any time).
 - **The gate:** propose `/feasibility` next - the build does not start on three
   plans that have never been checked against each other. Wait for the yes.

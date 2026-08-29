@@ -35,6 +35,7 @@ Run in order the first time; after that, `/status` tells you which one is next.
 | **`/review`** | The gap between green CI and actually right: spec drift, missing states, silent failure, PII in logs | Before pushing anything that matters |
 | **`/audit <ID\|milestone>`** | **Is what we marked done actually done?** Clause by clause; moves failures back | End of a milestone; before a number matters |
 | **`/test`** | Runs the suite, reads the failures, says what's actually broken | After a change; when unsure the suite protects the risk |
+| **`/equip`** | The tool-scout finds and **vets** the open-source tools, skills, and MCP servers that would help this project, and wires in the safe ones | After `/architect`, or any time a task needs a capability you don't have |
 | **`/secure`** | **Proves** tenant isolation with trespass, then reviews auth, secrets, input | Before anything touching data or auth ships |
 | **`/ship`** | The production-readiness gate, then deploy | When a milestone is ready to go live |
 | **`/wrap`** | Honest state to the tracker, handoff, changelogs, `python tools/run.py check`, commit | Stopping, even for an hour. **Especially before `/clear`** |
@@ -65,6 +66,7 @@ The front of the pipeline is run by these, defined in `.claude/agents/`. You don
 | **code-reviewer** | what a grep can't find, before a push | approve something adjacent to the spec |
 | **qa** | tests that cover the risk, not the happy path | call a thing tested when the risk isn't |
 | **security-auditor** | the permission and data boundaries | assert isolation when trespass can prove it |
+| **tool-scout** | finding and vetting the open-source tools/skills/MCP for this project | add anything unvetted, or pile on tools for their own sake |
 
 ---
 

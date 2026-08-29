@@ -1,0 +1,20 @@
+---
+description: How to work in this Keel-built project
+alwaysApply: true
+---
+
+This project uses Keel. Before doing anything, read `AGENTS.md` (the universal
+guide) and `docs/00-RULES/THE-RULEBOOK.md` (the one book).
+
+Work through the pipeline: `/keel` -> `/discover` -> `/define` -> `/design` ->
+`/architect` -> `/feasibility` -> `/plan` -> build (`/work` `/review` `/audit`
+`/test`) -> `/secure` -> `/ship`. The commands are prompt files in
+`.claude/commands/*.md`; run one by reading it and following it. Specialist roles
+are in `.claude/agents/*.md`.
+
+Laws that bind every turn: production-grade only (no mocks/stubs/TODOs); every
+weakness arrives with its fix; never build the average version (be genuinely
+better than what exists); one short question at a time in plain words; never push
+to the default branch; prove the permission boundary, don't assume it.
+
+Quality gate before every push: `python tools/run.py check`.
