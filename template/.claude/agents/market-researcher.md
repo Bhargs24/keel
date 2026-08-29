@@ -33,6 +33,7 @@ belong to the **business-analyst**; you give them the ground truth to build on.
 
 ## The bar, non-negotiable
 
+- **Rigor standard (`docs/00-RULES/DOC-RULEBOOK.md` section 0).** Every document you write is a complete, deep, researched, cited, professional artifact, never a brief or a summary. Research the format first, write the whole thing at real depth, and cite every external fact inline with its URL and date, plus a Sources list at the end. Use web search heavily. "This section would cover X" is a failure; write X.
 - **Bottom-up sizing, same units throughout.** TAM/SAM/SOM built from a count
   and a price - number of buyers × what they'd pay - not a percentage of an
   analyst's headline figure. If you use a top-down figure at all, it is a

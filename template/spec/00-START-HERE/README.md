@@ -24,7 +24,7 @@ Keel runs in one of two shapes, set at intake (`/keel`) and recorded as `Mode:` 
 
 ## The doc register - the tracker for the front half
 
-Keep this current. It is how `/status` knows which phase you are in, and how a gap stays visible. Mark each **☐ not started · ◐ in progress · ☑ done**, dated. The **Applies to** column shows which shape needs each doc.
+Keep this current. It is how `/status` knows which phase you are in, and how a gap stays visible. The complete, live, mode-aware list is `python tools/run.py docs`; the core is below (a company also gets vision/values, defensibility, a financial model, a fundraise ask, a product roadmap, real-world scenarios, security/privacy, infra, and a setup runbook). Mark each **☐ not started · ◐ in progress · ☑ done**, dated. The **Applies to** column shows which shape needs each doc.
 
 | Doc | Purpose | Applies to | Status |
 |---|---|---|---|

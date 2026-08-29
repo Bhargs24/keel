@@ -10,6 +10,7 @@ You write into `spec/01-Company/`, `spec/04-Business/`, and `spec/05-Finance/`. 
 
 ## The bar, non-negotiable
 
+- **Rigor standard (`docs/00-RULES/DOC-RULEBOOK.md` section 0).** Every document you write is a complete, deep, researched, cited, professional artifact, never a brief or a summary. Research the format first, write the whole thing at real depth, and cite every external fact inline with its URL and date, plus a Sources list at the end. Use web search heavily. "This section would cover X" is a failure; write X.
 - **Source-or-silence.** Every external claim is sourced (with the source and its date named) or not stated. A number you cannot source is a number you do not have. Write "unknown, needs a data point" rather than inventing one.
 - **Bottom-up, and with a downside.** Unit economics are built from units, and never presented base-case-only. Give **base / bear / bull**, and state what moves between them. A VP never accepts a single-point payback.
 - **The moat is named against a taxonomy, not asserted.** Say which of the durable business powers you actually have and why (scale economies, network effects, counter-positioning, switching costs, a cornered resource, branding, process power). "They can't follow" is not a moat until you name the *specific dependency* they would have to break to follow.
@@ -35,6 +36,16 @@ Each a proper document with a status header, real section numbering, tables wher
 **`spec/04-Business/GTM.md`** - the first ten customers and the first thousand, by channel, each with a realistic cost and conversion. No "we'll do content marketing" without who, what, and at what cost.
 
 **`spec/05-Finance/COST-TO-RUN.md`** - the monthly cost to run at a stated scale, per named vendor and rate. Feeds the feasibility gate, so it must be real.
+
+**`spec/01-Company/VISION-MISSION-VALUES.md`** - the long-arc purpose (vision), what you do for whom now (mission), and the operating values, each with the behaviour it implies. Short, but real.
+
+**`spec/01-Company/HOW-WE-PITCH.md`** - the pitch playbook per audience (a customer, an investor, a partner): the hook, the story, the proof, the ask, and the answers to the three hardest questions each will ask.
+
+**`spec/04-Business/DEFENSIBILITY.md`** - the moat, in full: which of the durable powers you have, the specific dependency a competitor would have to break to copy you, how the moat gets *stronger* with scale/time, and the honest date by which it must exist. Draws on the positioning and the market work.
+
+**`spec/05-Finance/FINANCIAL-MODEL.md`** - the actual model: revenue build, cost build, gross margin, the P&L shape, burn and runway at a stated raise and headcount, and the sensitivities that move it. Real line items, not a summary.
+
+**`spec/05-Finance/FUNDRAISE-ASK.md`** - if raising: how much, at what stage, against which milestones it buys, and the use of funds by line. If not raising, say so and skip.
 
 **A pre-mortem** (in the narrative or its own doc): it is eighteen months from now and this failed. What killed it, ranked by probability, each with the leading indicator that would warn you and the action that would prevent it.
 

@@ -14,6 +14,7 @@ doesn't exist, stop and say the Define phase must run first.
 
 ## The bar, non-negotiable
 
+- **Rigor standard (`docs/00-RULES/DOC-RULEBOOK.md` section 0).** Every document you write is a complete, deep, researched, cited, professional artifact, never a brief or a summary. Research the format first, write the whole thing at real depth, and cite every external fact inline with its URL and date, plus a Sources list at the end. Use web search heavily. "This section would cover X" is a failure; write X.
 - **Justify every choice.** Each technology is chosen against the alternatives,
   in one or two sentences, tied to a real requirement - the scale, the team's
   skills, the cost, the data shape. "It's popular" is not a reason. Prefer the
@@ -49,6 +50,19 @@ of truth for the wire; generated code comes from here.
 **`spec/03-Technical/TOOLS-AND-ACCOUNTS.md`** - everything to set up or buy:
 accounts (cloud, model APIs, auth, payments, analytics, error tracking, app
 stores), tools, and an estimated cost for each. The founder's shopping list.
+
+**`spec/03-Technical/SECURITY-PRIVACY.md`** - the security posture and the privacy
+/ data-protection architecture: authn and authz model, secrets handling, the
+tenancy boundary `/secure` proves, what personal data is held and why, retention,
+consent, and which regulations apply (GDPR, DPDP, HIPAA, ...) with the concrete
+obligations each imposes. Cite the rule, do not paraphrase it soft.
+
+**`spec/03-Technical/INFRA-DEVOPS.md`** - hosting, environments, CI/CD, the deploy
+and rollback path, monitoring and error tracking, backups, and how it scales, with
+the real services and their rates (feeds the cost model).
+
+**`spec/03-Technical/SETUP-RUNBOOK.md`** - zero to a running system, step by step,
+so anyone can stand it up locally and deploy it without a meeting.
 
 **`spec/03-Technical/BUILD-ROADMAP.md`** - the heart. Every work item is a row
 with: an **ID** (stable, not a sequence number), the **milestone** (a demoable

@@ -190,13 +190,15 @@ Prompt-to-app builders are great for a quick demo, then you hit the wall: no rea
 
 ## What Keel produces
 
-A complete, professional document set plus the working product:
+**A complete, professional document set, plus the working product.** Every document is written to a hard rigor standard: deep and exhaustive, not a summary; researched, with every external claim cited inline (source, URL, date) and a Sources list; written to the real professional format for that artifact. This is the difference between Keel and a chatbot that hands you an outline: it writes the actual document.
 
-- **Business:** the company narrative, positioning against a real moat (the 7 Powers, not hand-waving), market and competitor analysis, unit economics stress-tested with a downside case, a pre-mortem, and the real monthly cost to run, rebuilt from prices checked today rather than trusted.
-- **Product:** it starts with the person, the target user's psychology and the behaviour the product has to create, not a feature list. Then a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, success metrics, and every screen state, so the product is built around how people actually think and act.
-- **Design:** a design brief, a design system (colors, type, components), and real HTML mockups of the key screens.
-- **Technical:** the architecture, a justified tech stack, the data model, the accounts to set up, and a dependency-ordered build roadmap.
+- **Business:** the company narrative, vision and values, positioning against a real moat (the 7 Powers, not hand-waving), market and competitor analysis, unit economics stress-tested with a downside case, a defensibility analysis, a pre-mortem, a financial model (P&L, burn, runway), a fundraise ask, and the real monthly cost to run, rebuilt from prices checked today.
+- **Product:** it starts with the person, the target user's psychology and the behaviour the product has to create, not a feature list. Then a master PRD and per-module specs with prioritized, testable requirements, jobs-to-be-done, success metrics, a product roadmap, real-world scenarios, and every screen state, so the product is built around how people actually think and act.
+- **Design:** a design brief, a design system (colors, type, components), and real HTML mockups of the key screens, covering every state.
+- **Technical:** the architecture, a justified tech stack, the data model, a security and privacy design, the infra and CI/CD, a setup runbook, the accounts to set up, and a dependency-ordered build roadmap.
 - **The product itself:** production-grade code, tests that cover the risk, and a security proof, built task by task and tracked in git.
+
+**Scaled to what you are building.** A serious company gets the full set (around thirty documents). A weekend project gets a focused one (the concept, the product, the design, the plan), because a project should not have a fundraise deck and a funded startup skipping its unit economics is negligent. Knowing the difference is part of the point.
 
 ---
 

@@ -16,6 +16,7 @@ design the screens the product spec names, not screens you invent.
 
 ## The bar, non-negotiable
 
+- **Rigor standard (`docs/00-RULES/DOC-RULEBOOK.md` section 0).** Every document you write is a complete, deep, researched, cited, professional artifact, never a brief or a summary. Research the format first, write the whole thing at real depth, and cite every external fact inline with its URL and date, plus a Sources list at the end. Use web search heavily. "This section would cover X" is a failure; write X.
 - **Distinctive, not templated.** The current default AI look - a purple gradient
   hero, Inter everywhere, rounded cards with an accent bar, emoji section markers,
   everything centered - is what you exist to avoid. Derive the direction from the

@@ -8,6 +8,7 @@ You write the specification an engineer builds from with no meeting, and that a 
 
 ## The bar, non-negotiable
 
+- **Rigor standard (`docs/00-RULES/DOC-RULEBOOK.md` section 0).** Every document you write is a complete, deep, researched, cited, professional artifact, never a brief or a summary. Research the format first, write the whole thing at real depth, and cite every external fact inline with its URL and date, plus a Sources list at the end. Use web search heavily. "This section would cover X" is a failure; write X.
 - **Every requirement is numbered, prioritized, and testable.** Format: `FR-<module>-<n> (P0|P1|P2) · <name>.` with an inline `*Accept:*` line giving a pass/fail check. No priority and no accept line means it is not a requirement, it is a wish. `P0` = beachhead critical path; justify each one.
 - **Complete, not stub.** A screen is unspecified until its loading, empty, partial, error, offline, and permission-denied states are each named and described. Inventing behaviour for a hard state is a defect: cite the rule or decision it follows, or mark it `ASSUMPTION:` so the auditor can see it.
 - **Understand the person before the feature.** A feature list is not a product. For the target user, work out the **emotional job**, not just the functional one (what they want to *feel*, or stop feeling), their real anxieties and habits, and the behaviour you are trying to create or change. Most products fail not because the feature is missing but because they ask a person to do something they will not actually do. Name that risk before you design around it.
@@ -29,6 +30,10 @@ You write the specification an engineer builds from with no meeting, and that a 
 **`spec/02-Product/prd/M1..Mn.md`** (module suite) - per module: a one-line callout; Goals and Non-goals; numbered `FR` with priority and `*Accept:*`; every screen and every state; each action's behaviour on success and failure; edge cases and failure modes; the events it writes (schema); module metrics; dependencies; and an acceptance summary that gates it. Include a state or flow figure (inline SVG) where it makes the module legible.
 
 **`spec/02-Product/USER-STORIES.md`**, **`SUCCESS-METRICS.md`** (north-star plus activation/retention/outcome, each event-defined), **`FLOWS.md`** (the critical journeys, happy and unhappy).
+
+**`spec/02-Product/PRODUCT-ROADMAP.md`** - now / next / later, tied to the milestones in the build roadmap, each item traced to the job it serves. Not dates: sequence and dependency.
+
+**`spec/02-Product/REAL-WORLD-SCENARIOS.md`** - the messy real-world situations the product must handle (the bad network, the hostile input, the confused user, the edge account), each mapped to the module that owns it, so nothing gets discovered only in production.
 
 ## Method
 

@@ -4,6 +4,22 @@
 
 ---
 
+## 0 · The rigor standard (this is the bar the tool is judged on)
+
+**Every document is a complete, deep, researched, cited, professional artifact - never a brief, a summary, or an outline of what a real one would contain.** If a person could not hand this document to an investor, an engineer, or a co-founder and have it stand on its own, it is not done.
+
+Concretely, for every document:
+
+- **Research the format first.** Before writing a PRD, a market analysis, a financial model, or a technical design, know what a genuinely good one of these contains, then write to *that*, in full. Do not invent a shape; use the professional standard for the artifact.
+- **Write the whole thing, at real depth.** A master PRD is many pages of actual requirements, not a page of bullets. A market analysis shows the full sizing arithmetic and every competitor examined, not a paragraph. A financial model has the actual line items. "This section would cover X" is a failure; write X.
+- **Cite as you go.** Every external fact carries its source **inline** - the name, the URL, and the date - and every document that makes factual claims ends with a **Sources** list. Use web search and real pages heavily; prefer primary sources. A claim with no citation and no `ASSUMPTION:` marker does not belong in the document.
+- **Exhaustive, not indicative.** Every state, every edge case, every line item, every competitor, every risk. Completeness is the product; a gap is a defect the feasibility audit will find.
+- **Standalone and cross-linked.** Each document reads on its own and cites the others as `[[DOC-NAME]]`. No document assumes the reader has the conversation you had.
+
+This is what separates Keel's output from a chatbot's: not a summary of what you *should* write, but the actual, rigorous document, written religiously to standard and backed by research. Hold this bar on every file.
+
+---
+
 ## 1 · Source-or-silence
 
 **Every external claim is either sourced or not stated.** A market fact, a benchmark, a price, a competitor's behaviour, a cost - name the source, or don't write the number. A figure you cannot source is a figure you do not have; write "unknown, needs a data point" instead of inventing one.
