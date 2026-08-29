@@ -333,16 +333,43 @@ padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
 color:var(--bg);padding:9px 16px;border-radius:9px;font-size:13px;opacity:0;transition:.2s;z-index:20}
 #toast.on{opacity:1}
 .foot{text-align:center;color:var(--dim);font-size:12.5px;margin-top:40px}
+.live{font-size:12.5px;color:var(--accent);margin-left:10px;white-space:nowrap;font-weight:500}
+.live .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:5px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
+.how{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin:18px 0 4px}
+.how-top{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.how-top b{font-size:14px}
+.how-top span{color:var(--dim);font-size:12.5px}
+.how-body{margin-top:10px}
+.how-body ol{margin:0;padding-left:20px}
+.how-body li{margin:6px 0;font-size:14px;color:var(--ink);line-height:1.5}
+.how-note{margin-top:10px;font-size:12.5px;color:var(--dim)}
+.how.collapsed .how-body{display:none}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:var(--panel)}}
+.card.advanced{animation:flash 1.4s ease-out}
 </style>
 
 <div class=wrap>
   <h1>Keel</h1>
-  <div class=sub>From your idea to a product you can ship. Here is your next step.</div>
+  <div class=sub>From your idea to a product you can ship.
+    <span class=live id=live><span class=dot></span>live, this page updates by itself</span></div>
+
+  <div class=how id=how>
+    <div class="how-top" onclick="toggleHow()"><b>How this works</b> <span id=howToggle>hide</span></div>
+    <div class=how-body>
+      <ol>
+        <li><b>Do the step shown below.</b> Copy the command and paste it into your AI coding tool (Claude Code, Cursor, and so on), in this project's folder, then press enter.</li>
+        <li><b>Keel does the work</b> and writes it into this project, the research, the plan, the code. It asks you a short question when it needs a decision.</li>
+        <li><b>This page moves to the next step on its own.</b> You never refresh it and never remember a command. Just come back here after each step. Keep going until you have shipped.</li>
+      </ol>
+      <div class=how-note>Everything Keel writes appears below as it is finished. Click any of it to read it right here.</div>
+    </div>
+  </div>
+
   <div class=rail id=rail></div>
   <div class=card id=step></div>
   <div id=produced></div>
-  <div class=foot>Do the step above in your AI coding tool, then come back and refresh.
-    Keel keeps the hard parts in the back so you don't have to think about them.</div>
+  <div class=foot>You do the step above in your AI tool. This page notices the moment it is done and shows you the next one, by itself. Keel keeps the hard parts in the back so you don't have to think about them.</div>
 </div>
 <div id=reader><div class=rhead><b id=rpath></b><button onclick="closeReader()">close</button></div>
   <div class=rbody id=rbody></div></div>
@@ -351,10 +378,24 @@ color:var(--bg);padding:9px 16px;border-radius:9px;font-size:13px;opacity:0;tran
 <script>
 const $=s=>document.querySelector(s);
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');
-  clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('on'),2200);}
+  clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('on'),3200);}
+
+let lastStage=null;
+function toggleHow(){
+  const el=$('#how');const c=el.classList.toggle('collapsed');
+  $('#howToggle').textContent=c?'show':'hide';
+  try{localStorage.keelHow=c?'1':'0'}catch(e){}
+}
+try{if(localStorage.keelHow==='1'){$('#how').classList.add('collapsed');$('#howToggle').textContent='show';}}catch(e){}
 
 async function load(){
   const s=await (await fetch('/api/state')).json();
+  // the page moved forward on its own: make it visible
+  if(lastStage!==null && s.stage>lastStage){
+    toast('Step done. Here is your next one, no need to refresh.');
+    const c=$('#step');c.classList.remove('advanced');void c.offsetWidth;c.classList.add('advanced');
+  }
+  lastStage=s.stage;
   // rail
   $('#rail').innerHTML=s.journey.map((name,i)=>{
     const cls=i<s.stage?'done':(i===s.stage?'on':'');
@@ -369,8 +410,9 @@ async function load(){
     <div class=what>${st.what}</div>
     <div class=cmd><code>${st.command.replace(/</g,'&lt;')}</code>
       <button onclick="copyCmd(${JSON.stringify(st.command)})">Copy</button></div>
-    <div class=hint>Paste that into <b>Claude Code</b> (or your AI coding tool),
-      open in this project's folder, and press enter. ${s.build?`So far: <b>${s.build.done} of ${s.build.total}</b> build tasks done.`:''}</div>`;
+    <div class=hint>Copy it, paste it into your AI tool in this folder, and press enter.
+      Then come back here, this page moves to the next step by itself when it is done.
+      ${s.build?`So far: <b>${s.build.done} of ${s.build.total}</b> build tasks done.`:''}</div>`;
   // produced docs, grouped
   const groups={};
   s.docs.forEach(d=>{(groups[d.group]=groups[d.group]||[]).push(d)});
