@@ -35,7 +35,7 @@ Use the **tech-architect** subagent to produce, into `spec/03-Technical/`:
   one**. Confirm that check ran.
 - Note every paid choice's run cost so `spec/05-Finance/COST-TO-RUN.md` is real.
 - Update the doc register.
-- Give the developer a **one-screen summary**: the stack in a line, the milestone
+- Give a **short, plain recap** (2 to 4 lines, no jargon): the good news, the one thing to watch with its fix, and the single next step. The full detail is in the documents and the guide (`python tools/keel.py`) - point there, do not paste it. The recap covers: the stack in a line, the milestone
   spine, the total developer-weeks, and the riskiest technical assumption.
 - **The gate:** propose `/feasibility` next - the build does not start on three
   plans that have never been checked against each other. Wait for the yes.

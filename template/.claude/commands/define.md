@@ -35,7 +35,7 @@ When done:
   build must enforce - the permission gate, the thing a model must never decide,
   any safety law).
 - Update the doc register.
-- Give the developer a **one-screen summary**: the personas, the module map, what
+- Give a **short, plain recap** (2 to 4 lines, no jargon): the good news, the one thing to watch with its fix, and the single next step. The full detail is in the documents and the guide (`python tools/keel.py`) - point there, do not paste it. The recap covers: the personas, the module map, what
   the beachhead is, and the biggest gap the PM flagged.
 - **The gate:** the product must completely solve the business problem for the
   beachhead. If the PM flagged a real coverage gap, the next action is to close

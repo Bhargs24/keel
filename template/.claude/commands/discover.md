@@ -42,7 +42,7 @@ product quality carry the rest.
 ## Record and gate
 
 - Update the doc register.
-- Give a **one-screen summary**: what exists, the one sentence on how this is
+- Give a **short, plain recap** (2 to 4 lines): the good news, the one thing to watch with its fix, and the next step. Full detail is in the guide - point there, do not paste it. It covers: what exists, the one sentence on how this is
   better or new, and (for a company) the wedge, the market in a number, and the
   unit economics in a line, plus the single biggest risk - each with its fix.
 - **The gate:** if the honest finding is that this is not meaningfully different

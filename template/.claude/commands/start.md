@@ -40,7 +40,7 @@ git log --oneline -5
 git status --porcelain
 ```
 
-## 4 · Brief them, in under twenty lines
+## 4 · Brief them **short and plain**. For a non-technical person, a few lines and the one next step is plenty; offer the rest instead of showing it. (Detail on request; under twenty lines even for an engineer)
 
 - **The phase**, and the single next action it implies.
 - **What the last session did**, from the handoff and the recent commits. If there

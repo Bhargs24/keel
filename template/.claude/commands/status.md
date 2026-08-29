@@ -45,7 +45,7 @@ git status --porcelain
 
 Also glance at the two most recent `docs/40-HANDOFF/` files and `NOW.md`.
 
-## 3 · Brief them, in under twenty lines
+## 3 · Brief them **short and plain**. For a non-technical person, a few lines and the one next step is plenty; offer the rest instead of showing it. (Detail on request; under twenty lines even for an engineer)
 
 - **The phase**, and the one next action.
 - **The document set:** which of the pipeline docs exist and which don't (walk

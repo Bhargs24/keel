@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="560" viewBox="0 0 1040 560" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <style>.mono { font-family:'SFMono-Regular',Consolas,Menlo,monospace; }</style>
+  </defs>
+  <rect width="1040" height="560" rx="14" fill="#0f1413"/>
+  <text x="40" y="52" font-size="15" class="mono" fill="#59b8af">keel</text>
+  <text x="86" y="52" font-size="14" fill="#7e8987">one thing at a time, in plain words</text>
+  <line x1="40" y1="70" x2="1000" y2="70" stroke="#28312f"/>
+
+  <!-- keel bubble 1 -->
+  <g transform="translate(40,96)">
+    <rect width="30" height="30" rx="8" fill="#2f6f4f"/>
+    <text x="15" y="20" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">K</text>
+    <rect x="44" y="0" width="620" height="46" rx="12" fill="#161c1b"/>
+    <text x="64" y="28" font-size="15" fill="#e7ebe9">Do you want to turn this into a company one day, or a project you just want to build and make great?</text>
+  </g>
+
+  <!-- user bubble 1 -->
+  <g transform="translate(760,158)">
+    <rect x="0" y="0" width="240" height="40" rx="12" fill="#59b8af"/>
+    <text x="120" y="26" text-anchor="middle" font-size="15" fill="#0f1413" font-weight="500">Just a project</text>
+  </g>
+
+  <!-- keel bubble 2 -->
+  <g transform="translate(40,218)">
+    <rect width="30" height="30" rx="8" fill="#2f6f4f"/>
+    <text x="15" y="20" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">K</text>
+    <rect x="44" y="0" width="300" height="40" rx="12" fill="#161c1b"/>
+    <text x="64" y="26" font-size="15" fill="#e7ebe9">Got it. Who is it for?</text>
+  </g>
+
+  <!-- user bubble 2 -->
+  <g transform="translate(660,272)">
+    <rect x="0" y="0" width="340" height="40" rx="12" fill="#59b8af"/>
+    <text x="170" y="26" text-anchor="middle" font-size="15" fill="#0f1413" font-weight="500">People who journal but never re-read it</text>
+  </g>
+
+  <!-- keel bubble 3 -->
+  <g transform="translate(40,332)">
+    <rect width="30" height="30" rx="8" fill="#2f6f4f"/>
+    <text x="15" y="20" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">K</text>
+    <rect x="44" y="0" width="720" height="70" rx="12" fill="#161c1b"/>
+    <text x="64" y="28" font-size="15" fill="#e7ebe9">Perfect. I'll make sure this is genuinely better than what's already out there,</text>
+    <text x="64" y="52" font-size="15" fill="#e7ebe9">not a copy. Starting the research now, this takes a minute.</text>
+  </g>
+
+  <!-- caption -->
+  <text x="40" y="452" font-size="13.5" fill="#7e8987">No walls of text. No four-questions-at-once. Short, plain, and paced, so a first-time builder never freezes.</text>
+
+  <!-- input -->
+  <rect x="40" y="480" width="960" height="46" rx="12" fill="#161c1b" stroke="#28312f"/>
+  <text x="62" y="508" font-size="15" fill="#5b635f">Type your answer...</text>
+  <rect x="932" y="490" width="48" height="26" rx="8" fill="#2f6f4f"/>
+  <path d="M948 503 l10 0 M954 498 l6 5 l-6 5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

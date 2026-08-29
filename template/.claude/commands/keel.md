@@ -27,21 +27,23 @@ you the next step either way." Do not repeat it every turn.
 
 ## If they gave you an idea
 
+**Follow the conversation law: one short question at a time, in plain words, and
+wait for the answer before the next one. Never stack these into one message.**
+
 1. **Record it** in `docs/10-STATUS/NOW.md` under a "The idea" heading, verbatim,
    with today's date. This is the seed every later document grows from.
-2. **Set the shape.** Ask one plain question: *"Is this something you want to turn
-   into a company (customers, maybe revenue), or a project you just want to build
-   and make great?"* Record the answer in `NOW.md` as **`Mode: company`** or
-   **`Mode: project`** (or `Mode: experiment` for a quick proof). This decides how
-   much of the front half runs: a project skips the money work; a company does not.
-   If they are unsure, default to **project** and say they can switch later.
-3. **Clarify only what blocks progress.** Ask at most two more questions, and only
-   ones whose answer changes what gets built - who it's for, the one core job, any
-   hard constraint. Do **not** interrogate; the specialists surface the rest.
-4. **Name the innovation bar out loud, once:** *"whatever we build, I'll make sure
-   it's genuinely better or more original than what's already out there, not a
-   copy."* This is the innovation law, and it applies in both shapes.
-5. **Confirm the plan in one line** and start Phase 1 by running `/discover`.
+2. **Ask, and wait:** *"Do you want to turn this into a company one day, or is it
+   a project you just want to build and make great?"* Record the answer as
+   **`Mode: company`** or **`Mode: project`** in `NOW.md`. Unsure -> default
+   **project**, say they can switch later. Then, and only then:
+3. **Ask, and wait:** *"Who is it for?"* (one line is fine). Then, if and only if
+   something still genuinely blocks starting, **ask one more short question** about
+   that single thing. Otherwise do not ask anything else - the specialists surface
+   the rest. Never present a list of questions.
+4. **Reassure in one line:** *"Got it. I'll make sure this is genuinely better than
+   what's already out there, not a copy. Starting the research now."* Then start
+   Phase 1 by running `/discover`. Keep this whole intake to a handful of short
+   messages, not one long one.
 
 ## If they didn't (resuming)
 

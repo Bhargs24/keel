@@ -25,7 +25,7 @@ the ceremony, so it's safe to ask any time.
    run before more is built on a shaky foundation, a spec gap. **If so, say it
    plainly.** Do not recommend a coding task just because one was expected.
 
-## Report, in under ten lines
+## Report **short and plain**, a few lines: the recommendation and why, in words a non-technical person gets. Offer detail rather than dumping it
 
 - **The verdict on the ground** (what's in flight, whether done means done).
 - **The one thing to do**, and the rule that decided it - *"it unblocks four of

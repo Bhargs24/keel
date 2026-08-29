@@ -30,7 +30,7 @@ Use the **design-lead** subagent to produce, into `spec/06-Design/`:
 
 - Offer to open the mockups so the developer can see them, not just read about them.
 - Update the doc register.
-- Give the developer a **one-screen summary**: the design thesis in a sentence,
+- Give a **short, plain recap** (2 to 4 lines, no jargon): the good news, the one thing to watch with its fix, and the single next step. The full detail is in the documents and the guide (`python tools/keel.py`) - point there, do not paste it. The recap covers: the design thesis in a sentence,
   the palette and type, and the screen or state the design lead flagged as hardest
   to build well.
 - **The gate:** propose `/architect` next - the architect should know the design

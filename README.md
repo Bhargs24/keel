@@ -15,9 +15,15 @@ It is the tool for the part everyone skips: **knowing what to build and why, in 
 <p align="center">
 <a href="#install-it-start-here"><b>Install</b></a> ·
 <a href="#use-it"><b>Use it</b></a> ·
+<a href="#easy-by-design"><b>How it feels</b></a> ·
 <a href="#how-keel-compares"><b>Compare</b></a> ·
 <a href="#faq"><b>FAQ</b></a> ·
 <a href="https://github.com/Bhargs24/keel"><b>GitHub</b></a>
+</p>
+
+<p align="center">
+<img src="assets/cockpit.svg" alt="The Keel guide: a progress rail from Idea to Ship, and one plain-English next-step card with the exact command to copy" width="880">
+<br><sub>The guide (<code>python tools/keel.py</code>): it shows you the one next step, in plain words, and every document Keel writes.</sub>
 </p>
 
 ---
@@ -121,6 +127,21 @@ Then run `python install.py <your-repo>` once to lay down the project structure,
 **Already have a spec?** Drop your documents into `spec/`, run `/plan`, then `/work`.
 
 **The three commands to remember:** `/start` when you sit down, `/next` to find out what to do, `/wrap` when you stop. Everything else, Keel reaches for on your behalf.
+
+---
+
+## Easy by design
+
+Keel is built so a first-time builder never freezes. It talks the way a good mentor does: **one short question at a time, in plain words**, and it never dumps a wall of steps on you. The long plans and the details live in the guide and the documents. The conversation stays calm.
+
+<p align="center">
+<img src="assets/conversation.svg" alt="Keel asking one short question at a time in plain English, then confirming in a single line" width="820">
+</p>
+
+Two rules make this true, and they run on every message:
+
+- **The conversation law:** one question at a time, short plain answers, no jargon, and the depth kept in the guide rather than pasted into the chat.
+- **The paired-honesty law:** whenever Keel finds a weakness in your idea, product, or code, it hands you the fix in the same breath. It is never only a critic, and never a wall of problems with no way forward.
 
 ---
 
