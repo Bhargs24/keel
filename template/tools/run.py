@@ -5,7 +5,8 @@ Python - no `make`, no bash, nothing to install.
     python tools/run.py check      the fast gate (placeholders, boundaries,
                                     ownership, tracker, tenant isolation)
     python tools/run.py secure     prove tenant isolation on the schema (trespass)
-    python tools/run.py board      the progress board in a browser
+    python tools/run.py guide      the friendly cockpit: your step-by-step guide
+    python tools/run.py board      the developer progress board (kanban)
     python tools/run.py hooks      install the git hooks
     python tools/run.py phase      which pipeline phase, and the next command
     python tools/run.py verify     everything: the fast gate + your lint/types/tests
@@ -77,8 +78,13 @@ def task_secure(quiet_if_absent: bool = False) -> int:
     return _run([PY, str(TOOLS / "trespass" / "run.py"), "check", schema, "--no-color"])
 
 
+def task_guide() -> int:
+    """The Keel cockpit: the friendly step-by-step guide, in a browser."""
+    return _run([PY, str(TOOLS / "keel.py")])
+
+
 def task_board() -> int:
-    """The progress board in a browser."""
+    """The developer progress board in a browser."""
     return _run([PY, str(TOOLS / "board.py")])
 
 
@@ -122,6 +128,7 @@ def _has_make() -> bool:
 TASKS = {
     "check": task_check,
     "secure": task_secure,
+    "guide": task_guide,
     "board": task_board,
     "phase": task_phase,
     "docs": task_docs,

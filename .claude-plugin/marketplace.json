@@ -1,0 +1,12 @@
+{
+  "name": "keel",
+  "owner": { "name": "Bhargav Raghavendra", "url": "https://github.com/Bhargs24" },
+  "metadata": { "description": "Keel: from an idea to a shipped product, with an AI founding team." },
+  "plugins": [
+    {
+      "name": "keel",
+      "source": "./",
+      "description": "The Keel pipeline commands and specialist agents (business, market, product, design, architecture, feasibility, code review, QA, security)."
+    }
+  ]
+}

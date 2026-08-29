@@ -14,6 +14,7 @@ them yourself.
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -40,8 +41,15 @@ def ask(prompt: str, default: str = "") -> str:
 
 
 def collect_people() -> list[dict]:
-    print("\nWho is on the team? The key becomes their branch prefix and their")
-    print("ownership role, so keep it short and lowercase. Blank name to finish.\n")
+    """Ask who's building. Solo is the common case and gets no jargon."""
+    solo = ask("\nIs it just you building this? [Y/n]", "y").lower()
+    if solo in ("", "y", "yes"):
+        name = ask("  Your name (or a nickname)", "you")
+        key = re.sub(r"[^a-z0-9]", "", name.lower()) or "you"
+        return [{"key": key, "display": name.title(), "role": "founder", "owns": ""}]
+
+    print("\nA short lowercase key per person (it also names their branches, e.g.")
+    print("alex/T-001-...). Blank to finish.\n")
     people = []
     while True:
         key = ask(f"  person {len(people)+1} key (e.g. alex)").lower()
@@ -59,7 +67,11 @@ def collect_people() -> list[dict]:
 
 
 def write_roster(root: Path, people: list[dict], dry: bool, force: bool):
-    if not people:
+    target = root / "tracker" / "people.toml"
+    if not people:  # no one given: keep the example roster so the tools still work
+        if not target.exists() and not dry:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(TEMPLATE / "tracker" / "people.toml", target)
         return
     lines = [
         "# The roster. Adding a person is adding a block: no code change.",
@@ -71,7 +83,6 @@ def write_roster(root: Path, people: list[dict], dry: bool, force: bool):
                   f'display = "{p["display"]}"',
                   f'role    = "{p["role"]}"',
                   f'owns    = "{p["owns"]}"', ""]
-    target = root / "tracker" / "people.toml"
     if target.exists() and not force:
         print(f"  roster: tracker/people.toml already exists, left alone "
               f"(--force to replace with: {', '.join(p['key'] for p in people)})")
@@ -84,9 +95,12 @@ def write_roster(root: Path, people: list[dict], dry: bool, force: bool):
 
 def write_map(root: Path, people: list[dict], dry: bool, force: bool):
     """Start the map with only the rules that are true on day one."""
-    if not people:
-        return
     target = root / "docs" / "20-WORK" / "OWNERSHIP.map"
+    if not people:  # keep the example map so ownership_check still works
+        if not target.exists() and not dry:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(TEMPLATE / "docs" / "20-WORK" / "OWNERSHIP.map", target)
+        return
     if target.exists() and not force:
         print("  ownership map: docs/20-WORK/OWNERSHIP.map already exists, left alone")
         return
@@ -121,12 +135,19 @@ def write_map(root: Path, people: list[dict], dry: bool, force: bool):
         target.write_text("\n".join(lines), encoding="utf-8")
 
 
+# write_roster / write_map are the sole owners of these two, so the interactive
+# answers are never clobbered by the example the tree would otherwise lay down.
+_ROSTER_OWNED = {Path("tracker/people.toml"), Path("docs/20-WORK/OWNERSHIP.map")}
+
+
 def copy_tree(root: Path, force: bool, dry: bool) -> tuple[int, list[str]]:
     copied, skipped = 0, []
     for src in sorted(TEMPLATE.rglob("*")):
         if src.is_dir():
             continue
         rel = src.relative_to(TEMPLATE)
+        if rel in _ROSTER_OWNED:
+            continue
         dst = root / rel
         if dst.exists() and not force:
             skipped.append(str(rel))
@@ -148,12 +169,23 @@ def main():
 
     root = Path(a.target).expanduser().resolve()
     if not root.exists():
-        sys.exit(f"no such directory: {root}")
-    if not (root / ".git").exists():
-        print(f"warning: {root} is not a git repository. The hooks and the")
-        print("ownership check need git. Run `git init` first if that is a mistake.\n")
+        make = ask(f"\n{root} does not exist yet. Create it? [Y/n]", "y").lower()
+        if make in ("", "y", "yes") and not a.dry_run:
+            root.mkdir(parents=True, exist_ok=True)
+        else:
+            sys.exit(f"no such directory: {root}")
+    if not (root / ".git").exists() and not a.dry_run:
+        gi = ask("\nThis folder isn't set up for version control yet (Keel needs it).\n"
+                 "Set it up now? [Y/n]", "y").lower()
+        if gi in ("", "y", "yes"):
+            r = subprocess.run(["git", "init"], cwd=root, capture_output=True, text=True)
+            if r.returncode == 0:
+                print("  version control ready.")
+            else:
+                print("  couldn't set it up automatically. Install Git from git-scm.com,\n"
+                      "  then run this again. (Everything else still installed.)")
 
-    print(f"Installing into {root}")
+    print(f"\nInstalling into {root}")
     if a.dry_run:
         print("(dry run: nothing will be written)\n")
 
@@ -175,29 +207,38 @@ def main():
             print(f"      ... and {len(skipped)-12} more")
         print("  Re-run with --force to overwrite, or merge them by hand.")
 
-    print("\nFill these in before you rely on them:")
-    for path, what in FILL_IN:
-        print(f"  {path:<38} {what}")
+    print(f"""
+Done. Keel is installed into {root}.
 
-    print("""
-Now open your AI coding tool inside this repo and give it your idea:
+TWO WAYS TO START, pick one:
 
-  /keel "a booking tool for pet groomers that stops double-booking"
+  EASIEST - open the friendly guide. It shows you the one next step at a time,
+  in plain English, all the way from your idea to a shipped product:
 
-Keel takes it from there -- the business case, the product spec, the
-architecture, a feasibility audit, then the build. Approve each step.
+      python tools/keel.py
 
-Already have a spec? Drop it in spec/ and skip to the build:
-  /plan         load the build roadmap into the tracker
-  /work         it decides what to build next
-  /wrap         close the session cleanly
+  OR - open your AI coding tool (Claude Code, Cursor...) in this folder and type:
 
-The three to remember:  /start when you sit down * /next to decide what's
-next * /wrap when you stop.
+      /keel "a booking tool for pet groomers that stops double-booking"
 
-New here? Read docs/01-INDUCTION/START-HERE.md -- it's written for anyone.
-Nobody has to read the rulebook; Claude reads it for you.
+Either way, you just answer and say go. Keel does the research, the plan, the
+build, and the checks. You never have to remember a command.
+
+Already have a spec? Drop it in spec/ and run /plan, then /work.
 """)
+
+    if not a.dry_run and ask("Open the friendly guide now? [Y/n]", "y").lower() in ("", "y", "yes"):
+        try:
+            subprocess.Popen([sys.executable, "tools/keel.py"], cwd=root)
+            print("  opening the guide in your browser...")
+        except OSError:
+            print("  run it yourself with:  python tools/keel.py")
+
+    print("\n(For developers: a few files are yours to shape as the project grows -")
+    for path, what in FILL_IN:
+        print(f"    {path:<36} {what}")
+    print(" but the pipeline writes most of it. Nobody has to read the rulebook;")
+    print(" Claude reads it for you.)")
 
 
 if __name__ == "__main__":

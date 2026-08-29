@@ -1,0 +1,9 @@
+{
+  "name": "keel",
+  "description": "From an idea to a product you can ship. An AI founding team: business, product, design, and engineering agents that take one idea through research, a real spec, a feasibility audit, a build plan, and the disciplined build that ships it.",
+  "version": "0.1.0",
+  "author": { "name": "Bhargav Raghavendra" },
+  "homepage": "https://github.com/Bhargs24/keel",
+  "commands": "./template/.claude/commands",
+  "agents": "./template/.claude/agents"
+}
