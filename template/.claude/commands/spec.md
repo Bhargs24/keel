@@ -5,17 +5,17 @@ argument-hint: [TASK-ID, screen id, or a topic]
 
 Find and summarise what the specification says about: **$ARGUMENTS**
 
-Run `your spec-fetch step, if you have one` first if `docs/` and your specification is empty.
+
 
 ## Where to look, in order
 
 1. **A TASK-ID** (`BE-005`, `ST-013`, `TE-021`) → the block in
-   `your build plan or issue tracker`, then whatever its `Spec:` field points at.
-2. **A screen id** (`ST-11`, `PA-12`, `TE-21`) → `your product specification`,
+   `spec/03-Technical/BUILD-ROADMAP.md`, then whatever its `Spec:` field points at.
+2. **A screen id** (`ST-11`, `PA-12`, `TE-21`) → `spec/02-Product/PRD.md` and its module specs,
    for its states, actions and backend notes.
-3. **An event or projection** → your data-model document.
+3. **An event or projection** → `spec/03-Technical/DATA-MODEL.md`.
    **Authoritative for the wire.**
-4. **A topic** → search `docs/` and your specification broadly, and say which documents you searched.
+4. **A topic** → search `spec/` and `docs/` broadly, and say which documents you searched.
 
 ## Report
 

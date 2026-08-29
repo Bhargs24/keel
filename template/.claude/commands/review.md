@@ -5,13 +5,17 @@ description: Review this branch against the rulebook and the spec before pushing
 Review the current branch **before it is pushed**. You are looking for what a
 grep cannot find. `make check` already ran the mechanical gates; do not repeat them.
 
+For a substantial diff, spawn the **code-reviewer** subagent — it reviews with a
+clean context against the spec and reports back. For a small change, do it inline
+with the checklist below.
+
 ```
 git diff --stat main...HEAD
 git diff main...HEAD
 python tools/track.py show <the TASK-ID in the branch name>
 ```
 
-Read the step's block in `your build plan or issue tracker` and whatever its
+Read the step's block in `spec/03-Technical/BUILD-ROADMAP.md` and whatever its
 `Spec:` field points at. **You are reviewing against that, not against taste.**
 
 ## What to look for, in this order
@@ -24,9 +28,9 @@ most common and most expensive failure here.
 states? Loading, empty, below-confidence, error, offline, thin-data are part of
 the screen, not extras. **A missing state is a missing feature.**
 
-**3 · The invariants** (`CLAUDE.md`). Especially: no MCQ in the daily loop, no
-student self-signup, consent gating every child-data read and write, a model
-never deciding a calculation, corrections as new events rather than edits.
+**3 · The invariants** (`CLAUDE.md`). Whatever the product spec lists as a hard
+invariant — the permission gate everything passes through, the thing a model must
+never decide, the append-only or safety law. These are defects, not tradeoffs.
 
 **4 · Error handling.** Every failure typed, coded, logged, handled. **No silent
 catch, no bare `except`, no ignored error return.** What happens on a timeout, a

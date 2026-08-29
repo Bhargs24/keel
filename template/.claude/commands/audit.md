@@ -23,7 +23,7 @@ grep -l '^status: done' tracker/tasks/*.md
 
 ## For each task, check five things
 
-Read the step's block in `your build plan or issue tracker` first. Its
+Read the step's block in `spec/03-Technical/BUILD-ROADMAP.md` first. Its
 `Delivers`, `Test / DoD`, `Module`, `Events / API` and `Debug notes` are the
 standard. Then:
 

@@ -35,7 +35,7 @@ one. Say so and stop here.
 Audit the **most recent completions**, and **every dependency of the task you
 are about to recommend**. Not all of history: the ones this decision rests on.
 
-For each, read its `Test / DoD` in `your build plan or issue tracker` and
+For each, read its `Test / DoD` in `spec/03-Technical/BUILD-ROADMAP.md` and
 check it holds. If a dependency is marked done but does not meet its own
 definition of done, **that is the next task**, not the one after it. Move it back:
 
@@ -89,7 +89,7 @@ bench is green. A bench that gates several steps is high value even though it
 ships nothing a user sees.
 
 **4 · The critical path to this milestone's deliverable.** Read the milestone's
-line in your roadmap. Which open task does that
+line in `spec/03-Technical/BUILD-ROADMAP.md`. Which open task does that
 deliverable actually require? Prefer it over adjacent work in the same milestone.
 
 **5 · Risk first within a tier.** Between two otherwise equal tasks, prefer the
@@ -104,13 +104,13 @@ that out early is worth more than finishing something safe.
 
 Before recommending, check the decision against things the tracker does not know:
 
-- **`BUILD-ROADMAP.md`** — does building this now match what the milestone is
+- **`spec/03-Technical/BUILD-ROADMAP.md`** — does building this now match what the milestone is
   meant to deliver?
-- **`docs/20-WORK/INTEGRATION.md` if you have one** — is this on the right side of the seam, and does it
+- **`docs/20-WORK/OWNERSHIP.map`** — is this on the right side of the seam, and does it
   respect the ownership map?
 - **`docs/40-HANDOFF/`** — did the last session leave a reason to do something
   else first?
-- **your open-decisions list** — is there an open founder decision or an
+- **the open decisions in `docs/10-STATUS/NOW.md`** — is there an open founder decision or an
   unprovisioned account that this work will hit halfway through?
 - **The unassigned work.** `CO-001`, `CH-001`, `DS-001` and the spikes are on the
   critical path with nobody on them.
@@ -151,12 +151,12 @@ unblock it, and **what the most useful non-code action is right now.**
 2. `python tools/track.py start <ID>`
 3. `git switch -c <owner>/<ID>-<short-slug>` — the prefix is how CI knows whose
    files are whose, and a branch without one fails.
-4. `your spec-fetch step, if you have one` if the specifications are missing.
+4. the relevant `spec/` document if the specifications are missing.
 5. Read the step's full block, then the surface or engine spec it points at.
    **Do not infer behaviour that is written down.**
 6. Say in four or five lines what you are about to do, and **anything in the
    spec that looks wrong or ambiguous.**
-7. **Above T0 blast radius, enter plan mode first** (your change protocol).
+7. **Above T0 blast radius, enter plan mode first** (`docs/00-RULES/CHANGE-PROTOCOL.md`).
 
 Then build, and `track log <ID> "..."` on every real decision, surprise or dead
 end, unprompted.
