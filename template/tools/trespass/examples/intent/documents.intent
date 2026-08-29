@@ -1,0 +1,8 @@
+# Declares what examples/vulnerable/03-public-or-bypass.sql *should* enforce.
+# With this, the is_public escape hatch is proved to be a leak.
+[documents]
+tenant = user_id
+select = owner
+insert = owner
+update = owner
+delete = owner

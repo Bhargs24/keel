@@ -1,160 +1,211 @@
-# A quality base for building with Claude Code
+<div align="center">
 
-**A working setup for two or more people building a real product through AI sessions, without it turning into a mess.**
+# Keel
 
-> ### Status, honestly
->
-> **What is here works and is tested end to end**: the commands, the tracker, the gates, the hooks, the ownership boundary. Verified on a clean repository, including the dependency refusal, the ownership check reading a real roster, and a crossing note clearing a trespass.
->
-> **What is not here yet**: this governs a build against a specification. **It does not help you write one.** That half — working out what your project actually needs written down, and producing it with you — is the direction this is heading and is not built. Until it is, **this assumes you already have specifications.**
+### From an idea to a product you can ship. Properly.
 
-Not a linter config and not a prompt library. It is the answer to a specific problem: **AI writes code faster than a human can read it, and the bottleneck moves from typing to trusting.** Everything here exists to make trust cheap.
+**Keel is an AI founding team that lives in your terminal.** You give it one idea. It runs the real 0→1 work — business case, market and competitor research, a proper product spec, the technical architecture, a feasibility audit, and a dependency-ordered build plan — and then it builds the thing under quality gates that don't let it cut corners.
+
+All you need is a subscription to an AI coding tool you already use (Claude Code, Cursor, Codex — anything that can run commands and read files).
+
+*Not a framework. Not a prompt pack. A working operating system for taking software from nothing to production without it turning into a mess.*
+
+</div>
+
+---
+
+## The magic-wand loop
+
+```mermaid
+flowchart LR
+    I([💡 your idea]) --> D
+    subgraph RESEARCH [" the specialists do the thinking "]
+      direction LR
+      D["🔎 Discover<br/><sub>business · market · money</sub>"] --> P["📐 Define<br/><sub>the product · the PRD</sub>"] --> A["🏗️ Architect<br/><sub>stack · data · build plan</sub>"]
+    end
+    A --> F{"⚖️ Feasibility<br/>GO / REVISE / NO-GO"}
+    F -->|revise| D
+    F -->|go| PL["🗂️ Plan<br/><sub>load the tracker</sub>"]
+    PL --> B["🔨 Build loop<br/><sub>work · review · audit · test</sub>"]
+    B --> S["🛡️ Secure<br/><sub>prove tenant isolation</sub>"]
+    S --> SH([🚀 Ship])
+    B -.->|next task| B
+```
+
+Each box is a command. The first four spawn a **specialist subagent** that does the work and writes a real document — not a stub, not a summary. Between the plan and the build sits a **feasibility gate** that checks all three plans *together*: is the product coherent with the business, is it buildable with the tools you have, and can you afford to run it? If not, it says `REVISE` and tells you exactly what.
+
+---
+
+## Why this exists
+
+Anyone can now generate a working-looking app from a prompt. Almost nobody can get it to a *real* product — because the hard part was never the typing. It's knowing **what** to build and **why**, in **what order**, and proving it actually works before real users arrive. That's the part the current wave of tools skips, and it's the part that decides whether you ship or drown.
+
+Keel is built on one idea:
+
+> **Anything a person has to remember is a rule that will eventually be broken.**
+
+So Keel doesn't hand you a checklist and wish you luck. Every rule here either **runs automatically**, is **checked mechanically**, or is on a list short enough to actually hold. The AI is the operator — it chooses the next step, spawns the right specialist, writes the doc, claims the task, runs the checks, and tells you in one line what it did. You approve; you don't administrate.
+
+---
+
+## What you get
+
+| | |
+|---|---|
+| 🧠 **A team of specialists** | Business analyst, market researcher, product manager, tech architect, feasibility auditor, code reviewer, QA, security auditor — as subagents, each with its own brief and its own quality bar |
+| 📚 **A real document set** | The company narrative, positioning, market & competitor analysis, unit economics, cost-to-run, a master PRD with module specs, the technical design, and a dependency-ordered build roadmap — in the formats a fundable startup actually uses |
+| ⚖️ **Feasibility, before you build** | The three plans are audited alone and together. Coherent, buildable, affordable. A `GO / REVISE / NO-GO` verdict with reasons |
+| 🗂️ **A tracker that is just files in git** | One markdown file per task. No database, no hosting, no account. It refuses to start a task whose dependencies aren't done, and tells you what a completion unblocks |
+| 🧭 **"What do I do next?", answered** | `/next` decides — and it's allowed to say the best next move isn't code. `/status` tells you which phase you're in and what's blocking the finish line |
+| 🚦 **Gates that run themselves** | No placeholder code, module boundaries, ownership, dependency integrity, secret scanning, and per-language lint/type/test — the same ones locally and in CI |
+| 🛡️ **Security you can prove** | `/secure` runs **[trespass](#-trespass-security-you-can-prove)**, a formal analyzer that *proves* no user can read another user's data — or hands you the exact query that breaks it |
+| 🤝 **Built for a team, safe for AI sessions** | An enforced ownership boundary so two people (or ten agent sessions) on one repo never quietly overwrite each other |
+
+---
+
+## The commands
+
+Three you'll use constantly, the rest when you want them.
+
+### The pipeline
+
+| Command | What it does | Spawns |
+|---|---|---|
+| **`/keel "<idea>"`** | Capture the idea, clarify only what blocks progress, start the pipeline | orchestrator |
+| **`/discover`** | The business case: narrative, positioning, market & competitor analysis, unit economics, cost-to-run | business-analyst · market-researcher |
+| **`/define`** | The product: a master PRD, module specs, user stories, success metrics, flows | product-manager |
+| **`/architect`** | The build: architecture, tech stack, data model, tools & accounts, and the dependency-ordered **build roadmap** | tech-architect |
+| **`/feasibility`** | Audits the three plans, alone and together. **GO / REVISE / NO-GO** | feasibility-auditor |
+| **`/plan`** | Turns the build roadmap into tracker tasks with dependencies | — |
+
+### The build loop
+
+| Command | What it does |
+|---|---|
+| **`/start`** | Where things stand, what the last session did, what's ready. Stops without starting anything |
+| **`/work`** | **Decides what to build next**, verifies the ground is solid, then runs the ceremony on your yes |
+| **`/next`** | Just the recommendation — what to do next and why. Allowed to say "not code" |
+| **`/spec`** | What the specification actually says about a step, screen, or topic — quoted, with what it *doesn't* cover |
+| **`/review`** | The gap between green CI and actually right: spec drift, silent failure, PII in logs, happy-path-only tests |
+| **`/audit`** | **Is what we marked done actually done?** Clause by clause against its definition of done — and it moves failures back |
+| **`/test`** | Runs the suite, reads the failures, and tells you what's actually broken |
+| **`/secure`** | Proves tenant isolation with **trespass**, then a security review of the rest |
+| **`/ship`** | The production-readiness gate, then deploy |
+| **`/wrap`** | Honest state to the tracker, handoff, changelogs, checks, commit |
+| **`/status`** · **`/board`** | Where the whole project is · the board, in a browser |
+
+---
+
+## The specialists
+
+The front of the pipeline is run by subagents, each defined in `.claude/agents/`. They exist so the thinking is done by a focused mind with a clean context and one job — not squeezed into the middle of a coding session.
+
+| Agent | Owns | Refuses to |
+|---|---|---|
+| **business-analyst** | the narrative, positioning, business model, unit economics | invent a market size or a moat that isn't there |
+| **market-researcher** | TAM/SAM/SOM, the competitor field, the wedge | copy a competitor without saying why you win |
+| **product-manager** | the PRD, user stories, success metrics, every screen state | leave a state, an error, or an edge case unspecified |
+| **tech-architect** | architecture, stack, data model, the build roadmap | choose a stack it can't justify, or a plan with steps out of order |
+| **feasibility-auditor** | the cross-check of all three plans | pass a plan for want of checking — its verdict can be NO-GO |
+| **code-reviewer** | the gap a grep can't find, before a push | approve a change that builds something adjacent to the spec |
+| **qa** | tests that cover the risk, not just the happy path | call a thing tested when the thing most likely to break isn't |
+| **security-auditor** | the permission and data boundaries | assert isolation when trespass can prove it |
+
+---
+
+## 🛡️ trespass: security you can prove
+
+Broken access control — one user able to read or delete another user's data — is the single most common way AI-built apps leak, and the one class ordinary scanners **structurally cannot catch**, because catching it needs to know who is *supposed* to see what.
+
+Keel ships **trespass**, a formal analyzer for Postgres / Supabase row-level security. It compiles every policy into logic and either **proves** no tenant can reach another's rows, or hands you the exact query that shows they can:
+
+```
+✗ VULNERABLE  critical   [tenant-read]
+  Your policy:  user_id = auth.uid() OR is_public
+  Counterexample (from the solver):
+      session  auth.uid() = attacker
+      row      user_id = victim, is_public = true
+  Reproduce it:  select * from documents;   -- returns victim's rows to attacker
+```
+
+It's zero-dependency, it runs in `make check` and `/secure`, and it fails your build when a policy leaks. Details: [`tools/trespass/README.md`](template/tools/trespass/README.md).
+
+---
+
+## The document set it produces
+
+Generated into `spec/` and `docs/`, in dependency order, each drawing from the one before it:
+
+```
+spec/
+  00-START-HERE/   the program plan · the doc register (what's written, what's next)
+  01-Company/      narrative · vision/mission/values · one-pager · positioning · how-we-pitch
+  02-Product/      PRD (master) · prd/M1..Mn (module specs) · user stories · success metrics · flows
+  03-Technical/    technical design · tech-stack · data model & events · security/privacy
+                   · BUILD-ROADMAP · tools & accounts checklist
+  04-Business/     market analysis · competitor analysis · GTM · business model & pricing · unit economics
+  05-Finance/      cost-to-run model · financial model · fundraise ask
+
+docs/
+  00-RULES/        the one book, and the depth behind it (code · delivery · testing · docs · ownership)
+  01-INDUCTION/    start here · every command · how we work
+  02-GUIDE/        how to get maximum speed out of this without losing quality
+  10-STATUS/       NOW.md — what is claimed right now
+  20-WORK/         the ownership map, sprints, backlog work items, crossings
+  50-AUDITS/       dated, never edited after the fact — the feasibility and readiness audits
+  99-TEMPLATES/    PRD module · work item · decision record · handoff · audit
+```
+
+Two document classes do a lot of the work: **LIVING** carries a review date and is expected to change; **SNAPSHOT** is dated and *never edited after that date* — because an audit that gets quietly corrected is not a record of anything.
+
+---
+
+## Install
 
 ```bash
 python install.py /path/to/your/repo
 ```
 
----
+It asks who's on the team, writes the roster and a starting ownership map, installs the git hooks, and **skips anything that already exists** rather than overwriting it. `--force` to overwrite, `--dry-run` to look first.
 
-## The ideas it is built on
+Then, from inside your repo, in your AI coding tool:
 
-You can throw away every file here and keep these. They are the part that matters.
+```
+/keel "a booking tool for pet groomers that stops double-booking"
+```
 
-### 1 · Anything a person has to remember is a rule that will eventually be broken
-
-So very little here asks anyone to remember. A rule either **runs automatically**, or is **checked mechanically**, or is on a short list small enough to actually hold.
-
-The test for any new rule: *can this be a check?* If yes, it must be. A rule that lives only in a document will be reasoned past by an AI session and forgotten by a person, usually on the day it mattered.
-
-### 2 · Claude is the operator, not the instructor
-
-Most setups write their rules to a developer who will not read them. **Write them to Claude instead**, and let the developer say what they want.
-
-The developer says *"let's do the rate limiter"*. Claude finds the task, claims it, starts it, branches correctly, reads the specification, and reports in one line. **It never tells them to run a command it can run itself.** Asked where things stand, it runs the tool rather than answering from memory.
-
-### 3 · Choosing what to build next is a machine's job
-
-A person holds a dependency graph badly. `/work` takes no arguments: it verifies nothing before it is half-done, ranks the candidates against the milestone, what unblocks whom, and what would invalidate the most later work if wrong, then recommends one **with the reason visible** and names the runner-up so you can overrule it with information.
-
-**And it is allowed to say the best next action is not code** — a hire, a decision, an experiment. It will not recommend a task merely because a task was asked for.
-
-### 4 · "Done" must be verified, not declared
-
-Marking something done is self-reported, and self-reported progress is the number you end up quoting to somebody who matters.
-
-`/audit` walks a finished task against its **written definition of done**, clause by clause, and moves it back if it does not hold. Its fourth verdict is **CANNOT VERIFY**, so nothing ever passes for want of checking. It ends on one honest paragraph: **can the progress number be trusted?**
-
-### 5 · The boundary between people is a check, not a courtesy
-
-An AI session has no sense of whose work it is standing in. Asked to fix the console it will reach into the API, because from inside the session that is the shortest path — conflicting a branch mid-flight and routing review past whoever understands the code.
-
-**So ownership is enforced.** The branch prefix declares who you are, a map declares who owns what, and CI refuses the rest. **Three documented ways to cross** exist for when work genuinely has to: a crossing note, a handoff, or declared joint work.
-
-### 6 · Prove a capability on a bench before wiring it in
-
-Build a feature into the product and test it there, and every failure is ambiguous: the model, the adapter, the data, the UI, the network? **On a bench there is one variable and one number.**
-
-A spike answers a question and is deleted. **A bench is permanent** and becomes the regression suite that re-proves the capability whenever a model or a library moves.
-
-### 7 · Fast local gates, so CI is never the first place you learn something is wrong
-
-CI that is slow and punishing teaches people to ignore it or work around it, which is worse than no CI.
-
-`make check` runs the instant checks locally in **seconds**, and CI runs the same ones. The heavy per-language jobs run **only when that language changed**, and a documents-only commit runs neither lint nor tests. **CI becomes a formality that passes.**
-
-### 8 · The handoff carries what is not written anywhere else
-
-Every session ends with a handoff, and its last section is the whole point:
-
-> **What I know that is not written anywhere.** The dead ends. The thing the specification got wrong. Why a decision went the way it did rather than the obvious way.
-
-Everything else can be reconstructed from the diff. That cannot, and it is the difference between resuming and restarting.
+and follow where it takes you. Or, if you already have a spec, jump straight to `/plan` and `/work`.
 
 ---
 
-## What is in the box
+## The ideas it's built on
 
-### Seven commands
+You can throw away every file here and keep these.
 
-| | |
-|---|---|
-| `/start` | Where things stand, what the last session did, what is ready, what is wrong. **Stops without starting anything** |
-| `/work` | **Decides what to build next.** Verifies the ground, ranks, recommends with reasons, runs the ceremony on your yes |
-| `/spec` | What the specification actually says. Quotes it, and **says plainly what it does not cover** |
-| `/review` | The gap between green CI and actually right: spec drift, silent failure, personal data in logs, happy-path-only tests |
-| `/audit` | **Is what we marked done actually done?** Clause by clause, and it moves failures back |
-| `/wrap` | Honest state to the tracker, handoff, changelogs, checks, commit |
-| `/board` | The board in a browser |
-
-### A tracker that is files in git
-
-One markdown file per task: a small header and an append-only log. **No database, no hosting, no auth**, works on day one. Git gives history, timestamps and attribution for free, Claude reads and writes it natively, and two people editing different tasks never conflict.
-
-`tools/track.py` is the CLI. `tools/board.py` is a local web UI over the same files, on the standard library, **no dependencies**. Both refuse to start a task whose dependencies are unfinished, and report what a completion unblocks.
-
-**Adding a person is adding a block to `tracker/people.toml`.** The key becomes their branch prefix and their ownership role.
-
-### Gates that run themselves
-
-`no_placeholders` (no TODO, stub, mock data, "for now") · `dep_check` (module boundaries) · `ownership_check` (whose files are whose) · `track check` (dependency integrity) · secret scan · and the per-language jobs, path-filtered.
-
-### Hooks
-
-Session open loads the state · **every message carries the rule preamble** · files are scanned before write and formatted after · session end checks the handoff was written · **pushing to the default branch is refused.**
-
-### A document structure that resists going stale
-
-```
-docs/00-RULES/       the one book, and depth behind it
-docs/10-STATUS/      NOW.md, what is claimed right now
-docs/20-WORK/        ownership map, crossings, allocation
-docs/30-CHANGELOG/   per file, so two people rarely conflict
-docs/40-HANDOFF/     one per session
-docs/50-AUDITS/      dated, never edited after the fact
-docs/99-TEMPLATES/   handoff, decision record, changelog
-```
-
-Two document classes, and the distinction does the work: **LIVING** carries a review date and is expected to change; **SNAPSHOT** is dated and **never edited after that date**. An audit that gets quietly corrected is not a record of anything.
-
----
-
-## Installing
-
-```bash
-python install.py /path/to/your/repo
-```
-
-It asks who is on the team, writes the roster and a starting ownership map, installs the git hooks, and **skips anything that already exists** rather than overwriting it, listing what it skipped so you can merge by hand. `--force` to overwrite, `--dry-run` to look first.
-
-### Then fill in four things
-
-| | |
-|---|---|
-| `CLAUDE.md` | what you are building, the hard invariants, the layout |
-| `THE-RULEBOOK.md` Parts 3 and 4 | your judgement rules, and **what has no undo** |
-| `docs/20-WORK/OWNERSHIP.map` | real paths, as they appear |
-| `Makefile` | lint, typecheck, test and gen for your languages |
-
-**Part 4 is the one people skip and should not.** Name the things in your system with no undo — an append-only schema, anything sent to a user, a record the business depends on — because everything else is recoverable and speed there is free.
+1. **Anything a person must remember is a rule that will eventually be broken.** So a rule must run, be checked, or be short enough to hold. The test for any new rule: *can this be a check?* If yes, it must be.
+2. **The AI is the operator, not the instructor.** It never tells you to run a command it can run itself.
+3. **Choosing what to build next is a machine's job.** A person holds a dependency graph badly. `/next` ranks the candidates and shows the reason — and is allowed to say the answer isn't code.
+4. **"Done" must be verified, not declared.** `/audit` walks a task against its written definition of done, and its fourth verdict is *CANNOT VERIFY*, so nothing passes for want of checking.
+5. **The boundary between people is a check, not a courtesy.** An AI session has no sense of whose work it's standing in, so ownership is enforced in CI, not requested in a doc.
+6. **Prove a capability on a bench before wiring it in.** And prove the permission boundary rather than trusting it — that's what `/secure` is.
+7. **Feasibility is a gate, not a hope.** The business, the product, and the build are audited together before a line of code is written on top of them.
 
 ---
 
 ## What this is not
 
-**Not a framework.** Nothing imports it. Delete any file and the rest still works.
+**Not a code generator.** It orchestrates the one you already pay for. It's the judgment around it — what to build, why, in what order, and whether it's actually right.
 
-**Not opinionated about your stack.** The Makefile has empty hooks for your languages. The gates are language-agnostic.
+**Not opinionated about your stack.** The architect chooses and justifies; the gates are language-agnostic.
 
-**Not a substitute for specifications.** It assumes you have written down how the product behaves. If you have not, `/spec` has nothing to read and `/audit` has no standard to check against. **The tracker is a schedule; the specification is the truth.**
-
-**Not proven at scale.** It was built for two people on one product and is being used there. It should extend to five. Past that, the file-per-task tracker probably wants replacing with something real — everything else should hold.
+**Not a substitute for thinking.** It does the 0→1 legwork and holds the quality bar. You still make the calls it surfaces.
 
 ---
 
-## Where it came from
+<div align="center">
 
-Built while setting up an actual product, and every piece exists because something went wrong first.
+**Give it an idea. Watch it become a plan you can build, and then the thing itself.**
 
-The gates swallowed failures for weeks because `|| true` kept an empty repository green. CI could not run the toolchains it called. Branch protection turned out to be a paid feature. Nobody could run the product locally. An AI session reached into the other person's service because that was the shortest path. A task was marked done that was not.
+MIT licensed. Contributions welcome.
 
-**None of that was in a plan. All of it is in here now.**
+</div>

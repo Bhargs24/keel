@@ -1,0 +1,7 @@
+# For examples/safe/03: reading is public on purpose, writing is owner-only.
+[articles]
+tenant = author_id
+select = public
+insert = owner
+update = owner
+delete = owner
