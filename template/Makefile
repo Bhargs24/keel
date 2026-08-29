@@ -1,4 +1,8 @@
-.PHONY: setup hooks board dev dev-down dev-logs db-reset check verify gen lint typecheck test
+.PHONY: setup hooks board dev dev-down dev-logs db-reset check verify secure gen lint typecheck test
+
+# Where the database schema / migrations live, for the security proof. Auto-detected;
+# override with `make secure SCHEMA=path/to/schema.sql`.
+SCHEMA ?= $(shell for p in supabase/migrations schema.sql db/schema.sql sql/schema.sql prisma/schema.prisma; do [ -e "$$p" ] && echo "$$p" && break; done)
 
 setup: hooks ## first time on a machine
 	@echo ">> setup complete"
@@ -15,7 +19,16 @@ check: ## the fast gate. Seconds, no toolchains. Run before every push
 	@python tools/dep_check.py
 	@python tools/ownership_check.py
 	@python tools/track.py check
-	@echo ">> fast gate passed. `make verify` also runs lint, types and tests."
+	@$(MAKE) --no-print-directory secure
+	@echo ">> fast gate passed. \`make verify\` also runs lint, types and tests."
+
+secure: ## prove tenant isolation on the database schema with trespass
+	@if [ -n "$(SCHEMA)" ]; then \
+	  echo ">> trespass: proving tenant isolation on $(SCHEMA)"; \
+	  python tools/trespass/run.py check "$(SCHEMA)" --no-color; \
+	else \
+	  echo ">> trespass: no schema yet (looked for supabase/migrations, schema.sql, ...). Skipping. Set SCHEMA=path when you have one."; \
+	fi
 
 verify: check lint typecheck test ## everything CI runs
 

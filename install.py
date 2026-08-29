@@ -23,11 +23,13 @@ KIT = Path(__file__).resolve().parent
 TEMPLATE = KIT / "template"
 
 # Files you are expected to fill in. Listed at the end so nobody forgets.
+# Most of the spec/ set is written for you by the pipeline (/keel). These four
+# are the ones you (and Claude) shape by hand as the project takes form.
 FILL_IN = [
-    ("CLAUDE.md", "what you are building, the hard invariants, the layout"),
+    ("CLAUDE.md", "what you are building + the invariants (the pipeline fills most of it)"),
     ("docs/00-RULES/THE-RULEBOOK.md", "Parts 3 and 4: your judgement rules, and what has no undo"),
-    ("docs/20-WORK/OWNERSHIP.map", "the real paths, once you have some"),
-    ("Makefile", "lint, typecheck, test and gen for your languages"),
+    ("docs/20-WORK/OWNERSHIP.map", "the real paths, once /architect has named them"),
+    ("Makefile", "lint, typecheck, test and gen for the stack /architect chooses"),
 ]
 
 
@@ -56,7 +58,7 @@ def collect_people() -> list[dict]:
     return people
 
 
-def write_roster(root: Path, people: list[dict], dry: bool):
+def write_roster(root: Path, people: list[dict], dry: bool, force: bool):
     if not people:
         return
     lines = [
@@ -70,19 +72,27 @@ def write_roster(root: Path, people: list[dict], dry: bool):
                   f'role    = "{p["role"]}"',
                   f'owns    = "{p["owns"]}"', ""]
     target = root / "tracker" / "people.toml"
+    if target.exists() and not force:
+        print(f"  roster: tracker/people.toml already exists, left alone "
+              f"(--force to replace with: {', '.join(p['key'] for p in people)})")
+        return
     print(f"  roster: {', '.join(p['key'] for p in people)}")
     if not dry:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_map(root: Path, people: list[dict], dry: bool):
+def write_map(root: Path, people: list[dict], dry: bool, force: bool):
     """Start the map with only the rules that are true on day one."""
     if not people:
         return
+    target = root / "docs" / "20-WORK" / "OWNERSHIP.map"
+    if target.exists() and not force:
+        print("  ownership map: docs/20-WORK/OWNERSHIP.map already exists, left alone")
+        return
     owner = people[0]["key"].upper()
     lines = [
-        "# Ownership map · read by tools/ownership_check.py",
+        "# Ownership map * read by tools/ownership_check.py",
         "#",
         "#   <PERSON>    from tracker/people.toml, upper-cased",
         "#   SHARED      anyone may change it",
@@ -106,7 +116,6 @@ def write_map(root: Path, people: list[dict], dry: bool):
         "docs/10-STATUS/NOW.md                SHARED",
         "",
     ]
-    target = root / "docs" / "20-WORK" / "OWNERSHIP.map"
     if not dry:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("\n".join(lines), encoding="utf-8")
@@ -150,8 +159,8 @@ def main():
 
     people = collect_people() if not a.dry_run else []
     copied, skipped = copy_tree(root, a.force, a.dry_run)
-    write_roster(root, people, a.dry_run)
-    write_map(root, people, a.dry_run)
+    write_roster(root, people, a.dry_run, a.force)
+    write_map(root, people, a.dry_run, a.force)
 
     if not a.dry_run:
         subprocess.run(["git", "config", "core.hooksPath", ".githooks"],
@@ -171,17 +180,23 @@ def main():
         print(f"  {path:<38} {what}")
 
     print("""
-Then:
-  python tools/track.py add T-001 --title "..." --owner <person> --milestone M0
-  python tools/board.py
-  make check
+Now open your AI coding tool inside this repo and give it your idea:
 
-In Claude Code, from inside the repository:
-  /start        where things stand
+  /keel "a booking tool for pet groomers that stops double-booking"
+
+Keel takes it from there -- the business case, the product spec, the
+architecture, a feasibility audit, then the build. Approve each step.
+
+Already have a spec? Drop it in spec/ and skip to the build:
+  /plan         load the build roadmap into the tracker
   /work         it decides what to build next
   /wrap         close the session cleanly
 
-Read docs/00-RULES/THE-RULEBOOK.md once. Nobody else has to.
+The three to remember:  /start when you sit down * /next to decide what's
+next * /wrap when you stop.
+
+New here? Read docs/01-INDUCTION/START-HERE.md -- it's written for anyone.
+Nobody has to read the rulebook; Claude reads it for you.
 """)
 
 

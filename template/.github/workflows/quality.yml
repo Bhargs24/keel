@@ -32,6 +32,16 @@ jobs:
       - name: tracker is consistent
         run: python tools/track.py check
 
+      - name: tenant isolation (trespass)
+        run: |
+          SCHEMA=$(for p in supabase/migrations schema.sql db/schema.sql sql/schema.sql; do [ -e "$p" ] && echo "$p" && break; done)
+          if [ -n "$SCHEMA" ]; then
+            echo "proving tenant isolation on $SCHEMA"
+            python tools/trespass/run.py check "$SCHEMA" --no-color
+          else
+            echo "no database schema yet — nothing to prove"
+          fi
+
       - name: no secrets committed
         run: |
           if git log -p -1 | grep -nEi '^\+.*(api[_-]?key|secret|password|token)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"']{12,}'; then
