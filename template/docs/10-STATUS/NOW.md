@@ -2,8 +2,17 @@
 
 *Class: **LIVING** · Last-updated: · Owner:*
 
-**Read this first, every session. Claim before you touch anything.**
-This file is the shared memory between people and between AI sessions.
+**Read this first, every session.** This file is the shared memory between people
+and between AI sessions. `/keel` records the idea here; `/status` reads it to know
+which phase the project is in; claims are made here before touching anything.
+
+## The idea
+
+*<Recorded verbatim by `/keel`, with the date. The seed every document grows from.>*
+
+## Phase
+
+*<Which pipeline step we're on — set by `/status`. e.g. "Building · M0" or "Discover done → Define".>*
 
 ## Claims (one owner per area)
 

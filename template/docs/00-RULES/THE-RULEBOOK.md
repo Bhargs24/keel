@@ -74,7 +74,7 @@ The `Stop` hook checks these, so they are not left to memory.
 
 9. **`track log`** the state it is being left in. Half-done is fine; **half-done and silent is not.**
 10. **`track review`** or **`track done`.** `done` prints what it unblocks: **put that in `NOW.md`.**
-11. **Write the handoff** (`docs/99-TEMPLATES/session-handoff.md`). Its last section, *what I know that is not written anywhere*, is the whole value.
+11. **Write the handoff** (`docs/99-TEMPLATES/HANDOFF.md`). Its last section, *what I know that is not written anywhere*, is the whole value.
 12. **Changelog every changed file**, and fix any document the change contradicts, in the same commit.
 13. **`make check`.**
 
