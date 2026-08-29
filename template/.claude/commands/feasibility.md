@@ -8,10 +8,13 @@ argument-hint: [none]
 This is the gate that decides whether the build begins. It runs on the three
 plans together, because the failure that kills projects is the seam between them.
 
-**Gate check first.** All three must exist: the business case (`spec/01-Company`,
-`spec/04-Business`, `spec/05-Finance`), the product (`spec/02-Product/PRD.md`),
-and the technical plan (`spec/03-Technical/BUILD-ROADMAP.md`). If any is missing,
-name it and run the phase that produces it.
+**Gate check first.** Read the **Mode** in `NOW.md`. The product
+(`spec/02-Product/PRD.md`), the technical plan
+(`spec/03-Technical/BUILD-ROADMAP.md`), and the prior-art / differentiation
+(`spec/04-Business/PRIOR-ART.md`) must exist in **both** shapes. In `company` mode
+the business case (`spec/04-Business`, `spec/05-Finance`) must exist too; in
+`project` mode it does not apply. If a required doc is missing, name it and run the
+phase that produces it.
 
 ## Spawn the auditor
 

@@ -489,30 +489,55 @@ def cmd_check(a):
 SPEC = ROOT / "spec"
 DOCS = ROOT / "docs"
 
-# The document set the pipeline produces, in the order it is produced, each tied
-# to the phase that writes it. `track docs` checks these against what exists.
+# The document set the pipeline produces, in order, each tied to the phase that
+# writes it and the shape(s) it applies to: "all" (company and project), "company"
+# (skipped for a project), or "project". `track docs` checks these against disk.
 DOC_REGISTER = [
-    ("Discover", "spec/01-Company/COMPANY-NARRATIVE.md"),
-    ("Discover", "spec/01-Company/POSITIONING.md"),
-    ("Discover", "spec/01-Company/ONE-PAGER.md"),
-    ("Discover", "spec/04-Business/MARKET-ANALYSIS.md"),
-    ("Discover", "spec/04-Business/COMPETITOR-ANALYSIS.md"),
-    ("Discover", "spec/04-Business/BUSINESS-MODEL.md"),
-    ("Discover", "spec/04-Business/UNIT-ECONOMICS.md"),
-    ("Discover", "spec/04-Business/GTM.md"),
-    ("Discover", "spec/05-Finance/COST-TO-RUN.md"),
-    ("Define", "spec/02-Product/PRD.md"),
-    ("Define", "spec/02-Product/USER-STORIES.md"),
-    ("Define", "spec/02-Product/SUCCESS-METRICS.md"),
-    ("Define", "spec/02-Product/FLOWS.md"),
-    ("Design", "spec/06-Design/DESIGN-BRIEF.md"),
-    ("Design", "spec/06-Design/DESIGN-SYSTEM.md"),
-    ("Architect", "spec/03-Technical/TECHNICAL-DESIGN.md"),
-    ("Architect", "spec/03-Technical/TECH-STACK.md"),
-    ("Architect", "spec/03-Technical/DATA-MODEL.md"),
-    ("Architect", "spec/03-Technical/TOOLS-AND-ACCOUNTS.md"),
-    ("Architect", "spec/03-Technical/BUILD-ROADMAP.md"),
+    ("Discover", "spec/04-Business/PRIOR-ART.md", "all"),
+    ("Discover", "spec/01-Company/CONCEPT.md", "project"),
+    ("Discover", "spec/01-Company/COMPANY-NARRATIVE.md", "company"),
+    ("Discover", "spec/01-Company/POSITIONING.md", "company"),
+    ("Discover", "spec/01-Company/ONE-PAGER.md", "company"),
+    ("Discover", "spec/04-Business/MARKET-ANALYSIS.md", "company"),
+    ("Discover", "spec/04-Business/COMPETITOR-ANALYSIS.md", "company"),
+    ("Discover", "spec/04-Business/BUSINESS-MODEL.md", "company"),
+    ("Discover", "spec/04-Business/UNIT-ECONOMICS.md", "company"),
+    ("Discover", "spec/04-Business/GTM.md", "company"),
+    ("Discover", "spec/05-Finance/COST-TO-RUN.md", "company"),
+    ("Define", "spec/02-Product/PRD.md", "all"),
+    ("Define", "spec/02-Product/USER-STORIES.md", "all"),
+    ("Define", "spec/02-Product/SUCCESS-METRICS.md", "all"),
+    ("Define", "spec/02-Product/FLOWS.md", "all"),
+    ("Design", "spec/06-Design/DESIGN-BRIEF.md", "all"),
+    ("Design", "spec/06-Design/DESIGN-SYSTEM.md", "all"),
+    ("Architect", "spec/03-Technical/TECHNICAL-DESIGN.md", "all"),
+    ("Architect", "spec/03-Technical/TECH-STACK.md", "all"),
+    ("Architect", "spec/03-Technical/DATA-MODEL.md", "all"),
+    ("Architect", "spec/03-Technical/TOOLS-AND-ACCOUNTS.md", "all"),
+    ("Architect", "spec/03-Technical/BUILD-ROADMAP.md", "all"),
 ]
+
+
+def detect_mode() -> str:
+    """company | project | experiment, from a Mode: line in NOW.md, else inferred."""
+    now = ROOT / "docs" / "10-STATUS" / "NOW.md"
+    if now.exists():
+        m = re.search(r"(?im)^\**\s*Mode\s*[:=]?\s*\**\s*(company|project|experiment)",
+                      now.read_text(encoding="utf-8", errors="ignore"))
+        if m:
+            return m.group(1).lower()
+    # No marker: infer from what's on disk. Company docs present -> company.
+    if (ROOT / "spec" / "04-Business" / "MARKET-ANALYSIS.md").exists():
+        return "company"
+    if (ROOT / "spec" / "01-Company" / "CONCEPT.md").exists():
+        return "project"
+    return "company"  # safe default: show the full set until /keel sets the shape
+
+
+def register_for(mode: str) -> list[tuple[str, str]]:
+    """The (group, path) rows that apply to this shape."""
+    exp = {"company", "all"} if mode == "company" else {"project", "all"}
+    return [(g, rel) for (g, rel, applies) in DOC_REGISTER if applies in exp]
 
 
 def _exists(rel: str) -> bool:
@@ -539,28 +564,33 @@ def detect_phase() -> tuple[str, str, str]:
         return ("Design done", "/architect", "the design exists; the technical plan is next")
     if _exists("spec/02-Product/PRD.md"):
         return ("Define done", "/design", "the PRD exists; design is next (or skip to /architect)")
-    if _exists("spec/01-Company/COMPANY-NARRATIVE.md"):
-        return ("Discover done", "/define", "the business case exists; define the product")
+    # Discover is done when its shape-appropriate anchor doc exists.
+    discover_done = _exists("spec/01-Company/CONCEPT.md") or _exists("spec/01-Company/COMPANY-NARRATIVE.md")
+    if discover_done:
+        return ("Discover done", "/define", "the concept / business case exists; define the product")
     if SPEC.exists() and any(SPEC.rglob("*.md")):
-        return ("Discovering", "/discover", "the business case is in progress")
+        return ("Discovering", "/discover", "researching what exists and how this is better")
     return ("Pre-Discover", "/keel", "no documents yet; start with the idea")
 
 
 def cmd_phase(a):
     phase, nxt, why = detect_phase()
-    print(f"\n{paint('Phase', 'b')}   {paint(phase, 'doing')}")
+    print(f"\n{paint('Phase', 'b')}   {paint(phase, 'doing')}   "
+          f"{paint('(' + detect_mode() + ')', 'todo')}")
     print(f"  {why}")
     print(f"  next: {paint(nxt, 'b')}\n")
 
 
 def cmd_docs(a):
     """The doc register as a live checklist: which pipeline documents exist."""
+    rows_all = register_for(detect_mode())
     by_phase: dict[str, list[tuple[str, bool]]] = {}
-    for phase, rel in DOC_REGISTER:
+    for phase, rel in rows_all:
         by_phase.setdefault(phase, []).append((rel, _exists(rel)))
-    have = sum(1 for _, rel in DOC_REGISTER if _exists(rel))
-    total = len(DOC_REGISTER)
-    print(f"\n{paint('Document set', 'b')}   {have}/{total} written")
+    have = sum(1 for _, rel in rows_all if _exists(rel))
+    total = len(rows_all)
+    print(f"\n{paint('Document set', 'b')}   {have}/{total} written   "
+          f"{paint('(' + detect_mode() + ' mode)', 'todo')}")
     for phase in ("Discover", "Define", "Design", "Architect"):
         rows = by_phase.get(phase, [])
         if not rows:

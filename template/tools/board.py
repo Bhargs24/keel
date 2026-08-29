@@ -46,7 +46,8 @@ def snapshot() -> dict:
         })
     phase, nxt, why = track.detect_phase()
     docs = [{"phase": ph, "path": rel.split("spec/", 1)[-1],
-             "done": (track.ROOT / rel).exists()} for ph, rel in track.DOC_REGISTER]
+             "done": (track.ROOT / rel).exists()}
+            for ph, rel in track.register_for(track.detect_mode())]
     return {"tasks": out,
             "people": [{"id": k, "display": v.get("display", k),
                         "role": v.get("role", "")} for k, v in people.items()],

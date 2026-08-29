@@ -19,10 +19,13 @@ python tools/track.py docs
 document set as a checklist, so a gap in the front half is visible. For reference,
 the detection is:
 
+Run `python tools/track.py phase` - it also prints the **Mode** (company or
+project), which decides which documents are expected.
+
 | If this is true | The phase is | The next action is |
 |---|---|---|
-| `docs/10-STATUS/NOW.md` has an idea but `spec/01-Company/` is empty | **Pre-Discover** | `/discover` |
-| `spec/01-Company/` exists but `spec/02-Product/PRD.md` doesn't | **Discover done → Define** | `/define` |
+| `docs/10-STATUS/NOW.md` has an idea but no `spec/` docs | **Pre-Discover** | `/discover` |
+| `spec/01-Company/CONCEPT.md` (project) or `COMPANY-NARRATIVE.md` (company) exists but no `spec/02-Product/PRD.md` | **Discover done → Define** | `/define` |
 | `PRD.md` exists but `spec/06-Design/DESIGN-BRIEF.md` doesn't | **Define done → Design** | `/design` (or skip to `/architect`) |
 | Design exists but `spec/03-Technical/BUILD-ROADMAP.md` doesn't | **Design done → Architect** | `/architect` |
 | The roadmap exists but there's no `docs/50-AUDITS/*-feasibility.md` | **Architect done → Feasibility** | `/feasibility` |

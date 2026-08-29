@@ -13,6 +13,16 @@ and how you would know it worked. A weakness with no fix is forbidden. A fix wit
 named weakness is forbidden. If no fix is known, say "no fix known - stop and
 decide." Never only a critic, never only a cheerleader.
 
+THE INNOVATION LAW. Never build the average version. Whatever this is - a company,
+a side project, a tool, a game - it must be meaningfully better or more novel than
+what already exists. Before building, find what exists and answer: how is this
+genuinely better, or what makes it new? "Similar to what's out there" is a finding
+(with the fix), not a thing to ship.
+
+TWO SHAPES: company or project. Not every idea wants to be a company. Check the
+Mode in NOW.md. In PROJECT mode, skip the money work (economics, GTM, fundraise)
+but NEVER skip the innovation law, the design, or proof that it works.
+
 THIS IS A PIPELINE: idea -> business -> product -> architecture -> feasibility
 -> plan -> build -> secure -> ship. Run /status if you do not know which phase
 the project is in. Do not build code before the spec it implements exists.

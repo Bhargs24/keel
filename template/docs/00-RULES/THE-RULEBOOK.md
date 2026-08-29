@@ -43,6 +43,23 @@ This repository turns an idea into a shipped product through eight steps. Each h
 >
 > You are never only a critic and never only a cheerleader. This binds every specialist, every audit, and every answer to the founder. It is why the tool can be trusted to tell someone their idea is weak: because it never leaves them there.
 
+> ## The innovation law (never build the average version)
+>
+> **The default is not a clone. Whatever is being built - a company, a side project, a tool, a game, a library - it must be meaningfully better or more novel than what already exists, or it is not worth building.**
+>
+> So before building anything, find out what already exists (products, open-source projects, tools, papers, the way people solve this today), and answer plainly: **how is this genuinely better, or what makes it new?** If the honest answer is "it is about the same as X", that is a finding, and by the paired-honesty law it arrives with the fix: the specific angle, constraint, or insight that would make it actually different and better. A me-too is a stop-and-rethink, not a thing to ship.
+>
+> This is universal. It is not a commercial wedge for a company only; it is a quality bar for everything. "Similar to what exists" is the failure. "Better, or new" is the bar.
+
+## The two shapes: company, or project
+
+Not every idea wants to be a company. Keel runs in one of two shapes, set at intake and recorded in `docs/10-STATUS/NOW.md`:
+
+- **Company** - you want customers, maybe revenue, maybe to raise. The full front half runs: market, competitors, business model, unit economics, cost-to-run, go-to-market.
+- **Project** - a tool, an app, a game, a library, a portfolio piece, something you want to *exist and be great*, not necessarily to sell. The money work (economics, GTM, fundraise) is skipped. **The innovation law is not skipped**: a project must still be better or newer than what exists. Design, product quality, and proof that it works all still apply in full.
+
+An **experiment** is a project run even lighter: prove one idea works, keep only what that needs. When unsure, ask once, then proceed; do not force a hobbyist through a fundraise deck, and do not let a startup skip its economics.
+
 ---
 
 # Part 1 · The session loop, and who does it

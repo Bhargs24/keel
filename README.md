@@ -8,6 +8,8 @@
 
 It is the tool for the part everyone skips: **knowing what to build and why, in what order, and proving it actually works before real users arrive.** And it is easy enough for a non-technical founder and rigorous enough for a senior engineer.
 
+**Building a company or just a project?** Both. Keel runs in two shapes: a full **company** path (market, competitors, unit economics, go-to-market) or a lighter **project** path (skip the money work, just build something great). Either way one rule never bends: **it must be genuinely better or more original than what already exists. Never a clone, never the average version.**
+
 </div>
 
 <p align="center">
@@ -215,6 +217,12 @@ Yes, fully. Use `python tools/run.py check` where docs mention `make`.
 
 **Is my idea and code private?**
 Yes. Everything lives in your own git repository on your machine. Keel stores nothing.
+
+**Do I have to turn my idea into a company?**
+No. Keel has a **project** mode for when you just want to build something great, a tool, an app, a game, a library, without the market sizing, unit economics, or go-to-market. It skips the business work but keeps the design, the product quality, and the proof that it works.
+
+**Will it just clone what already exists?**
+Never, on purpose. Before building, Keel researches what is already out there and holds a hard rule: your idea must be meaningfully better or more original, or it says so and helps you find the angle that makes it new. It will not build you the average version of something that already exists.
 
 **Can a solo, non-technical founder really ship with this?**
 That is exactly who it is built for, alongside professional teams. The installer, the guide, and the "tell me the next step" design assume you do not know the commands, and never make you feel like you should.

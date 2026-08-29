@@ -29,14 +29,19 @@ you the next step either way." Do not repeat it every turn.
 
 1. **Record it** in `docs/10-STATUS/NOW.md` under a "The idea" heading, verbatim,
    with today's date. This is the seed every later document grows from.
-2. **Clarify only what blocks progress.** Ask at most three questions, and only
-   ones whose answer changes what gets built - who it's for, what the one core
-   job is, any hard constraint (budget, platform, a non-negotiable). Do **not**
-   interrogate; the specialists will surface the rest. If they can't answer, note
-   it as an open question and proceed on a stated assumption.
-3. **Confirm the plan in one line** - "I'll run Discover (business + market),
-   then Define (the product), then Architect, then a feasibility audit, then
-   we build" - and start Phase 1 by running `/discover`.
+2. **Set the shape.** Ask one plain question: *"Is this something you want to turn
+   into a company (customers, maybe revenue), or a project you just want to build
+   and make great?"* Record the answer in `NOW.md` as **`Mode: company`** or
+   **`Mode: project`** (or `Mode: experiment` for a quick proof). This decides how
+   much of the front half runs: a project skips the money work; a company does not.
+   If they are unsure, default to **project** and say they can switch later.
+3. **Clarify only what blocks progress.** Ask at most two more questions, and only
+   ones whose answer changes what gets built - who it's for, the one core job, any
+   hard constraint. Do **not** interrogate; the specialists surface the rest.
+4. **Name the innovation bar out loud, once:** *"whatever we build, I'll make sure
+   it's genuinely better or more original than what's already out there, not a
+   copy."* This is the innovation law, and it applies in both shapes.
+5. **Confirm the plan in one line** and start Phase 1 by running `/discover`.
 
 ## If they didn't (resuming)
 

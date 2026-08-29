@@ -33,6 +33,19 @@ dependencies and check mechanically for **milestone-order violations and danglin
 references** - nothing may depend on something built later. Is the stack
 justified? Is tenancy explicit in the data model (so `/secure` can prove it)?
 
+First, the check that applies to **every** shape, company or project:
+- **Is it actually better or new?** Read `spec/04-Business/PRIOR-ART.md`. Does the
+  differentiation hold up, or is this a me-too dressed up? If the thing is basically
+  the same as something that already exists and no angle makes it genuinely better,
+  that is a REVISE at best (with the fix: the angle that would). "Similar to what's
+  out there" is a finding, not a pass. This is the innovation law, and it is not
+  optional for a project.
+
+**Check the Mode in `NOW.md`.** In `project` or `experiment` mode, skip the
+business checks below (market, unit economics, run-cost-vs-model); they do not
+apply to something nobody is selling. The innovation, product-completeness,
+build-order, and buildability checks still apply in full.
+
 Extra checks that catch the failures a first read misses:
 - **Every requirement is real.** Sample the PRD modules: does each functional
   requirement carry a priority and an `*Accept:*` line? A spec of unprioritized,

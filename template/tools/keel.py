@@ -46,12 +46,13 @@ STEPS: dict[str, dict[str, str]] = {
                 "You just answer and say go.",
     },
     "Discovering": {
-        "title": "Finish researching the business",
+        "title": "Research what exists, and how yours is better",
         "command": "/discover",
-        "why": "Before building anything, Keel works out if there is a real, "
-               "winnable business here - and where the money is.",
-        "what": "Two specialists research your market and competitors and write "
-                "the business case. Read it here when it's done.",
+        "why": "Before building anything, Keel checks what already exists and makes "
+               "sure your idea is genuinely better or newer - never a copy. (For a "
+               "company, it also researches the market and the money.)",
+        "what": "A specialist finds the existing products and projects and writes an "
+                "honest verdict on how yours stands apart. Read it here when it's done.",
     },
     "Discover done": {
         "title": "Define the product",
@@ -115,8 +116,9 @@ PHASE_STAGE = {
 def state() -> dict:
     phase, nxt_cmd, why = track.detect_phase()
     step = STEPS.get(phase, STEPS["Building"])
+    mode = track.detect_mode()
     docs = []
-    for group, rel in track.DOC_REGISTER:
+    for group, rel in track.register_for(mode):
         p = ROOT / rel
         docs.append({
             "group": group,
@@ -129,6 +131,7 @@ def state() -> dict:
     done = sum(1 for t in tasks.values() if t.status == "done")
     return {
         "phase": phase,
+        "mode": mode,
         "stage": PHASE_STAGE.get(phase, 0),
         "journey": JOURNEY,
         "step": step,
