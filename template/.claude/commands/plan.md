@@ -1,9 +1,9 @@
 ---
-description: Phase 5 — load the build roadmap into the tracker as tasks with dependencies.
+description: Phase 5 - load the build roadmap into the tracker as tasks with dependencies.
 argument-hint: [optional milestone to load, e.g. M0]
 ---
 
-**Phase 5 · Plan — turn the roadmap into a trackable backlog.**
+**Phase 5 · Plan - turn the roadmap into a trackable backlog.**
 
 $ARGUMENTS
 
@@ -31,11 +31,11 @@ depends on). Otherwise load the whole roadmap.
 
 ## Verify and report
 
-- Run `python tools/track.py check` — it fails on a dependency that doesn't
+- Run `python tools/track.py check` - it fails on a dependency that doesn't
   exist or a task ordered ahead of what it needs. Fix any it finds.
 - Run `python tools/track.py status` and show it.
 - Tell the developer how many tasks were loaded, what the first ready task is,
-  and that they can now run `/work` to begin — or `/board` to see the shape.
+  and that they can now run `/work` to begin - or `/board` to see the shape.
 
 **From here the build loop takes over:** `/start` to land, `/work` to build,
 `/review` and `/audit` and `/test` to verify, `/secure` before anything touching

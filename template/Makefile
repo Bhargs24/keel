@@ -1,34 +1,24 @@
 .PHONY: setup hooks board dev dev-down dev-logs db-reset check verify secure gen lint typecheck test
 
-# Where the database schema / migrations live, for the security proof. Auto-detected;
-# override with `make secure SCHEMA=path/to/schema.sql`.
-SCHEMA ?= $(shell for p in supabase/migrations schema.sql db/schema.sql sql/schema.sql prisma/schema.prisma; do [ -e "$$p" ] && echo "$$p" && break; done)
+# macOS / Linux convenience over the cross-platform runner. On Windows (or any
+# machine without `make`), call the same tasks directly:
+#     python tools/run.py check      python tools/run.py secure   etc.
+# There is one source of truth for what a gate does: tools/run.py.
 
 setup: hooks ## first time on a machine
 	@echo ">> setup complete"
 
 hooks: ## install the git hooks (refuses a push to the default branch)
-	git config core.hooksPath .githooks
-	@echo ">> hooks installed. Override deliberately: ALLOW_PUSH_DEFAULT=1"
+	@python tools/run.py hooks
 
 board: ## the progress board in a browser
-	python tools/board.py
+	@python tools/run.py board
 
 check: ## the fast gate. Seconds, no toolchains. Run before every push
-	@python tools/no_placeholders.py
-	@python tools/dep_check.py
-	@python tools/ownership_check.py
-	@python tools/track.py check
-	@$(MAKE) --no-print-directory secure
-	@echo ">> fast gate passed. \`make verify\` also runs lint, types and tests."
+	@python tools/run.py check
 
 secure: ## prove tenant isolation on the database schema with trespass
-	@if [ -n "$(SCHEMA)" ]; then \
-	  echo ">> trespass: proving tenant isolation on $(SCHEMA)"; \
-	  python tools/trespass/run.py check "$(SCHEMA)" --no-color; \
-	else \
-	  echo ">> trespass: no schema yet (looked for supabase/migrations, schema.sql, ...). Skipping. Set SCHEMA=path when you have one."; \
-	fi
+	@python tools/run.py secure
 
 verify: check lint typecheck test ## everything CI runs
 

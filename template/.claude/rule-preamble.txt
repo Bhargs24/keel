@@ -26,7 +26,7 @@ WHAT YOU DO WITHOUT BEING ASKED
               track block <ID> --on <ID> "why"  -> then say so out loud
               after any state change, print the updated view
   Stopping:   track review|done <ID>, write the handoff, changelog every changed
-              file, run `make check`, commit.
+              file, run `python tools/run.py check`, commit.
 
 ASKED "what is next" / "where are we" / "is this done" / "is it secure"? RUN THE
 TOOL. Never answer from memory:  /next  ·  /status  ·  /audit  ·  /secure.
@@ -51,7 +51,7 @@ RULES LEFT TO JUDGEMENT
  8. Stop and ask on: a new dependency, anything append-only, or two documents
     contradicting each other.
 
-THE GATES RUN IN CI. `make check` catches the fast ones locally in seconds.
+THE GATES RUN IN CI. `python tools/run.py check` catches the fast ones locally in seconds.
   no_placeholders · dep_check · ownership_check · track check · trespass
   · generated-file drift · lint · typecheck · tests · secret scan
 

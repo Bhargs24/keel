@@ -296,17 +296,25 @@ def cmd_show(a):
     print(f"\n{t.body.rstrip()}\n")
 
 
-def _transition(a, to, guard=None, extra=None):
-    tasks = load_all()
-    t = get(tasks, a.id)
-    who = whoami(a.as_)
+GUARDS = {"doing": ("todo", "blocked"), "review": ("doing",), "done": ("doing", "review")}
+
+
+def apply_transition(tasks, t, to, who, extra=None):
+    """The task state machine. One source of truth, called by both the CLI and
+    the board, so a rule can never live in two places and drift.
+
+    Returns ``(error, freed)``: ``error`` is a message string if the transition
+    is not allowed (the caller decides how to surface it), else ``None``; ``freed``
+    is the list of tasks this completion unblocks.
+    """
+    guard = GUARDS.get(to)
     if guard and t.status not in guard:
-        die(f"{t.id} is {t.status}, expected one of {', '.join(guard)}")
+        return f"{t.id} is {t.status}, expected one of {', '.join(guard)}", []
     if to == "doing":
         blockers = blockers_of(t, tasks)
         if blockers:
-            die(f"{t.id} depends on unfinished work: "
-                + ", ".join(f"{b.id} ({b.owner}, {b.status})" for b in blockers))
+            return ("depends on unfinished work: "
+                    + ", ".join(f"{b.id} ({b.owner}, {b.status})" for b in blockers)), []
         if not t.started:
             t.meta["started"] = now()
     if to == "done":
@@ -314,16 +322,28 @@ def _transition(a, to, guard=None, extra=None):
     was, t.meta["status"] = t.status, to
     t.append(who, extra or f"{was} -> {to}")
     t.save()
-    print(f"{t.id}: {was} -> {paint(to, to)}")
+    freed = []
     if to == "done":
         freed = [x for x in tasks.values()
                  if t.id in x.list_field("depends_on") and x.status == "todo"
                  and not [b for b in blockers_of(x, tasks) if b.id != t.id]]
-        if freed:
-            print("\n  This unblocks:")
-            for x in freed:
-                print(f"      {x.id}  {x.title[:46]}  [{x.owner}]")
-            print("\n  Say so in docs/10-STATUS/NOW.md. Do not wait to be asked.")
+    return None, freed
+
+
+def _transition(a, to, guard=None, extra=None):
+    tasks = load_all()
+    t = get(tasks, a.id)
+    who = whoami(a.as_)
+    was = t.status
+    error, freed = apply_transition(tasks, t, to, who, extra=extra)
+    if error:
+        die(error if error.startswith(t.id) else f"{t.id} {error}")
+    print(f"{t.id}: {was} -> {paint(to, to)}")
+    if freed:
+        print("\n  This unblocks:")
+        for x in freed:
+            print(f"      {x.id}  {x.title[:46]}  [{x.owner}]")
+        print("\n  Say so in docs/10-STATUS/NOW.md. Do not wait to be asked.")
 
 
 def cmd_start(a):

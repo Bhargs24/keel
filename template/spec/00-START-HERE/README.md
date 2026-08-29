@@ -1,14 +1,14 @@
-# spec/ — the source of truth
+# spec/ - the source of truth
 
 *Class: **LIVING** · Last-updated: · Owner: <who>. This folder is **what** the product is and **why**. The build is measured against it; when code and spec disagree, the spec is what a task is audited against.*
 
-The pipeline fills this folder in order. Nothing here is written by hand in a hurry — each document is produced by its specialist to the bar in `docs/00-RULES/DOC-RULEBOOK.md` (source-or-silence, differentiate-or-don't, complete-not-stub, bottom-up numbers).
+The pipeline fills this folder in order. Nothing here is written by hand in a hurry - each document is produced by its specialist to the bar in `docs/00-RULES/DOC-RULEBOOK.md` (source-or-silence, differentiate-or-don't, complete-not-stub, bottom-up numbers).
 
 ## The map
 
 | Folder | What lives here | Written by | Phase |
 |---|---|---|---|
-| `00-START-HERE/` | this map, and the **doc register** below | you | — |
+| `00-START-HERE/` | this map, and the **doc register** below | you | - |
 | `01-Company/` | the canonical narrative, vision/mission/values, one-pager, positioning | business-analyst | Discover |
 | `02-Product/` | the master **PRD**, the per-module specs (`prd/`), user stories, success metrics, flows | product-manager | Define |
 | `03-Technical/` | technical design, tech stack, data model, tools & accounts, the **build roadmap** | tech-architect | Architect |
@@ -18,7 +18,7 @@ The pipeline fills this folder in order. Nothing here is written by hand in a hu
 
 Each document inherits from the one before it: the product serves the business's wedge; the architecture serves the product's requirements; the build roadmap sequences the architecture. A change upstream that isn't threaded downstream is a contradiction, and `/feasibility` will find it.
 
-## The doc register — the tracker for the front half
+## The doc register - the tracker for the front half
 
 Keep this current. It is how `/status` knows which phase the project is in, and how a gap in the document set stays visible. Mark each **☐ not started · ◐ in progress · ☑ done**, dated.
 

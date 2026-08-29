@@ -61,7 +61,7 @@ before the projection it reads. **Say what you find.**
 # Step 2 · Build the candidate set
 
 Tasks that are `todo`, owned by this person, with **every dependency genuinely
-done** — verified in 1.2, not merely marked.
+done** - verified in 1.2, not merely marked.
 
 ```
 python tools/track.py next --for <name>
@@ -104,13 +104,13 @@ that out early is worth more than finishing something safe.
 
 Before recommending, check the decision against things the tracker does not know:
 
-- **`spec/03-Technical/BUILD-ROADMAP.md`** — does building this now match what the milestone is
+- **`spec/03-Technical/BUILD-ROADMAP.md`** - does building this now match what the milestone is
   meant to deliver?
-- **`docs/20-WORK/OWNERSHIP.map`** — is this on the right side of the seam, and does it
+- **`docs/20-WORK/OWNERSHIP.map`** - is this on the right side of the seam, and does it
   respect the ownership map?
-- **`docs/40-HANDOFF/`** — did the last session leave a reason to do something
+- **`docs/40-HANDOFF/`** - did the last session leave a reason to do something
   else first?
-- **the open decisions in `docs/10-STATUS/NOW.md`** — is there an open founder decision or an
+- **the open decisions in `docs/10-STATUS/NOW.md`** - is there an open founder decision or an
   unprovisioned account that this work will hit halfway through?
 - **The unassigned work.** `CO-001`, `CH-001`, `DS-001` and the spikes are on the
   critical path with nobody on them.
@@ -135,7 +135,7 @@ Give the developer, in under fifteen lines:
   item left on the critical path"*.
 - **The runner-up**, in one line, so they can overrule you with information.
 - **What it will touch and what done looks like**, from the step's block.
-- **Anything that will bite** — an unmade decision, a missing account, a spec
+- **Anything that will bite** - an unmade decision, a missing account, a spec
   gap you can already see.
 
 If the candidate set was empty: say what everyone is waiting on, who could
@@ -149,7 +149,7 @@ unblock it, and **what the most useful non-code action is right now.**
 
 1. Claim it in `docs/10-STATUS/NOW.md`, commit. Claiming is a commit.
 2. `python tools/track.py start <ID>`
-3. `git switch -c <owner>/<ID>-<short-slug>` — the prefix is how CI knows whose
+3. `git switch -c <owner>/<ID>-<short-slug>` - the prefix is how CI knows whose
    files are whose, and a branch without one fails.
 4. the relevant `spec/` document if the specifications are missing.
 5. Read the step's full block, then the surface or engine spec it points at.

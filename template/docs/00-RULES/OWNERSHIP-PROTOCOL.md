@@ -30,11 +30,11 @@ People work this repository through long-running AI sessions. A session has no s
 
 ## Part 2 · The three ways work legitimately crosses
 
-### 2.1 · Crossing — you need a change in their area to unblock yours
+### 2.1 · Crossing - you need a change in their area to unblock yours
 
 **Preferred: do not do it.** Say what you need, the owner makes the change in their own branch. This is almost always faster than the merge you would otherwise cause, and it keeps the person who understands the code in the loop.
 
-**When it genuinely has to happen in your branch** — a rename that spans both sides, a contract change that is meaningless split in two — then:
+**When it genuinely has to happen in your branch** - a rename that spans both sides, a contract change that is meaningless split in two - then:
 
 1. Write a **crossing note** at `docs/20-WORK/crossings/YYYY-MM-DD-<slug>.md`, in the same change.
 2. Name **every path** you touched outside your area. The check reads this file and matches paths literally.
@@ -42,18 +42,18 @@ People work this repository through long-running AI sessions. A session has no s
 
 **A crossing note is a small, real document, not a checkbox.** Template in Part 4.
 
-### 2.2 · Handoff — a step changes owner permanently
+### 2.2 · Handoff - a step changes owner permanently
 
 Work moves. A step turns out to belong on the other side, or one person is blocked and the other picks it up.
 
 1. Update the plan in `docs/20-WORK/`.
 2. Update the claim in `docs/10-STATUS/NOW.md`.
 3. Write the handoff into `docs/40-HANDOFF/`: **what is done, what is half-done, what the next action is, and what you know that is not written anywhere.** That last one is the whole value.
-4. If the *path* ownership changes and not just the step, update `docs/20-WORK/OWNERSHIP.map` — **and that edit needs both of them to approve**, because it changes the rule itself.
+4. If the *path* ownership changes and not just the step, update `docs/20-WORK/OWNERSHIP.map` - **and that edit needs both of them to approve**, because it changes the rule itself.
 
 **A handoff with no handoff note is not a handoff, it is an abandonment.**
 
-### 2.3 · Joint work — you genuinely have to build it together
+### 2.3 · Joint work - you genuinely have to build it together
 
 Rare, and specific. The obvious case is **the shared contract everyone depends on**, because everyone depends on it forever and a misunderstanding is expensive in every direction.
 

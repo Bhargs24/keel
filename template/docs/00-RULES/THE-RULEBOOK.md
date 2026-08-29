@@ -16,18 +16,18 @@ This repository turns an idea into a shipped product through eight steps. Each h
 
 | Step | Command | Specialist | Output, and the gate before the next step |
 |---|---|---|---|
-| Idea | `/keel` | — | The idea, and the few unknowns that block it, captured |
+| Idea | `/keel` | - | The idea, and the few unknowns that block it, captured |
 | 1 · Discover | `/discover` | business-analyst, market-researcher | `spec/01-Company`, `spec/04-Business`, `spec/05-Finance`. **Gate: is there a real, differentiated, viable business?** |
 | 2 · Define | `/define` | product-manager | `spec/02-Product`. **Gate: does the product solve the business problem, completely?** |
-| 2.5 · Design | `/design` | design-lead | `spec/06-Design` — brief, design system, screen mockups. **Gate: is the design distinctive and complete (every state)?** |
+| 2.5 · Design | `/design` | design-lead | `spec/06-Design` - brief, design system, screen mockups. **Gate: is the design distinctive and complete (every state)?** |
 | 3 · Architect | `/architect` | tech-architect | `spec/03-Technical` + the build roadmap. **Gate: is it buildable with the chosen tools?** |
 | 4 · Feasibility | `/feasibility` | feasibility-auditor | `docs/50-AUDITS`. **Gate: GO / REVISE / NO-GO** |
-| 5 · Plan | `/plan` | — | The build roadmap, loaded into the tracker |
+| 5 · Plan | `/plan` | - | The build roadmap, loaded into the tracker |
 | 6 · Build | `/start` `/work` `/review` `/audit` `/test` | code-reviewer, qa | Working software, verified against its definition of done |
 | 7 · Secure | `/secure` | security-auditor | Proven tenant isolation (**trespass**) and a security review |
-| 8 · Ship | `/ship` | — | A production-readiness gate, then deploy |
+| 8 · Ship | `/ship` | - | A production-readiness gate, then deploy |
 
-**The docs are the truth; the tracker is the schedule.** A build step is trusted because a spec says what it must do and a test proves it does — never because it looked right.
+**The docs are the truth; the tracker is the schedule.** A build step is trusted because a spec says what it must do and a test proves it does - never because it looked right.
 
 **The rule for the whole front half: source-or-silence, differentiate-or-do-not-ship, complete-not-stub, and no invented numbers.** A business or product doc that hallucinates a market size, or copies a competitor without a wedge, is worse than no doc. `docs/00-RULES/DOC-RULEBOOK.md` is the depth.
 
@@ -49,7 +49,7 @@ This repository turns an idea into a shipped product through eight steps. Each h
 
 **Claude chooses. The developer approves.** `/next` and `/work` decide. The next action is whatever most unblocks the finish line, and **it is often not code**: a missing spec, an unresolved decision, an audit that must run before more is built on a shaky foundation. Say so plainly.
 
-For a build task specifically: verify the ground first (anything in flight, anything done-in-name-only, anything out of order), then rank — earliest milestone, what unblocks someone else, what gates other work, the critical path, risk first, then size.
+For a build task specifically: verify the ground first (anything in flight, anything done-in-name-only, anything out of order), then rank - earliest milestone, what unblocks someone else, what gates other work, the critical path, risk first, then size.
 
 ## Starting a build task
 
@@ -77,7 +77,7 @@ The `Stop` hook checks these, so they are not left to memory.
 10. **`track review`** or **`track done`.** `done` prints what it unblocks: **put that in `NOW.md`.**
 11. **Write the handoff** (`docs/99-TEMPLATES/HANDOFF.md`). Its last section, *what I know that is not written anywhere*, is the whole value.
 12. **Changelog every changed file**, and fix any document the change contradicts, in the same commit.
-13. **`make check`.**
+13. **`python tools/run.py check`.**
 
 ## When asked about state
 
@@ -96,7 +96,7 @@ The `Stop` hook checks these, so they are not left to memory.
 
 # Part 2 · The gates, and never being surprised by one
 
-**`make check` runs the fast ones locally in seconds**, with no toolchains. Run it before every push and CI becomes a formality that passes.
+**`python tools/run.py check` runs the fast ones locally in seconds**, with no toolchains. Run it before every push and CI becomes a formality that passes.
 
 **The fast job always runs and finishes in under a minute. The code job runs only when code changed** and installs only the languages that changed. **A documents-only commit runs neither lint nor tests.**
 
@@ -137,7 +137,7 @@ Short, because they cannot be automated, so they have to be small enough to hold
 
 Everything else is recoverable. **Name yours here, and slow down at them.**
 
-Typical candidates: **an append-only schema** once real users have written to it · **anything sent to a user** — an email, a message, a notification · **a record written into a dataset the business depends on** · **a public claim in a pitch or a deck** that you cannot walk back.
+Typical candidates: **an append-only schema** once real users have written to it · **anything sent to a user** - an email, a message, a notification · **a record written into a dataset the business depends on** · **a public claim in a pitch or a deck** that you cannot walk back.
 
 **Speed everywhere else is free. Here it is not.**
 

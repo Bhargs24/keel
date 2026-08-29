@@ -39,7 +39,7 @@ jobs:
             echo "proving tenant isolation on $SCHEMA"
             python tools/trespass/run.py check "$SCHEMA" --no-color
           else
-            echo "no database schema yet — nothing to prove"
+            echo "no database schema yet - nothing to prove"
           fi
 
       - name: no secrets committed

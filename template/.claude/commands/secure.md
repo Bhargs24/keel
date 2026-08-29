@@ -1,15 +1,15 @@
 ---
-description: Phase 7 — prove the permission and data boundaries. Run trespass on the schema, then a security review of the rest.
+description: Phase 7 - prove the permission and data boundaries. Run trespass on the schema, then a security review of the rest.
 argument-hint: [optional path to schema/migrations; defaults to auto-detect]
 ---
 
 **Prove the boundary, don't assert it.** For anything touching auth, money, or
-multi-tenant data, "it should be fine" is not a result — either it's proved
+multi-tenant data, "it should be fine" is not a result - either it's proved
 isolated, or here is the exact request that breaks it.
 
 ## 1 · Prove tenant isolation (the provable part)
 
-Find the database schema — a `schema.sql`, a `supabase/migrations/` directory, or
+Find the database schema - a `schema.sql`, a `supabase/migrations/` directory, or
 wherever the data model lives ($ARGUMENTS overrides). Then run the vendored
 analyzer yourself:
 
@@ -17,7 +17,7 @@ analyzer yourself:
 python tools/trespass/run.py check <schema-or-migrations> --intent <intent file if present> --no-color
 ```
 
-- Read every finding. A **VULNERABLE** verdict is a hole *with a reproduction* —
+- Read every finding. A **VULNERABLE** verdict is a hole *with a reproduction* -
   treat it as a ship blocker and show the exact query.
 - An **UNKNOWN** verdict is the analyzer being honest about a policy it couldn't
   fully model. Read it and judge it by hand; never assume it's safe.
@@ -39,4 +39,4 @@ Lead with the proof: what `trespass` proved isolated, and every VULNERABLE with
 its reproduction query. Then the reviewed findings, grouped **must fix before
 ship / should fix / worth knowing**, each with the file and the concrete attack
 it enables. If the boundaries hold, say what you **proved** versus what you
-**reviewed by eye** — the distinction is the whole point.
+**reviewed by eye** - the distinction is the whole point.

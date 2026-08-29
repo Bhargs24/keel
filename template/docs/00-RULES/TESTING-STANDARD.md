@@ -34,17 +34,17 @@ Don't write an end-to-end test for what a unit test proves, or a unit test for w
 
 ## 3 · The rules
 
-- **Tests fail before the change.** A test that passes without the code it claims to test is testing nothing. Where you can, show it red first — this is why the TDD discipline matters, and why writing code and test together (which shapes the test to fit the code) is banned for anything non-trivial.
+- **Tests fail before the change.** A test that passes without the code it claims to test is testing nothing. Where you can, show it red first - this is why the TDD discipline matters, and why writing code and test together (which shapes the test to fit the code) is banned for anything non-trivial.
 - **Every spec state has a test.** For a screen, every state the spec names. For a calculation, an input the author did not anticipate. For anything append-only or money-touching, **idempotency and replay determinism**.
 - **Hostile input is tested**, not just the input that confirms the happy path.
-- **A flaky test is a defect.** It passes and fails without a code change. Quarantine it and fix it; never re-run until green — that's how a suite becomes decoration.
+- **A flaky test is a defect.** It passes and fails without a code change. Quarantine it and fix it; never re-run until green - that's how a suite becomes decoration.
 - **The bug that escaped becomes a test.** Every real defect gets a regression test that would have caught it, before the fix lands.
 
 ---
 
 ## 4 · Benches: prove a capability before wiring it in
 
-For anything uncertain — a model's behaviour, a third-party API's real semantics, a novel algorithm — build a **bench**: an isolated harness with one variable and one number. Prove the capability on the bench, then wire it into the product. A bench is permanent; it becomes the regression suite that re-proves the capability whenever a model or a library moves. (A spike, by contrast, answers a question and is deleted.)
+For anything uncertain - a model's behaviour, a third-party API's real semantics, a novel algorithm - build a **bench**: an isolated harness with one variable and one number. Prove the capability on the bench, then wire it into the product. A bench is permanent; it becomes the regression suite that re-proves the capability whenever a model or a library moves. (A spike, by contrast, answers a question and is deleted.)
 
 **No capability is wired into the product before its bench is green.**
 
@@ -52,7 +52,7 @@ For anything uncertain — a model's behaviour, a third-party API's real semanti
 
 ## 5 · What CI runs
 
-`make test` runs the suite, per language, only when that language changed. `make verify` runs it alongside lint and types. A red test does not land, whoever wrote it. The security proof — `trespass` on the schema — runs in `make check` and `/secure`; a `VULNERABLE` verdict is a failing test with a reproduction.
+`make test` runs the suite, per language, only when that language changed. `python tools/run.py verify` runs it alongside lint and types. A red test does not land, whoever wrote it. The security proof - `trespass` on the schema - runs in `python tools/run.py check` and `/secure`; a `VULNERABLE` verdict is a failing test with a reproduction.
 
 ## Changelog
 

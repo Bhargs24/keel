@@ -32,7 +32,7 @@ A feature is not complete until every one of these is true.
 
 `TODO`, `FIXME`, `for now`, `temporary`, `mock`, `stub`, `placeholder`, `dummy`, `hardcoded`, `we'll fix later`, `not implemented`, commented-out code.
 
-**`tools/no_placeholders.py` greps for these in CI and fails the build.** A genuine deferral is a **new work item with an ID**, referenced in the code by that ID — not a comment nobody will ever find.
+**`tools/no_placeholders.py` greps for these in CI and fails the build.** A genuine deferral is a **new work item with an ID**, referenced in the code by that ID - not a comment nobody will ever find.
 
 ### The one legitimate exception
 
@@ -56,19 +56,19 @@ The tracker log is the shared memory. Keep it useful by keeping it typed. Each e
 
 | Type | For | Example |
 |---|---|---|
-| **decision** | a choice made, and why | "chose Postgres advisory locks over Redis — one fewer dependency" |
+| **decision** | a choice made, and why | "chose Postgres advisory locks over Redis - one fewer dependency" |
 | **surprise** | reality differed from the spec or the plan | "the vendor's webhook is at-least-once, not exactly-once; added idempotency" |
 | **dead end** | a path tried and abandoned, so nobody retries it | "tried the library's streaming API; it buffers the whole response, unusable here" |
 | **blocked** | stuck, on what, and what would unblock it | "blocked on the event schema (W0.3); can't write the projection until it lands" |
 | **state** | where it's being left, at session end | "half-done: read path works, write path stubbed at handlers/orders.go:88" |
 
-**A diary of what you did is noise. The five above are signal** — they are the things the next person (often you, three days later) would otherwise have to rediscover.
+**A diary of what you did is noise. The five above are signal** - they are the things the next person (often you, three days later) would otherwise have to rediscover.
 
 ---
 
 ## 4 · Finishing
 
-A task is finished when `/wrap` has run: the honest state is logged, the task is moved (`review`/`done`/`block`), the handoff is written with its *what-I-know-that-isn't-written* section, every changed file is changelogged, any contradicted document is fixed in the same change, and `make check` is green. **Not before.**
+A task is finished when `/wrap` has run: the honest state is logged, the task is moved (`review`/`done`/`block`), the handoff is written with its *what-I-know-that-isn't-written* section, every changed file is changelogged, any contradicted document is fixed in the same change, and `python tools/run.py check` is green. **Not before.**
 
 ## Changelog
 

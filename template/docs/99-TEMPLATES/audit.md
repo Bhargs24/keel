@@ -27,10 +27,10 @@ Separate what was checked **mechanically** (a real result for what it tests) fro
 For each: a severity, what's wrong, the evidence, and the fix.
 
 **Finding <N> (<CRITICAL/HIGH/MEDIUM/LOW>) · <one line>.**
-<What it is, how it was found, and exactly what fixes it — in which document or file.>
+<What it is, how it was found, and exactly what fixes it - in which document or file.>
 
 ---
 
 ## The honest paragraph
 
-<Can the thing audited be trusted? Say it plainly. If a number (progress, coverage, readiness) was the point, say whether that number can be trusted. Do not soften a bad verdict to be encouraging — a false pass costs more than an honest fail.>
+<Can the thing audited be trusted? Say it plainly. If a number (progress, coverage, readiness) was the point, say whether that number can be trusted. Do not soften a bad verdict to be encouraging - a false pass costs more than an honest fail.>

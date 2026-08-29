@@ -6,7 +6,7 @@
 <Two or three sentences. What this module does and the user need it serves. Traces to a user story and a business goal.>
 
 ## User stories it satisfies
-- As a <persona>, I want <capability>, so that <outcome>. — *acceptance: <checkable criteria>*
+- As a <persona>, I want <capability>, so that <outcome>. - *acceptance: <checkable criteria>*
 
 ## Screens and states
 For each screen, **every state it can be in.** A missing state is a missing feature.
@@ -29,7 +29,7 @@ For each screen, **every state it can be in.** A missing state is a missing feat
 ## Data
 - **Reads:** <entities/fields, from `DATA-MODEL.md`>
 - **Writes:** <entities/events>
-- **Ownership:** <the tenancy column that decides who may see each row — what `/secure` proves>
+- **Ownership:** <the tenancy column that decides who may see each row - what `/secure` proves>
 
 ## Edge cases
 <The messy real-world cases, each with defined behaviour. The spec lists them so the build doesn't have to invent them.>

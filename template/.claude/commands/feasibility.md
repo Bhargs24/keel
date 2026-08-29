@@ -1,9 +1,9 @@
 ---
-description: Phase 4 — the gate. Spawn the auditor to check the business, product, and technical plans together and return GO / REVISE / NO-GO.
+description: Phase 4 - the gate. Spawn the auditor to check the business, product, and technical plans together and return GO / REVISE / NO-GO.
 argument-hint: [none]
 ---
 
-**Phase 4 · Feasibility — can development actually start?**
+**Phase 4 · Feasibility - can development actually start?**
 
 This is the gate that decides whether the build begins. It runs on the three
 plans together, because the failure that kills projects is the seam between them.
@@ -18,18 +18,18 @@ name it and run the phase that produces it.
 Use the **feasibility-auditor** subagent. It writes a dated **SNAPSHOT** to
 `docs/50-AUDITS/<date>-feasibility.md` and checks:
 
-- **Each plan alone** — the business (sized bottom-up? wedge structural? economics
+- **Each plan alone** - the business (sized bottom-up? wedge structural? economics
   positive? run cost affordable?), the product (every core job a complete flow?
   states and edges specified?), the technical plan (build order sound, parsed and
   proven free of order violations? stack justified? tenancy explicit?).
-- **The three together** — does the product deliver the business's wedge or has it
+- **The three together** - does the product deliver the business's wedge or has it
   drifted? Does the architecture serve *this* product? Do the developer-weeks fit
   a realistic team? Does the run cost fit inside the unit economics? What single
   point of failure carries the whole plan?
 
 It separates what it checked **mechanically** (a real result) from what it
 checked by **judgement** (not a proof of absence), and it never passes something
-it could not verify — that becomes `CANNOT VERIFY`.
+it could not verify - that becomes `CANNOT VERIFY`.
 
 ## The verdict, then the next action
 

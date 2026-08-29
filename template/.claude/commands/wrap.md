@@ -24,10 +24,10 @@ sees it without being told.
 
 `docs/40-HANDOFF/<YYYY-MM-DD>-<slug>.md`:
 
-- **Done** — what actually landed
-- **Half-done** — what is in flight and exactly where it stops
-- **Next action** — one sentence, specific enough to start from cold
-- **What I know that is not written anywhere** — the dead ends, the thing the
+- **Done** - what actually landed
+- **Half-done** - what is in flight and exactly where it stops
+- **Next action** - one sentence, specific enough to start from cold
+- **What I know that is not written anywhere** - the dead ends, the thing the
   spec got wrong, the reason a decision went the way it did.
   **This is the whole value of the file.**
 

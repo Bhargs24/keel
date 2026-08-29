@@ -1,14 +1,14 @@
 ---
-description: Where the whole project stands — which pipeline phase it's in, what's done, and what the next action is.
+description: Where the whole project stands - which pipeline phase it's in, what's done, and what the next action is.
 argument-hint: [none]
 ---
 
 **Give a single, honest picture of where this project is.** Do all of this
-yourself by reading the files and running the tools — never from memory.
+yourself by reading the files and running the tools - never from memory.
 
 ## 1 · Which phase are we in?
 
-Run the tool — it detects the phase from what's on disk, so it's a fact, not a guess:
+Run the tool - it detects the phase from what's on disk, so it's a fact, not a guess:
 
 ```
 python tools/track.py phase

@@ -1,8 +1,8 @@
-# <Project> — engineering & product context
+# <Project> - engineering & product context
 
 **Before anything else, read `docs/00-RULES/THE-RULEBOOK.md`. It is the one book, read every session.**
 
-This repository is run with **Keel**: an idea is taken to a shipped product through a fixed pipeline — discover the business, define the product, design the architecture, prove it is buildable, plan the work, then build it under enforced quality gates. You are the operator of that pipeline.
+This repository is run with **Keel**: an idea is taken to a shipped product through a fixed pipeline - discover the business, define the product, design the architecture, prove it is buildable, plan the work, then build it under enforced quality gates. You are the operator of that pipeline.
 
 ## You are the operator, not the instructor
 
@@ -14,9 +14,9 @@ This repository is run with **Keel**: an idea is taken to a shipped product thro
 |---|---|---|
 | **Idea** | `/keel "<idea>"` | Capture the idea, clarify only what blocks progress, and start the pipeline |
 | **1 · Discover** | `/discover` | The **business-analyst** and **market-researcher** produce `spec/01-Company`, `spec/04-Business`, `spec/05-Finance` |
-| **2 · Define** | `/define` | The **product-manager** produces `spec/02-Product` — the PRD and its modules |
-| **2.5 · Design** | `/design` | The **design-lead** produces `spec/06-Design` — the design brief, the design system, and real screen mockups |
-| **3 · Architect** | `/architect` | The **tech-architect** produces `spec/03-Technical` — stack, data model, and the **build roadmap** |
+| **2 · Define** | `/define` | The **product-manager** produces `spec/02-Product` - the PRD and its modules |
+| **2.5 · Design** | `/design` | The **design-lead** produces `spec/06-Design` - the design brief, the design system, and real screen mockups |
+| **3 · Architect** | `/architect` | The **tech-architect** produces `spec/03-Technical` - stack, data model, and the **build roadmap** |
 | **4 · Feasibility** | `/feasibility` | The **feasibility-auditor** checks the three plans, alone and together: coherent, buildable, affordable to run. **GO / REVISE / NO-GO** |
 | **5 · Plan** | `/plan` | Load the build roadmap into the tracker as tasks with dependencies |
 | **6 · Build** | `/start` `/work` `/spec` `/review` `/audit` `/test` | The build loop. Claude decides the next task; the developer approves |
@@ -42,7 +42,7 @@ Violating one is a defect, not a tradeoff. If a spec seems to require breaking o
 
 1. **<The append-only rule, if you have one.>**
 2. **<The thing a model or a client must never decide.>**
-3. **<The permission gate everything passes through — enforced, and provable with `/secure`.>**
+3. **<The permission gate everything passes through - enforced, and provable with `/secure`.>**
 4. **<The tone or safety law, if anything you write reaches a user.>**
 
 ---
@@ -77,4 +77,4 @@ Two or more roles come from `tracker/people.toml`; the enforced map is `docs/20-
 
 ## Conventions
 
-*<Naming, error handling, logging, test layout — from `docs/00-RULES/CODE-RULEBOOK.md` and `TESTING-STANDARD.md`. Short. A convention nobody can recall is not one.>*
+*<Naming, error handling, logging, test layout - from `docs/00-RULES/CODE-RULEBOOK.md` and `TESTING-STANDARD.md`. Short. A convention nobody can recall is not one.>*

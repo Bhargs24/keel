@@ -22,7 +22,7 @@ Find and summarise what the specification says about: **$ARGUMENTS**
 - **What it is**, in two or three sentences of plain language.
 - **The exact requirements**: states, actions, events, definition of done.
 - **What it depends on and what depends on it.**
-- **The rules that bind it** — invariants from `CLAUDE.md`, and anything in the
+- **The rules that bind it** - invariants from `CLAUDE.md`, and anything in the
   anti-anxiety or consent laws that applies.
 - **Anything the spec does not say** that a builder would need. Say this plainly
   rather than filling the gap yourself.

@@ -99,29 +99,15 @@ def act(tid: str, body: dict) -> dict:
     targets = {"start": "doing", "unblock": "doing", "review": "review", "done": "done"}
     if action not in targets:
         return {"error": f"unknown action {action!r}"}
-    to = targets[action]
 
-    if to == "doing":
-        blockers = track.blockers_of(t, tasks)
-        if blockers:
-            return {"error": "depends on unfinished work: "
-                    + ", ".join(f"{b.id} ({b.owner}, {b.status})" for b in blockers)}
-        if not t.started:
-            t.meta["started"] = track.now()
-    if to == "done":
-        t.meta["finished"] = track.now()
-
-    was, t.meta["status"] = t.status, to
-    t.append(who, f"{was} -> {to}")
-    t.save()
-
-    freed = []
-    if to == "done":
-        for x in tasks.values():
-            if tid in x.list_field("depends_on") and x.status == "todo":
-                if not [b for b in track.blockers_of(x, tasks) if b.id != tid]:
-                    freed.append({"id": x.id, "title": x.title, "owner": x.owner})
-    return {"ok": True, "unblocks": freed}
+    # One source of truth for the state machine: track.apply_transition. The board
+    # is a different door onto the same room, never a second set of rules.
+    extra = "unblocked" if action == "unblock" else None
+    error, freed = track.apply_transition(tasks, t, targets[action], who, extra=extra)
+    if error:
+        return {"error": error}
+    return {"ok": True,
+            "unblocks": [{"id": x.id, "title": x.title, "owner": x.owner} for x in freed]}
 
 
 # ---------------------------------------------------------------------- HTTP

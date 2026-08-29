@@ -44,10 +44,10 @@ IMPORT_PATTERNS = [
     (r"\.go$", re.compile(rf'^\s*(?:[\w.]+\s+)?"({MODULE}/[^"]+)"', re.M)),
     # Python
     (r"\.py$", re.compile(r"^\s*(?:from|import)\s+((?:apps|services|packages)[\w.]*)", re.M)),
-    # TypeScript / JavaScript
-    (r"\.(ts|tsx|js|jsx)$", re.compile(r"""(?:from|require\()\s*['"](@{MODULE}/[^'"]+|(?:\.\./)+(?:apps|services|packages)/[^'"]+)['"]""", re.M)),
+    # TypeScript / JavaScript  (rf: {MODULE} must interpolate, or scoped imports are never checked)
+    (r"\.(ts|tsx|js|jsx)$", re.compile(rf"""(?:from|require\()\s*['"](@{MODULE}/[^'"]+|(?:\.\./)+(?:apps|services|packages)/[^'"]+)['"]""", re.M)),
     # Dart
-    (r"\.dart$", re.compile(r"""^\s*import\s+['"]package:({MODULE}_[\w]+)/""", re.M)),
+    (r"\.dart$", re.compile(rf"""^\s*import\s+['"]package:({MODULE}_[\w]+)/""", re.M)),
 ]
 
 SKIP_DIRS = {".git", "node_modules", ".dart_tool", "build", "dist", ".next",

@@ -10,7 +10,7 @@
 
 ## Done means
 - [ ] Does exactly what the spec section says, every state and edge case
-- [ ] Real data path — no mocks, stubs, TODOs, or hardcoded data
+- [ ] Real data path - no mocks, stubs, TODOs, or hardcoded data
 - [ ] Every error typed and coded; structured logs with a trace_id; **no PII**
 - [ ] Authorization enforced server-side; proved with `/secure` if it touches data
 - [ ] Tests at the right level, failing before the change (`TESTING-STANDARD.md`)

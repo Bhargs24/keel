@@ -12,7 +12,7 @@ which phase the project is in; claims are made here before touching anything.
 
 ## Phase
 
-*<Which pipeline step we're on — set by `/status`. e.g. "Building · M0" or "Discover done → Define".>*
+*<Which pipeline step we're on - set by `/status`. e.g. "Building · M0" or "Discover done → Define".>*
 
 ## Claims (one owner per area)
 
