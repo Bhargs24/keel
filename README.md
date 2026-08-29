@@ -94,9 +94,13 @@ Keel is built in layers, and only the top one is tied to a specific tool:
 
 So: **best with Claude Code**, where the commands, agents, hooks, and security gate are native. But it works with **any AI coding tool**, Cursor, Codex, Aider, Cline, Windsurf, Gemini CLI, open-source or closed, because every command is a prompt file the AI reads, and the repo ships an `AGENTS.md` (the emerging cross-tool standard) plus a Cursor rules file as the universal entry point. And the tracker, the gates, the security proof, and the guide run with no AI at all. Nothing here is locked to one vendor.
 
+---
+
 ## Your project's own toolkit, found and vetted for you
 
 You should not have to know which open-source tools, skills, or MCP servers your project needs. **`/equip`** sends a **tool-scout** to find them, for your exact stack: the MCP servers the AI can use, the Claude Code skills and plugins, the dev and quality tools, the libraries. It **vets every one for safety** (what it does, what it can access, whether it touches your data or secrets) and recommends a small, focused set, because piling on twenty tools just costs the AI focus. Anything that could touch your data or credentials is never added without your explicit yes. The vetted list lives in your repo, and the safe tools get wired in for you.
+
+---
 
 ## Install it (start here)
 
@@ -198,7 +202,7 @@ Prompt-to-app builders are great for a quick demo, then you hit the wall: no rea
 - **Technical:** the architecture, a justified tech stack, the data model, a security and privacy design, the infra and CI/CD, a setup runbook, the accounts to set up, and a dependency-ordered build roadmap.
 - **The product itself:** production-grade code, tests that cover the risk, and a security proof, built task by task and tracked in git.
 
-**Scaled to what you are building.** A serious company gets the full set (around thirty documents). A weekend project gets a focused one (the concept, the product, the design, the plan), because a project should not have a fundraise deck and a funded startup skipping its unit economics is negligent. Knowing the difference is part of the point.
+**Scaled to what you are building.** A serious company gets the full set (around thirty documents). A weekend project gets a focused one (the concept, the product, the design, the plan). A side project has no business carrying a fundraise deck, and a funded startup with no unit economics is flying blind. Knowing which one you are, and giving it exactly the rigor it needs, is part of the point.
 
 ---
 
@@ -239,44 +243,98 @@ Written from scratch on the standard library, validated against Z3 and a real Po
 
 ## FAQ
 
-**Is Keel free?**
+*Click any question to open its answer.*
+
+<details open>
+<summary><b>Is Keel free?</b></summary>
+
 Yes. Keel is open source under the MIT license. You only pay for the AI coding tool you already use (like Claude Code or Cursor).
 
-**Do I need to know how to code to use Keel?**
+</details>
+
+<details>
+<summary><b>Do I need to know how to code to use Keel?</b></summary>
+
 No. The guided cockpit shows you the one next step in plain English and gives you the exact words to paste. Keel does the technical work; you make the decisions it surfaces. It is also rigorous enough for professional engineers.
 
-**Does Keel write the actual code, or just documents?**
+</details>
+
+<details>
+<summary><b>Does Keel write the actual code, or just documents?</b></summary>
+
 Both. It writes the full business and product plan, and then it writes and ships the actual product code, tested and secured, by driving your AI coding tool.
 
-**What AI tools does Keel work with? Open source or closed?**
+</details>
+
+<details>
+<summary><b>What AI tools does Keel work with, open source or closed?</b></summary>
+
 Any of them. Claude Code fits most smoothly (Keel installs as a plugin, with native commands, agents, and hooks). It also works with Cursor, Codex, Aider, Cline, Windsurf, Gemini CLI, and any other AI coding tool, open-source or closed, because the commands are prompt files and the repo ships a universal `AGENTS.md` plus a Cursor rules file. The tracker, the quality gates, the security proof, and the guide are plain Python and work with no AI at all. Nothing is locked to one vendor.
 
-**Does Keel find and set up the right open-source tools for my project?**
+</details>
+
+<details>
+<summary><b>Does Keel find and set up the right open-source tools for my project?</b></summary>
+
 Yes. `/equip` sends a tool-scout to find the MCP servers, skills, and libraries your specific stack needs, vets each one for safety (what it can access, whether it touches your data), recommends a small focused set, and wires in the safe ones. Anything that could reach your data or secrets is never added without your explicit yes.
 
-**How is Keel different from Lovable, Bolt, v0, or Replit?**
+</details>
+
+<details>
+<summary><b>How is Keel different from Lovable, Bolt, v0, or Replit?</b></summary>
+
 Those generate a prototype from a prompt, then leave you at the wall with no spec, no plan, and no proof it works, locked into their platform. Keel does the research, the spec, the design, the plan, and the proof, and builds with the tool you already own, on code you keep.
 
-**How is it different from just using Claude Code or Cursor directly?**
+</details>
+
+<details>
+<summary><b>How is it different from just using Claude Code or Cursor directly?</b></summary>
+
 A coding agent writes code fast but guesses at what to build and whether it is right. Keel adds the founding-team judgment: what to build, why, in what order, and proof that it works, with a feasibility gate before a line of code.
 
-**Can Keel build a SaaS app? A mobile app? An MVP?**
+</details>
+
+<details>
+<summary><b>Can Keel build a SaaS app? A mobile app? An MVP?</b></summary>
+
 Yes. Keel is stack-agnostic. The architect chooses and justifies the right technology for your product, whether that is a web app, a SaaS, a mobile app, or an API.
 
-**Does it work on Windows?**
+</details>
+
+<details>
+<summary><b>Does it work on Windows?</b></summary>
+
 Yes, fully. Use `python tools/run.py check` where docs mention `make`.
 
-**Is my idea and code private?**
+</details>
+
+<details>
+<summary><b>Are my idea and code private?</b></summary>
+
 Yes. Everything lives in your own git repository on your machine. Keel stores nothing.
 
-**Do I have to turn my idea into a company?**
+</details>
+
+<details>
+<summary><b>Do I have to turn my idea into a company?</b></summary>
+
 No. Keel has a **project** mode for when you just want to build something great, a tool, an app, a game, a library, without the market sizing, unit economics, or go-to-market. It skips the business work but keeps the design, the product quality, and the proof that it works.
 
-**Will it just clone what already exists?**
+</details>
+
+<details>
+<summary><b>Will it just clone what already exists?</b></summary>
+
 Never, on purpose. Before building, Keel researches what is already out there and holds a hard rule: your idea must be meaningfully better or more original, or it says so and helps you find the angle that makes it new. It will not build you the average version of something that already exists.
 
-**Can a solo, non-technical founder really ship with this?**
+</details>
+
+<details>
+<summary><b>Can a solo, non-technical founder really ship with this?</b></summary>
+
 That is exactly who it is built for, alongside professional teams. The installer, the guide, and the "tell me the next step" design assume you do not know the commands, and never make you feel like you should.
+
+</details>
 
 ---
 
