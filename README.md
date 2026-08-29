@@ -22,8 +22,8 @@ It is the tool for the part everyone skips: **knowing what to build and why, in 
 </p>
 
 <p align="center">
-<img src="assets/cockpit.svg" alt="The Keel guide: a progress rail from Idea to Ship, and one plain-English next-step card with the exact command to copy" width="880">
-<br><sub>The guide (<code>python tools/keel.py</code>): it shows you the one next step, in plain words, and every document Keel writes.</sub>
+<img src="assets/cockpit-hero.png" alt="The Keel guide: a progress rail from Idea to Ship, a plain-English next-step card with the exact command to copy, and the document set Keel has written" width="880">
+<br><sub>The guide (<code>python tools/keel.py</code>), on a real project: the one next step in plain words, the journey from idea to ship, and every document Keel has written.</sub>
 </p>
 
 ---
@@ -231,11 +231,11 @@ Broken access control, one user able to read or delete another user's data, is t
 
 Keel ships **trespass**, a formal analyzer for Postgres and Supabase row-level security. It compiles every policy into logic and either **proves** no user can reach another's rows, or hands you the exact query that shows they can:
 
-```
-VULNERABLE  critical   [tenant-read]
-  Your policy:  user_id = auth.uid() OR is_public
-  Reproduce it:  select * from documents;   -- returns another user's rows
-```
+<p align="center">
+<img src="assets/trespass-proof.png" alt="trespass output: a policy proven VULNERABLE with a solver counterexample, the exact query that reproduces the leak, and the fix" width="760">
+</p>
+
+That is a real run: a policy a developer would plausibly write, proven unsafe by the solver, with the counterexample and the fix. Not a linter guessing at patterns, a proof.
 
 Written from scratch on the standard library, validated against Z3 and a real Postgres, it runs in the gates and in `/secure`, and it fails your build when a policy leaks. Details: [`tools/trespass/README.md`](template/tools/trespass/README.md).
 
