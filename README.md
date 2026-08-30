@@ -201,7 +201,11 @@ Ready now
   TODO   T-002   Build the login flow     # T-003 stays hidden: it depends on this
 ```
 
-`next` only ever surfaces a task whose dependencies are met, so nothing is built before the thing it needs, and finishing one unlocks the next automatically. `/board` opens the same thing as a visual board in your browser.
+`next` only ever surfaces a task whose dependencies are met, so nothing is built before the thing it needs, and finishing one unlocks the next automatically. `/board` opens the same thing as a visual board in your browser:
+
+<p align="center">
+<img src="assets/keel-board.png" alt="The Keel task board: columns for todo, doing, blocked, review, and done, with the pipeline strip on top and dependency notes like 'waiting on T-003' on the cards" width="880">
+</p>
 
 ---
 
