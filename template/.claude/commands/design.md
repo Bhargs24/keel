@@ -16,15 +16,28 @@ proceed on what you have.
 ## Spawn the design lead
 
 Use the **design-lead** subagent to produce, into `spec/06-Design/`:
-- `DESIGN-BRIEF.md` - the art direction: the design thesis in a line, the palette
-  as named hex values, the type pairing and why, the layout and motion posture.
-  Derived from *this* product's world, not the generic AI-default look.
+- `DESIGN-BRIEF.md` - the art direction *and its reasoning*: the grounding (who
+  the user is, their context, what the product is to them, the domain's visual
+  language with real references), the two or three directions explored and the
+  one committed to with why, the design thesis in a line, the palette as named
+  hex values with each role justified, the type pairing and why, the layout and
+  motion posture. Every choice traced to *this* product, so it could belong to
+  no other.
 - `DESIGN-SYSTEM.md` - the tokens (color roles, type scale, spacing, radius,
-  elevation) and the component inventory with their states. What the frontend
-  stack must implement; the architect reads it when choosing the UI layer.
-- `mockups/<screen>.html` - real, self-contained HTML mockups of the key screens,
-  covering **every state** (loading, empty, partial, error, offline), openable in
-  a browser with a double-click.
+  elevation, motion) and the component inventory with their states. What the
+  frontend stack must implement; the architect reads it when choosing the UI layer.
+- `mockups/<screen>.html` - real, self-contained, *polished* HTML mockups of the
+  key screens, with **real content (no lorem)**, covering **every state**
+  (loading, empty, partial, error, offline), openable in a browser with a
+  double-click.
+
+**Hold the bar. This is the phase where AI ships a generic look by default, and a
+generic look is worse than none.** The design lead must ground the direction in
+the product's own world, explore real alternatives before committing, and pass
+its own anti-generic self-critique (could this be mistaken for another product?
+does it hit an AI-default pattern with no reason? is every choice justified?)
+before anything is shown. If the result reads like the default AI theme, it goes
+back.
 
 ## Preview, record, and gate
 
