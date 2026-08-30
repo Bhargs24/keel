@@ -13,6 +13,12 @@ It is the tool for the part everyone skips: **knowing what to build and why, in 
 </div>
 
 <p align="center">
+<a href="https://pypi.org/project/keel-kit/"><img src="https://img.shields.io/pypi/v/keel-kit?color=2e7d32&label=pip%20install%20keel-kit" alt="Install from PyPI"></a>
+<img src="https://img.shields.io/pypi/pyversions/keel-kit?color=2e7d32" alt="Python versions">
+<img src="https://img.shields.io/badge/license-MIT-2e7d32" alt="MIT License">
+</p>
+
+<p align="center">
 <a href="#install-it-start-here"><b>Install</b></a> ·
 <a href="#use-it"><b>Use it</b></a> ·
 <a href="#easy-by-design"><b>How it feels</b></a> ·
@@ -135,12 +141,19 @@ You should not have to know which open-source tools, skills, or MCP servers your
 ### The easiest way (recommended for everyone)
 
 ```bash
-git clone https://github.com/Bhargs24/keel
-cd keel
-python install.py ~/my-product      # the folder for your new product
+pip install keel-kit
+keel init my-product      # the folder for your new product
 ```
 
-The installer is a concierge: it creates the folder, sets up version control, asks "is it just you building this?" with no jargon, and offers to open the guide.
+That installs Keel and scaffolds a fresh project into `my-product`, with version control set up and ready to go.
+
+Prefer not to use pip? Clone the repo instead. The concierge installer does the same thing and asks "is it just you building this?" with no jargon:
+
+```bash
+git clone https://github.com/Bhargs24/keel
+cd keel
+python install.py ~/my-product
+```
 
 Then open the **guide**, which shows you the next step at every point:
 
