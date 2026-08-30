@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keel-kit"
+dynamic = ["version"]
+description = "An open-source AI product builder: take an idea to a shipped, production-grade product."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Bhargav Raghavendra" }]
+keywords = [
+  "ai", "product-builder", "spec-driven-development", "claude-code",
+  "developer-tools", "scaffold", "agents", "prd", "idea-to-production",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Code Generators",
+  "Topic :: Software Development :: Build Tools",
+]
+
+[project.urls]
+Homepage = "https://github.com/Bhargs24/keel"
+Repository = "https://github.com/Bhargs24/keel"
+Issues = "https://github.com/Bhargs24/keel/issues"
+
+[project.scripts]
+keel = "keel_kit:main"
+
+[tool.hatch.version]
+path = "keel_kit/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["keel_kit"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"template" = "keel_kit/template"
+
+[tool.hatch.build.targets.sdist]
+include = ["keel_kit", "template", "README.md", "LICENSE"]
