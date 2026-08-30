@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy this to tools/boundaries.json and edit it for your architecture. /architect writes it for the stack it chooses. With no tools/boundaries.json present, dep_check enforces nothing (it never misfires on a layout it does not know). 'module' is your import prefix (Go module path, npm scope, Dart package prefix), or empty. 'layers' maps each top-level module directory to the layers it may import from. 'siblings_isolated' lists layers where one module may not reach into another of the same layer. 'leaf' lists modules that must import nothing internal.",
+  "module": "acme",
+  "layers": {
+    "apps": ["packages"],
+    "services": ["packages"],
+    "packages": ["packages"]
+  },
+  "siblings_isolated": ["apps", "services"],
+  "leaf": ["packages/shared"]
+}
