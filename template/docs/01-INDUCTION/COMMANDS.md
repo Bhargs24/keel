@@ -20,7 +20,8 @@ Run in order the first time; after that, `/status` tells you which one is next.
 | **`/design`** | The look and feel: a design brief, a design system, real screen mockups covering every state | design-lead | Is the design distinctive and complete? |
 | **`/architect`** | The build: architecture, tech stack, data model, tools & accounts, the dependency-ordered build roadmap | tech-architect | Is it buildable with the chosen tools? |
 | **`/feasibility`** | Audits the three plans, alone and together | feasibility-auditor | **GO / REVISE / NO-GO** |
-| **`/plan`** | Loads the build roadmap into the tracker as tasks with dependencies | - | The build begins |
+| **`/plan`** | Loads the build roadmap into the tracker as tasks with dependencies | - | - |
+| **`/scaffold`** | Wires the repo to the chosen stack: skeleton, `boundaries.json`, the real `Makefile` lint/type/test, the ownership map, so the code gates actually enforce | - | The build begins |
 
 ---
 

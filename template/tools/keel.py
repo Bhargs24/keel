@@ -124,6 +124,7 @@ COMMANDS = [
         ("/architect", "The tech stack, the data model, and the build roadmap"),
         ("/feasibility", "Audit all three plans together: GO, REVISE, or NO-GO"),
         ("/plan", "Load the roadmap into the tracker as ordered tasks"),
+        ("/scaffold", "Wire the repo to your stack so the code gates are real"),
     ]),
     ("The build loop", [
         ("/start", "Load the rules and brief you on where things stand"),

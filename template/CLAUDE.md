@@ -19,6 +19,7 @@ This repository is run with **Keel**: an idea is taken to a shipped product thro
 | **3 · Architect** | `/architect` | The **tech-architect** produces `spec/03-Technical` - stack, data model, and the **build roadmap** |
 | **4 · Feasibility** | `/feasibility` | The **feasibility-auditor** checks the three plans, alone and together: coherent, buildable, affordable to run. **GO / REVISE / NO-GO** |
 | **5 · Plan** | `/plan` | Load the build roadmap into the tracker as tasks with dependencies |
+| **5.5 · Scaffold** | `/scaffold` | Wire the repo to the chosen stack: the skeleton, `boundaries.json`, the real `Makefile` gates, the ownership map. Runs once, so the code gates actually enforce |
 | **6 · Build** | `/start` `/work` `/spec` `/review` `/audit` `/test` | The build loop. Claude decides the next task; the developer approves |
 | **7 · Secure** | `/secure` | **trespass** proves tenant isolation on the database; the security-auditor reviews the rest |
 | **8 · Ship** | `/ship` | The production-readiness gate, then deploy |

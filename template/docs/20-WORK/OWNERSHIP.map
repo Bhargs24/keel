@@ -14,29 +14,18 @@
 #
 # Changing this file is itself a crossing: it needs both owners to approve.
 
-# --- generated, never hand-edited -------------------------------------------
-packages/shared                      GENERATED
+# This ships neutral on purpose. There is no application code yet, so there are
+# no real owners yet. `/scaffold` (after `/architect`) and `install.py` fill in
+# the real paths and owners once the architecture and the team exist. An unmapped
+# path defaults to SHARED, so this never blocks genuinely new work and never
+# misfires on a layout it does not know.
 
-# --- example: one service split by subpackage -------------------------------
-services/api/handlers                ALEX
-services/api                         ALEX
-services/worker                      ALEX
-
-apps/web                             SAM
-apps/console                         SAM
-infra                                SAM
-
-# --- gates and infrastructure -----------------------------------------------
-tools                                ALEX
-.github                              ALEX
-Makefile                             ALEX
-
-# --- shared working areas ---------------------------------------------------
+# --- what exists on day one, shared until a team splits it by architecture ---
+tools                                SHARED
+.github                              SHARED
+Makefile                             SHARED
 docs                                 SHARED
 tracker                              SHARED
-bench                                SHARED
-spikes                               SHARED
-fixtures                             SHARED
 README.md                            SHARED
 
 # --- files two sessions reliably conflict on: change alone, never in parallel

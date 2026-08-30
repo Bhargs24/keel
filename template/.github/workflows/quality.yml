@@ -1,17 +1,17 @@
 name: quality gates
 
 # Docs-only changes skip the code pipeline entirely. Most commits early on are
-# documents, and running four toolchains to check a markdown edit is how CI
-# earns a reputation for wasting time.
+# documents, and running toolchains to check a markdown edit is how CI earns a
+# reputation for wasting time.
 on:
   pull_request:
   push:
     branches: [main]
 
 jobs:
-  # Everything here is pure Python and finishes in seconds. It is also
-  # everything `make check` runs locally, so this should never be the first
-  # place you learn something is wrong.
+  # Pure Python, finishes in seconds, and stack-agnostic. This is also everything
+  # `python tools/run.py check` runs locally, so CI should never be the first
+  # place you learn something is wrong. None of this is tied to a project's stack.
   fast:
     runs-on: ubuntu-latest
     steps:
@@ -34,12 +34,12 @@ jobs:
 
       - name: tenant isolation (trespass)
         run: |
-          SCHEMA=$(for p in supabase/migrations schema.sql db/schema.sql sql/schema.sql; do [ -e "$p" ] && echo "$p" && break; done)
+          SCHEMA=$(for p in supabase/migrations schema.sql db/schema.sql sql/schema.sql prisma/schema.prisma; do [ -e "$p" ] && echo "$p" && break; done)
           if [ -n "$SCHEMA" ]; then
             echo "proving tenant isolation on $SCHEMA"
             python tools/trespass/run.py check "$SCHEMA" --no-color
           else
-            echo "no database schema yet - nothing to prove"
+            echo "no database schema yet, nothing to prove"
           fi
 
       - name: no secrets committed
@@ -49,54 +49,43 @@ jobs:
             exit 1
           fi
 
-  # Only runs when code changed. Each language is set up only if that language
-  # actually has source, so an empty directory never fails the build.
+  # The language jobs. Stack is detected from standard manifest files, so this
+  # works for any project without editing this file: /scaffold wires the actual
+  # commands into the Makefile, and this just runs them with the right toolchains
+  # set up. Until a stack exists, the manifests are absent and this is a no-op.
   code:
     runs-on: ubuntu-latest
     needs: fast
-    if: |
-      github.event_name == 'push' ||
-      contains(join(github.event.pull_request.labels.*.name), 'code') ||
-      true
     steps:
       - uses: actions/checkout@v4
 
-      - name: what changed
-        id: changed
+      - name: detect stacks
+        id: stacks
         run: |
-          BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
-          FILES=$(git diff --name-only "$BASE" HEAD || true)
-          echo "$FILES"
-          grep -qE '^(services|apps|packages)/' <<< "$FILES" && echo "code=yes" >> $GITHUB_OUTPUT || echo "code=no" >> $GITHUB_OUTPUT
-          grep -qE '^services/core-api/.*\.go$'  <<< "$FILES" && echo "go=yes"   >> $GITHUB_OUTPUT || true
-          grep -qE '^services/ai/.*\.py$'        <<< "$FILES" && echo "py=yes"   >> $GITHUB_OUTPUT || true
-          grep -qE '^apps/(web|console)/.*\.tsx?$' <<< "$FILES" && echo "ts=yes" >> $GITHUB_OUTPUT || true
+          have() { find . -path ./node_modules -prune -o -name "$1" -print 2>/dev/null | grep -q . && echo yes || echo no; }
+          echo "go=$([ -f go.mod ] && echo yes || echo no)" >> $GITHUB_OUTPUT
+          echo "node=$([ -f package.json ] && echo yes || echo no)" >> $GITHUB_OUTPUT
+          echo "py=$([ -f pyproject.toml ] || [ -f requirements.txt ] && echo yes || echo no)" >> $GITHUB_OUTPUT
+          echo "rust=$([ -f Cargo.toml ] && echo yes || echo no)" >> $GITHUB_OUTPUT
 
       - uses: actions/setup-go@v5
-        if: steps.changed.outputs.go == 'yes'
-        with: { go-version: "1.23" }
-      - uses: actions/setup-python@v5
-        if: steps.changed.outputs.py == 'yes'
-        with: { python-version: "3.12" }
+        if: steps.stacks.outputs.go == 'yes'
+        with: { go-version: "stable" }
       - uses: actions/setup-node@v4
-        if: steps.changed.outputs.ts == 'yes'
-        with: { node-version: "22" }
+        if: steps.stacks.outputs.node == 'yes'
+        with: { node-version: "lts/*" }
+      - uses: actions/setup-python@v5
+        if: steps.stacks.outputs.py == 'yes'
+        with: { python-version: "3.12" }
 
+      # These call the Makefile targets that /scaffold wires to the chosen stack's
+      # real linters, typecheckers, and test runners. Before /scaffold they are
+      # safe no-ops, so this never blocks a project that has not wired its stack.
       - name: generated files in sync
-        if: steps.changed.outputs.code == 'yes'
-        run: |
-          make gen
-          git diff --exit-code -- packages/shared \
-            || (echo "packages/shared is out of sync. Run 'make gen' and commit."; exit 1)
-
+        run: make gen && git diff --exit-code || (echo "Something generated is out of sync. Run 'make gen' and commit."; exit 1)
       - name: lint
-        if: steps.changed.outputs.code == 'yes'
         run: make lint
-
       - name: typecheck
-        if: steps.changed.outputs.code == 'yes'
         run: make typecheck
-
       - name: tests
-        if: steps.changed.outputs.code == 'yes'
         run: make test
