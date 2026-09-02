@@ -84,9 +84,9 @@ rebuilt.
 worth more than one that only unblocks you, because a blocked person produces
 nothing. Weigh this heavily.
 
-**3 · Benches before the things they gate.** No capture mode is wired before its
-bench is green. A bench that gates several steps is high value even though it
-ships nothing a user sees.
+**3 · Benches before the things they gate.** No feature is wired up before the
+test bench that proves it is green. A bench that gates several steps is high
+value even though it ships nothing a user sees.
 
 **4 · The critical path to this milestone's deliverable.** Read the milestone's
 line in `spec/03-Technical/BUILD-ROADMAP.md`. Which open task does that
@@ -112,14 +112,14 @@ Before recommending, check the decision against things the tracker does not know
   else first?
 - **the open decisions in `docs/10-STATUS/NOW.md`** - is there an open founder decision or an
   unprovisioned account that this work will hit halfway through?
-- **The unassigned work.** `CO-001`, `CH-001`, `DS-001` and the spikes are on the
-  critical path with nobody on them.
+- **The unassigned work.** Anything on the critical path with nobody on it -
+  name it, even if it is not yours to pick up.
 
 > **If the highest-value next action is not a coding task, say so.** Sometimes
 > the honest answer is *"the best thing you can do today is not this branch, it
-> is the content hire, or `SP-01`, which needs twenty pages of real student work
-> and no code at all."* **Say it. Do not recommend a task because a task is what
-> was asked for.**
+> is collecting the real sample data the next milestone needs, or making the
+> decision that three tasks are waiting on - no code at all."* **Say it. Do not
+> recommend a task because a task is what was asked for.**
 
 ---
 
@@ -151,7 +151,8 @@ unblock it, and **what the most useful non-code action is right now.**
 2. `python tools/track.py start <ID>`
 3. `git switch -c <owner>/<ID>-<short-slug>` - the prefix is how CI knows whose
    files are whose, and a branch without one fails.
-4. the relevant `spec/` document if the specifications are missing.
+4. If the task's specifications are missing, stop and say so - a task without
+   a spec gets its spec written first, never an improvised build.
 5. Read the step's full block, then the surface or engine spec it points at.
    **Do not infer behaviour that is written down.**
 6. Say in four or five lines what you are about to do, and **anything in the

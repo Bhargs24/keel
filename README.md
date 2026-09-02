@@ -14,6 +14,7 @@ It is the tool for the part everyone skips: **knowing what to build and why, in 
 
 <p align="center">
 <a href="https://pypi.org/project/keel-kit/"><img src="https://img.shields.io/pypi/v/keel-kit?color=2e7d32&label=pip%20install%20keel-kit" alt="Install from PyPI"></a>
+<a href="https://github.com/Bhargs24/keel/actions/workflows/ci.yml"><img src="https://github.com/Bhargs24/keel/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <img src="https://img.shields.io/pypi/pyversions/keel-kit?color=2e7d32" alt="Python versions">
 <img src="https://img.shields.io/badge/license-MIT-2e7d32" alt="MIT License">
 </p>
@@ -101,6 +102,8 @@ Most AI tools will hand you code full of mock data, `TODO`s, and happy-path-only
 | `ownership_check` | a change reaching into code it does not own |
 | `trespass` | a database policy that lets one user read another user's rows |
 | tracker integrity | a build plan that has drifted from the actual work |
+
+The gate never bluffs: a check with nothing to check yet (no schema, no module boundaries, no tasks) reports itself **inactive**, by name, with the step that arms it — it is never counted as "passed". `/scaffold` arms the code gates the moment your stack is chosen, and the cockpit walks you through it.
 
 **Laws the code is written against**, in rulebooks the AI reads every session: every error is typed with a stable, greppable code (`VAL_`, `AUTH_`, `NOTFOUND_`, `DEP_`, and so on) and never silently swallowed; no personal data in logs, ever; functions stay small and single-purpose; the same logic is never pasted twice, so a fix is made in one place; a bug is root-caused and reproduced before it is called fixed; and secrets are scanned on every write.
 
@@ -197,7 +200,7 @@ Then run `python install.py <your-repo>` once to lay down the project structure,
 <img src="assets/keel-commands.png" alt="The Keel cockpit's command reference: every command grouped into the pipeline, the build loop, and anytime, each with a plain-English description, and a you-are-here marker on the current step" width="720">
 </p>
 
-Twenty commands, three groups: the **pipeline** (`/keel` through `/plan`), the **build loop** (`/work`, `/review`, `/audit`, `/test`, `/equip`, `/secure`, `/ship`, and more), and the **anytime** navigation (`/status`, `/board`). The full reference with what each spawns is in [`docs/01-INDUCTION/COMMANDS.md`](template/docs/01-INDUCTION/COMMANDS.md).
+Twenty-one commands, three groups: the **pipeline** (`/keel` through `/plan`), the **build loop** (`/work`, `/review`, `/audit`, `/test`, `/equip`, `/secure`, `/ship`, and more), and the **anytime** navigation (`/status`, `/board`). The full reference with what each spawns is in [`docs/01-INDUCTION/COMMANDS.md`](template/docs/01-INDUCTION/COMMANDS.md).
 
 ---
 

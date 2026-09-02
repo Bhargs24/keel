@@ -19,7 +19,7 @@
 
 ### 1.1 The dependency rule (enforced in CI by `tools/dep_check.py`, not by goodwill)
 
-Modules may only depend **inward**. Set your module prefix and the allowed edges in `dep_check.py`; the check fails the build on a violation.
+Modules may only depend **inward**. `/scaffold` writes your real layout and edges into `tools/boundaries.json`; the check fails the build on a violation. An example shape (yours will differ):
 
 ```
 apps/*          may import  packages/*

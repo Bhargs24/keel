@@ -1,5 +1,5 @@
 ---
-description: Open the the project progress board
+description: Open the project progress board
 ---
 
 Start the board and open it in the browser. Do not tell the user to run it.

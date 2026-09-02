@@ -21,12 +21,21 @@ Nothing else. There is deliberately no build tool from the 1970s to install and 
 ### The easiest way (recommended for everyone)
 
 ```bash
-git clone https://github.com/Bhargs24/keel
-cd keel
-python install.py ~/my-product      # the folder for your new product
+pip install keel-kit
+keel init my-product                # the folder for your new product
 ```
 
-The installer is a concierge, not a form. It creates the folder, sets up version control, asks "is it just you building this?" with no jargon, and offers to open the guide. You do not have to know what any of it means.
+One command in, one command out: the folder exists, version control is set up, the tracker knows your name (from `--name` or your git identity), and the guide is a `python tools/keel.py` away.
+
+### The concierge way (best for a team)
+
+```bash
+git clone https://github.com/Bhargs24/keel
+cd keel
+python install.py ~/my-product
+```
+
+The installer is a concierge, not a form. It asks "is it just you building this?" with no jargon, writes the roster and the ownership map from your answers, and offers to open the guide. You do not have to know what any of it means.
 
 ### The developer way (install as a Claude Code plugin)
 

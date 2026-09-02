@@ -36,8 +36,8 @@ never decide, the append-only or safety law. These are defects, not tradeoffs.
 catch, no bare `except`, no ignored error return.** What happens on a timeout, a
 retry, a partial write?
 
-**5 · PII.** No student name, phone, answer text or raw audio in a log line.
-Ids, lengths, hashes, confidences only.
+**5 · PII.** No user's name, email, phone, free-text content, or raw media in a
+log line. Ids, lengths, hashes, confidences only.
 
 **6 · Tests that are actually about the risk.** Does a test exist for the thing
 most likely to break, or only for the happy path? For anything touching the
