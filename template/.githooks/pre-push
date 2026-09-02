@@ -18,7 +18,7 @@ while read -r _local_ref _local_sha remote_ref _remote_sha; do
   [ "$branch" = "$protected" ] || continue
   [ -n "$override" ] && continue
 
-  cat >&2 <<'MSG'
+  cat >&2 <<MSG
 
   Refused: this pushes straight to $protected.
 

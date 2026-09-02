@@ -1,21 +1,21 @@
 {
   "hooks": {
     "UserPromptSubmit": [
-      { "hooks": [ { "type": "command", "command": "cat .claude/rule-preamble.txt" } ] }
+      { "hooks": [ { "type": "command", "command": "python .claude/scripts/preamble.py" } ] }
     ],
     "SessionStart": [
-      { "hooks": [ { "type": "command", "command": "bash .claude/scripts/session-brief.sh" } ] }
+      { "hooks": [ { "type": "command", "command": "python .claude/scripts/session_brief.py" } ] }
     ],
     "PreToolUse": [
       { "matcher": "Write|Edit",
-        "hooks": [ { "type": "command", "command": "bash .claude/scripts/secret-scan.sh" } ] }
+        "hooks": [ { "type": "command", "command": "python .claude/scripts/secret_scan.py" } ] }
     ],
     "PostToolUse": [
       { "matcher": "Edit|Write",
-        "hooks": [ { "type": "command", "command": "bash .claude/scripts/format-and-lint.sh" } ] }
+        "hooks": [ { "type": "command", "command": "python .claude/scripts/format_and_lint.py" } ] }
     ],
     "Stop": [
-      { "hooks": [ { "type": "command", "command": "bash .claude/scripts/handoff-reminder.sh" } ] }
+      { "hooks": [ { "type": "command", "command": "python .claude/scripts/handoff_reminder.py" } ] }
     ]
   }
 }
