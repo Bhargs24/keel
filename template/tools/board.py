@@ -11,6 +11,7 @@ room, not a second source of truth.
 Each person runs their own instance against their own working copy. Changes
 are commits, and git merges them like anything else.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -24,8 +25,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import track  # the model, the transitions and the rules all live there
 
-
 # ------------------------------------------------------------------- payload
+
 
 def snapshot() -> dict:
     tasks = track.load_all()
@@ -33,26 +34,45 @@ def snapshot() -> dict:
     out = []
     for t in sorted(tasks.values(), key=lambda x: (x.milestone, x.area, x.id)):
         blockers = track.blockers_of(t, tasks)
-        out.append({
-            "id": t.id, "title": t.title, "owner": t.owner or "unassigned",
-            "area": t.area, "milestone": t.milestone, "status": t.status,
-            "depends_on": t.list_field("depends_on"),
-            "blocks": t.list_field("blocks"),
-            "bench": t.bench, "started": t.started, "finished": t.finished,
-            "blockers": [{"id": b.id, "owner": b.owner, "status": b.status,
-                          "title": b.title} for b in blockers],
-            "ready": t.status == "todo" and not blockers,
-            "log": [l[2:] for l in t.log_lines],
-        })
+        out.append(
+            {
+                "id": t.id,
+                "title": t.title,
+                "owner": t.owner or "unassigned",
+                "area": t.area,
+                "milestone": t.milestone,
+                "status": t.status,
+                "depends_on": t.list_field("depends_on"),
+                "blocks": t.list_field("blocks"),
+                "bench": t.bench,
+                "started": t.started,
+                "finished": t.finished,
+                "blockers": [
+                    {"id": b.id, "owner": b.owner, "status": b.status, "title": b.title}
+                    for b in blockers
+                ],
+                "ready": t.status == "todo" and not blockers,
+                "log": [line[2:] for line in t.log_lines],
+            }
+        )
     phase, nxt, why = track.detect_phase()
-    docs = [{"phase": ph, "path": rel.split("spec/", 1)[-1],
-             "done": (track.ROOT / rel).exists()}
-            for ph, rel in track.register_for(track.detect_mode())]
-    return {"tasks": out,
-            "people": [{"id": k, "display": v.get("display", k),
-                        "role": v.get("role", "")} for k, v in people.items()],
-            "phase": {"name": phase, "next": nxt, "why": why},
-            "docs": docs}
+    docs = [
+        {
+            "phase": ph,
+            "path": rel.split("spec/", 1)[-1],
+            "done": (track.ROOT / rel).exists(),
+        }
+        for ph, rel in track.register_for(track.detect_mode())
+    ]
+    return {
+        "tasks": out,
+        "people": [
+            {"id": k, "display": v.get("display", k), "role": v.get("role", "")}
+            for k, v in people.items()
+        ],
+        "phase": {"name": phase, "next": nxt, "why": why},
+        "docs": docs,
+    }
 
 
 def act(tid: str, body: dict) -> dict:
@@ -92,8 +112,12 @@ def act(tid: str, body: dict) -> dict:
             t.meta["depends_on"] = ", ".join(deps)
         was, t.meta["status"] = t.status, "blocked"
         why = (body.get("why") or "").strip()
-        t.append(who, f"{was} -> blocked" + (f" on {on}" if on else "")
-                 + (f": {why}" if why else ""))
+        t.append(
+            who,
+            f"{was} -> blocked"
+            + (f" on {on}" if on else "")
+            + (f": {why}" if why else ""),
+        )
         t.save()
         return {"ok": True}
 
@@ -107,11 +131,14 @@ def act(tid: str, body: dict) -> dict:
     error, freed = track.apply_transition(tasks, t, targets[action], who, extra=extra)
     if error:
         return {"error": error}
-    return {"ok": True,
-            "unblocks": [{"id": x.id, "title": x.title, "owner": x.owner} for x in freed]}
+    return {
+        "ok": True,
+        "unblocks": [{"id": x.id, "title": x.title, "owner": x.owner} for x in freed],
+    }
 
 
 # ---------------------------------------------------------------------- HTTP
+
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):  # quiet
@@ -133,7 +160,20 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, json.dumps(snapshot()))
         self._send(404, json.dumps({"error": "not found"}))
 
+    def _same_origin(self) -> bool:
+        """Only the board's own page may mutate tasks. The server binds to
+        127.0.0.1, but any site open in the same browser could still fire a
+        cross-origin POST at localhost -- so a request carrying a foreign
+        Origin is refused. Requests with no Origin (curl, scripts on this
+        machine) are the operator's own business and stay allowed."""
+        origin = self.headers.get("Origin")
+        if not origin:
+            return True
+        return origin == f"http://{self.headers.get('Host') or ''}"
+
     def do_POST(self):
+        if not self._same_origin():
+            return self._send(403, json.dumps({"error": "cross-origin request refused"}))
         if not self.path.startswith("/api/task/"):
             return self._send(404, json.dumps({"error": "not found"}))
         tid = self.path.split("/api/task/", 1)[1]
@@ -409,8 +449,9 @@ load();setInterval(load,15000);
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__,
-                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--port", type=int, default=7777)
     p.add_argument("--no-open", action="store_true")
     a = p.parse_args()

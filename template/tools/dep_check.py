@@ -27,6 +27,7 @@ Config shape (tools/boundaries.json):
 
 Run: python tools/dep_check.py     (also runs in CI on every PR)
 """
+
 from __future__ import annotations
 
 import json
@@ -38,8 +39,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = Path(__file__).resolve().parent / "boundaries.json"
 
-SKIP_DIRS = {".git", "node_modules", ".dart_tool", "build", "dist", ".next",
-             "__pycache__", "vendor", ".venv", "coverage", "target"}
+SKIP_DIRS = {
+    ".git",
+    "node_modules",
+    ".dart_tool",
+    "build",
+    "dist",
+    ".next",
+    "__pycache__",
+    "vendor",
+    ".venv",
+    "coverage",
+    "target",
+}
 
 
 def load_config() -> dict | None:
@@ -74,14 +86,19 @@ def owning_module(path: Path, layers: set[str]) -> str | None:
 
 def import_patterns(module: str, layers: set[str]) -> list[tuple[str, re.Pattern]]:
     """Import matchers built from the project's own module prefix and layer names."""
-    alt = "|".join(re.escape(l) for l in sorted(layers)) or r"(?!x)x"
+    alt = "|".join(re.escape(layer) for layer in sorted(layers)) or r"(?!x)x"
     mod = re.escape(module) if module else r"(?!x)x"
     return [
-        (r"\.go$", re.compile(rf'^\s*(?:[\w.]+\s+)?"({mod}/[^"]+)"', re.M)),
-        (r"\.py$", re.compile(rf"^\s*(?:from|import)\s+((?:{alt})[\w.]*)", re.M)),
-        (r"\.(ts|tsx|js|jsx)$",
-         re.compile(rf"""(?:from|require\()\s*['"](@{mod}/[^'"]+|(?:\.\./)+(?:{alt})/[^'"]+)['"]""", re.M)),
-        (r"\.dart$", re.compile(rf"""^\s*import\s+['"]package:({mod}_[\w]+)/""", re.M)),
+        (r"\.go$", re.compile(rf'^\s*(?:[\w.]+\s+)?"({mod}/[^"]+)"', re.MULTILINE)),
+        (r"\.py$", re.compile(rf"^\s*(?:from|import)\s+((?:{alt})[\w.]*)", re.MULTILINE)),
+        (
+            r"\.(ts|tsx|js|jsx)$",
+            re.compile(
+                rf"""(?:from|require\()\s*['"](@{mod}/[^'"]+|(?:\.\./)+(?:{alt})/[^'"]+)['"]""",
+                re.MULTILINE,
+            ),
+        ),
+        (r"\.dart$", re.compile(rf"""^\s*import\s+['"]package:({mod}_[\w]+)/""", re.MULTILINE)),
     ]
 
 
@@ -134,16 +151,19 @@ def scan(cfg: dict) -> tuple[list[str], dict[str, set[str]]]:
                 if src_mod in leaf:
                     violations.append(
                         f"{rel}: {src_mod} must import nothing internal, "
-                        f"but imports {dst_mod}")
+                        f"but imports {dst_mod}"
+                    )
                 elif dst_layer not in allowed.get(src_layer, []):
                     violations.append(
                         f"{rel}: {src_layer}/* may not import {dst_layer}/* "
-                        f"({src_mod} -> {dst_mod})")
+                        f"({src_mod} -> {dst_mod})"
+                    )
                 elif src_layer == dst_layer and src_layer in isolated:
-                    one = src_layer[:-1] if src_layer.endswith("s") else src_layer
+                    one = src_layer.removesuffix("s")
                     violations.append(
                         f"{rel}: no {one} may import another {one}'s internals "
-                        f"({src_mod} -> {dst_mod}). Talk over the contract.")
+                        f"({src_mod} -> {dst_mod}). Talk over the contract."
+                    )
     return violations, graph
 
 
@@ -156,7 +176,7 @@ def find_cycles(graph: dict[str, set[str]]) -> list[list[str]]:
         colour[node] = GREY
         for nxt in sorted(graph.get(node, ())):
             if colour[nxt] == GREY:
-                cycles.append(stack[stack.index(nxt):] + [nxt])
+                cycles.append(stack[stack.index(nxt) :] + [nxt])
             elif colour[nxt] == WHITE:
                 visit(nxt, stack + [nxt])
         colour[node] = BLACK
@@ -170,8 +190,10 @@ def find_cycles(graph: dict[str, set[str]]) -> list[list[str]]:
 def main() -> int:
     cfg = load_config()
     if cfg is None:
-        print("dep-check: no module boundaries configured "
-              "(add tools/boundaries.json to enforce them); nothing to check.")
+        print(
+            "dep-check: no module boundaries configured "
+            "(add tools/boundaries.json to enforce them); nothing to check."
+        )
         return 0
 
     violations, graph = scan(cfg)
@@ -179,7 +201,9 @@ def main() -> int:
 
     if not violations and not cycles:
         n = sum(len(v) for v in graph.values())
-        print(f"dep-check: OK. {len(graph)} modules, {n} internal edges, no violations.")
+        print(
+            f"dep-check: OK. {len(graph)} modules, {n} internal edges, no violations."
+        )
         return 0
 
     print("dep-check FAILED\n")

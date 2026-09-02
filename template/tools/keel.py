@@ -16,6 +16,7 @@ to know what a "subagent" is.
 
 Standard library only. Nothing to install.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -43,106 +44,144 @@ STEPS: dict[str, dict[str, str]] = {
         "command": '/keel "your idea, in a sentence"',
         "why": "Everything starts from one clear idea. Say it in plain words.",
         "what": "Keel asks a couple of quick questions, then begins the research. "
-                "You just answer and say go.",
+        "You just answer and say go.",
     },
     "Discovering": {
         "title": "Research what exists, and how yours is better",
         "command": "/discover",
         "why": "Before building anything, Keel checks what already exists and makes "
-               "sure your idea is genuinely better or newer - never a copy. (For a "
-               "company, it also researches the market and the money.)",
+        "sure your idea is genuinely better or newer - never a copy. (For a "
+        "company, it also researches the market and the money.)",
         "what": "A specialist finds the existing products and projects and writes an "
-                "honest verdict on how yours stands apart. Read it here when it's done.",
+        "honest verdict on how yours stands apart. Read it here when it's done.",
     },
     "Discover done": {
         "title": "Define the product",
         "command": "/define",
         "why": "Now Keel turns the idea into a precise plan for what the product "
-               "actually does - every screen, every state.",
+        "actually does - every screen, every state.",
         "what": "A product manager writes the full specification, so nothing gets "
-                "guessed later. This is what the build follows.",
+        "guessed later. This is what the build follows.",
     },
     "Define done": {
         "title": "Design how it looks and feels",
         "command": "/design",
         "why": "A distinctive design, not a generic template. You'll get real "
-               "screen mockups you can open and look at.",
+        "screen mockups you can open and look at.",
         "what": "A design lead creates the look, the colours and type, and mockups "
-                "of the key screens. (If your idea has little UI, you can skip this "
-                'by saying "skip to the technical plan".)',
+        "of the key screens. (If your idea has little UI, you can skip this "
+        'by saying "skip to the technical plan".)',
     },
     "Design done": {
         "title": "Plan how it gets built",
         "command": "/architect",
         "why": "Keel chooses the technology and lays out the build in the right "
-               "order, so nothing is built before the thing it needs.",
+        "order, so nothing is built before the thing it needs.",
         "what": "An architect writes the technical plan and a step-by-step build "
-                "roadmap, plus the list of accounts you'll need to set up.",
+        "roadmap, plus the list of accounts you'll need to set up.",
     },
     "Architect done": {
         "title": "Check it all holds together",
         "command": "/feasibility",
         "why": "The most important gate. Before a line of code, Keel audits the "
-               "business, the product, and the build together.",
+        "business, the product, and the build together.",
         "what": "An independent auditor gives a GO, REVISE, or NO-GO with reasons. "
-                "If something's off, it tells you exactly what to fix.",
+        "If something's off, it tells you exactly what to fix.",
     },
     "Feasibility done": {
         "title": "Load the build plan",
         "command": "/plan",
         "why": "The plan passed. Now Keel turns the roadmap into a checklist of "
-               "tasks it can build one at a time.",
+        "tasks it can build one at a time.",
         "what": "Every piece of the build becomes a tracked task in the right "
-                "order. Then the building begins.",
+        "order. Then the building begins.",
+    },
+    "Plan done": {
+        "title": "Wire the repo to your stack",
+        "command": "/scaffold",
+        "why": "The tasks are loaded. One more step before building: Keel wires "
+        "the project to the chosen technology so its quality gates check "
+        "real things - until then they have nothing to enforce.",
+        "what": "Keel creates the code skeleton, turns on the module-boundary "
+        "rules, and fills in the real lint, type-check, and test "
+        "commands. After this, every gate is armed.",
     },
     "Building": {
         "title": "Build the next piece",
         "command": "/work",
         "why": "Keel decides what to build next, builds it properly, tests it, and "
-               "proves it's secure - one piece at a time.",
+        "proves it's secure - one piece at a time.",
         "what": 'Say "what\'s next?" (/next) to just see the recommendation, or '
-                "/work to build it. Come back here to watch the progress fill in.",
+        "/work to build it. Come back here to watch the progress fill in.",
     },
 }
 
 # The journey, in order, for the rail at the top.
-JOURNEY = ["Idea", "Discover", "Define", "Design", "Architect", "Check", "Build", "Ship"]
+JOURNEY = [
+    "Idea",
+    "Discover",
+    "Define",
+    "Design",
+    "Architect",
+    "Check",
+    "Build",
+    "Ship",
+]
 PHASE_STAGE = {
-    "Pre-Discover": 0, "Discovering": 1, "Discover done": 2, "Define done": 3,
-    "Design done": 4, "Architect done": 5, "Feasibility done": 6, "Building": 6,
+    "Pre-Discover": 0,
+    "Discovering": 1,
+    "Discover done": 2,
+    "Define done": 3,
+    "Design done": 4,
+    "Architect done": 5,
+    "Feasibility done": 6,
+    "Plan done": 6,
+    "Building": 6,
 }
 
 # The whole toolset, shown in the cockpit so nothing is hidden. Grouped the way
 # docs/01-INDUCTION/COMMANDS.md groups them. You never have to memorise these
 # (Keel reaches for them for you), but you can always see what exists and why.
 COMMANDS = [
-    ("The pipeline: from idea to build-ready", [
-        ('/keel "your idea"', "Capture the idea and start the pipeline"),
-        ("/discover", "Research the market, the competitors, and the business case"),
-        ("/define", "Write the full product spec, every screen and every state"),
-        ("/design", "A distinctive design system and real screen mockups"),
-        ("/architect", "The tech stack, the data model, and the build roadmap"),
-        ("/feasibility", "Audit all three plans together: GO, REVISE, or NO-GO"),
-        ("/plan", "Load the roadmap into the tracker as ordered tasks"),
-        ("/scaffold", "Wire the repo to your stack so the code gates are real"),
-    ]),
-    ("The build loop", [
-        ("/start", "Load the rules and brief you on where things stand"),
-        ("/next", "Decide the single best next thing to do, and why"),
-        ("/work", "Claim, branch, read the spec, then build the next task"),
-        ("/spec <topic>", "Show exactly what the spec says about something"),
-        ("/review", "Catch what green tests miss, before a push"),
-        ("/audit <id>", "Check that 'done' is really done, clause by clause"),
-        ("/test", "Run the tests and say what actually broke"),
-        ("/equip", "Find and vet open-source tools, skills, and MCP servers"),
-        ("/secure", "Prove no user can read another user's data"),
-        ("/ship", "The production-readiness gate, then deploy"),
-        ("/wrap", "Save honest state and a handoff before you stop"),
-    ]),
-    ("Anytime", [
-        ("/status", "Which phase the project is in, and what is next"),
-        ("/board", "The task board, in your browser"),
-    ]),
+    (
+        "The pipeline: from idea to build-ready",
+        [
+            ('/keel "your idea"', "Capture the idea and start the pipeline"),
+            (
+                "/discover",
+                "Research the market, the competitors, and the business case",
+            ),
+            ("/define", "Write the full product spec, every screen and every state"),
+            ("/design", "A distinctive design system and real screen mockups"),
+            ("/architect", "The tech stack, the data model, and the build roadmap"),
+            ("/feasibility", "Audit all three plans together: GO, REVISE, or NO-GO"),
+            ("/plan", "Load the roadmap into the tracker as ordered tasks"),
+            ("/scaffold", "Wire the repo to your stack so the code gates are real"),
+        ],
+    ),
+    (
+        "The build loop",
+        [
+            ("/start", "Load the rules and brief you on where things stand"),
+            ("/next", "Decide the single best next thing to do, and why"),
+            ("/work", "Claim, branch, read the spec, then build the next task"),
+            ("/spec <topic>", "Show exactly what the spec says about something"),
+            ("/review", "Catch what green tests miss, before a push"),
+            ("/audit <id>", "Check that 'done' is really done, clause by clause"),
+            ("/test", "Run the tests and say what actually broke"),
+            ("/equip", "Find and vet open-source tools, skills, and MCP servers"),
+            ("/secure", "Prove no user can read another user's data"),
+            ("/ship", "The production-readiness gate, then deploy"),
+            ("/wrap", "Save honest state and a handoff before you stop"),
+        ],
+    ),
+    (
+        "Anytime",
+        [
+            ("/status", "Which phase the project is in, and what is next"),
+            ("/board", "The task board, in your browser"),
+        ],
+    ),
 ]
 
 
@@ -153,12 +192,14 @@ def state() -> dict:
     docs = []
     for group, rel in track.register_for(mode):
         p = ROOT / rel
-        docs.append({
-            "group": group,
-            "path": rel,
-            "name": rel.split("/")[-1],
-            "exists": p.exists(),
-        })
+        docs.append(
+            {
+                "group": group,
+                "path": rel,
+                "name": rel.split("/")[-1],
+                "exists": p.exists(),
+            }
+        )
     # build progress, if we're building
     tasks = track.load_all()
     done = sum(1 for t in tasks.values() if t.status == "done")
@@ -198,7 +239,9 @@ def md_to_html(md: str) -> str:
         s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
         s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", s)
         s = re.sub(r"\[\[([^\]]+)\]\]", r"<em>\1</em>", s)
-        s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2" target="_blank">\1</a>', s)
+        s = re.sub(
+            r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2" target="_blank">\1</a>', s
+        )
         return s
 
     while i < n:
@@ -224,14 +267,18 @@ def md_to_html(md: str) -> str:
         if re.match(r"^\s*[-*]\s+", line):
             out.append("<ul>")
             while i < n and re.match(r"^\s*[-*]\s+", lines[i]):
-                out.append("<li>" + inline(re.sub(r"^\s*[-*]\s+", "", lines[i])) + "</li>")
+                out.append(
+                    "<li>" + inline(re.sub(r"^\s*[-*]\s+", "", lines[i])) + "</li>"
+                )
                 i += 1
             out.append("</ul>")
             continue
         if re.match(r"^\s*\d+\.\s+", line):
             out.append("<ol>")
             while i < n and re.match(r"^\s*\d+\.\s+", lines[i]):
-                out.append("<li>" + inline(re.sub(r"^\s*\d+\.\s+", "", lines[i])) + "</li>")
+                out.append(
+                    "<li>" + inline(re.sub(r"^\s*\d+\.\s+", "", lines[i])) + "</li>"
+                )
                 i += 1
             out.append("</ol>")
             continue
@@ -242,16 +289,26 @@ def md_to_html(md: str) -> str:
                 i += 1
             out.append("</blockquote>")
             continue
-        if line.startswith("|") and i + 1 < n and re.match(r"^\|[\s:|-]+\|?\s*$", lines[i + 1]):
+        if (
+            line.startswith("|")
+            and i + 1 < n
+            and re.match(r"^\|[\s:|-]+\|?\s*$", lines[i + 1])
+        ):
+
             def cells(row: str) -> list[str]:
                 return [c.strip() for c in row.strip().strip("|").split("|")]
+
             out.append("<table><thead><tr>")
             for c in cells(line):
                 out.append(f"<th>{inline(c)}</th>")
             out.append("</tr></thead><tbody>")
             i += 2
             while i < n and lines[i].startswith("|"):
-                out.append("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in cells(lines[i])) + "</tr>")
+                out.append(
+                    "<tr>"
+                    + "".join(f"<td>{inline(c)}</td>" for c in cells(lines[i]))
+                    + "</tr>"
+                )
                 i += 1
             out.append("</tbody></table>")
             continue
@@ -287,6 +344,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, json.dumps(state()))
         if self.path.startswith("/api/doc?"):
             from urllib.parse import parse_qs, urlparse
+
             rel = parse_qs(urlparse(self.path).query).get("path", [""])[0]
             return self._send(200, json.dumps(read_doc(rel)))
         self._send(404, json.dumps({"error": "not found"}))
@@ -500,8 +558,9 @@ load();setInterval(load,4000);
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__,
-                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--port", type=int, default=7799)
     p.add_argument("--no-open", action="store_true")
     a = p.parse_args()

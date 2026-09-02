@@ -24,6 +24,7 @@ Rules, in full:
 Usage:  python tools/ownership_check.py [base-ref]
         base-ref defaults to origin/main.
 """
+
 import re
 import subprocess
 import sys
@@ -32,15 +33,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MAP = ROOT / "docs" / "20-WORK" / "OWNERSHIP.map"
 CROSSINGS = "docs/20-WORK/crossings/"
+
+
 def roles():
     """Role names are the keys in tracker/people.toml, upper-cased.
     Adding a person is adding a block there: no code change."""
     people = ROOT / "tracker" / "people.toml"
     if not people.exists():
         return ()
-    return tuple(m.group(1).upper() for m in
-                 re.finditer(r"^\[people\.([A-Za-z0-9_-]+)\]", 
-                             people.read_text(encoding="utf-8"), re.M))
+    return tuple(
+        m.group(1).upper()
+        for m in re.finditer(
+            r"^\[people\.([A-Za-z0-9_-]+)\]", people.read_text(encoding="utf-8"), re.MULTILINE
+        )
+    )
 
 
 ROLES = roles()
@@ -76,7 +82,7 @@ def owner_of(path, rules):
 
 
 def role_from_branch(branch):
-    m = re.match(r"^([A-Za-z0-9_-]+)/", branch, re.I)
+    m = re.match(r"^([A-Za-z0-9_-]+)/", branch, re.IGNORECASE)
     if not m:
         return None
     role = m.group(1).upper()
@@ -95,13 +101,19 @@ def main():
     if role is None:
         print(f"FAIL  branch {branch!r} does not declare a role.")
         print("      Name branches  <person>/<TASK-ID>-<slug>, where <person> is a key")
-        print(f"      in tracker/people.toml. Known: {', '.join(r.lower() for r in ROLES) or 'none'}")
+        print(
+            f"      in tracker/people.toml. Known: {', '.join(r.lower() for r in ROLES) or 'none'}"
+        )
         print("      The name is how the boundary is checked. See")
         print("      docs/00-RULES/OWNERSHIP-PROTOCOL.md")
         return 1
 
     merge_base = sh("git", "merge-base", base, "HEAD") or base
-    changed = [f for f in sh("git", "diff", "--name-only", merge_base, "HEAD").splitlines() if f]
+    changed = [
+        f
+        for f in sh("git", "diff", "--name-only", merge_base, "HEAD").splitlines()
+        if f
+    ]
     if not changed:
         print("ownership: no changed files.")
         return 0
@@ -127,14 +139,16 @@ def main():
         print("FAIL  generated files were hand-edited:")
         for f in generated:
             print(f"        {f}")
-        print("      packages/shared is produced by `make gen` from the event")
-        print("      schemas. Change the schema, regenerate, commit the result.")
+        print("      Paths marked GENERATED in docs/20-WORK/OWNERSHIP.map are")
+        print("      produced from a source of truth. Change the source,")
+        print("      regenerate, commit the result.")
         return 1
 
     if trespass:
         owners = sorted({own for _, own in trespass})
-        print(f"FAIL  this is a {role} branch. "
-              f"These files belong to {', '.join(owners)}:")
+        print(
+            f"FAIL  this is a {role} branch. These files belong to {', '.join(owners)}:"
+        )
         for f, own in trespass:
             print(f"        {f}   [{own}]")
         print()

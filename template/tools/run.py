@@ -18,6 +18,7 @@ Why this exists: the gates are the part Keel is supposed to hide from you, so
 they must never be the thing that breaks in your face because a build tool from
 1976 is not installed. Everything here is the Python standard library.
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -35,8 +36,13 @@ def _run(args: list[str], cwd: Path = ROOT) -> int:
 
 
 def _schema_path() -> str | None:
-    for cand in ("supabase/migrations", "schema.sql", "db/schema.sql",
-                 "sql/schema.sql", "prisma/schema.prisma"):
+    for cand in (
+        "supabase/migrations",
+        "schema.sql",
+        "db/schema.sql",
+        "sql/schema.sql",
+        "prisma/schema.prisma",
+    ):
         if (ROOT / cand).exists():
             return cand
     return None
@@ -45,24 +51,69 @@ def _schema_path() -> str | None:
 # --------------------------------------------------------------------------- #
 # Tasks.
 # --------------------------------------------------------------------------- #
+def _on_task_branch() -> bool:
+    """Whether we're on a branch the ownership gate can check (not the default
+    branch, not detached HEAD) -- mirrors ownership_check.py's own bail-outs."""
+    r = subprocess.run(
+        ["git", "branch", "--show-current"], cwd=ROOT, capture_output=True, text=True
+    )
+    branch = r.stdout.strip()
+    return bool(branch) and branch not in ("main", "master")
+
+
 def task_check() -> int:
-    """The fast gate. Seconds, no toolchains. Run before every push."""
+    """The fast gate. Seconds, no toolchains. Run before every push.
+
+    Honesty rule: a check with nothing to check is reported as INACTIVE, never
+    counted as passed. "Passed" means something was actually enforced.
+    """
     steps = [
-        ("no placeholder code", [PY, str(TOOLS / "no_placeholders.py")]),
-        ("module boundaries", [PY, str(TOOLS / "dep_check.py")]),
-        ("ownership boundary", [PY, str(TOOLS / "ownership_check.py")]),
-        ("tracker consistent", [PY, str(TOOLS / "track.py"), "check"]),
+        ("no placeholder code", [PY, str(TOOLS / "no_placeholders.py")], True, ""),
+        (
+            "module boundaries",
+            [PY, str(TOOLS / "dep_check.py")],
+            (ROOT / "tools" / "boundaries.json").exists(),
+            "armed by /scaffold (writes tools/boundaries.json)",
+        ),
+        (
+            "ownership boundary",
+            [PY, str(TOOLS / "ownership_check.py")],
+            _on_task_branch(),
+            "checks task branches; you are on the default branch",
+        ),
+        (
+            "tracker consistent",
+            [PY, str(TOOLS / "track.py"), "check"],
+            any((ROOT / "tracker" / "tasks").glob("*.md"))
+            if (ROOT / "tracker" / "tasks").exists()
+            else False,
+            "no tasks loaded yet (/plan loads them)",
+        ),
+        (
+            "tenant isolation (trespass)",
+            None,
+            _schema_path() is not None,
+            "no database schema yet; armed the moment one exists",
+        ),
     ]
-    failed = []
-    for name, args in steps:
-        if _run(args) != 0:
-            failed.append(name)
-    if task_secure(quiet_if_absent=True) != 0:
-        failed.append("tenant isolation (trespass)")
+    failed, enforced, inactive = [], [], []
+    for name, args, active, why_off in steps:
+        if not active:
+            inactive.append((name, why_off))
+            continue
+        rc = task_secure(quiet_if_absent=True) if args is None else _run(args)
+        (enforced if rc == 0 else failed).append(name)
     if failed:
         print(f"\n>> gate FAILED: {', '.join(failed)}")
         return 1
-    print("\n>> fast gate passed. `python tools/run.py verify` also runs lint, types, tests.")
+    print(
+        f"\n>> fast gate: {len(enforced)} check(s) enforced and passing"
+        + (f", {len(inactive)} inactive" if inactive else "")
+        + "."
+    )
+    for name, why_off in inactive:
+        print(f"   inactive: {name} -- {why_off}")
+    print("   `python tools/run.py verify` also runs lint, types, tests.")
     return 0
 
 
@@ -71,8 +122,10 @@ def task_secure(quiet_if_absent: bool = False) -> int:
     schema = _schema_path()
     if not schema:
         if not quiet_if_absent:
-            print(">> trespass: no schema yet (looked for supabase/migrations, "
-                  "schema.sql, ...). Nothing to prove.")
+            print(
+                ">> trespass: no schema yet (looked for supabase/migrations, "
+                "schema.sql, ...). Nothing to prove."
+            )
         return 0
     print(f">> trespass: proving tenant isolation on {schema}")
     return _run([PY, str(TOOLS / "trespass" / "run.py"), "check", schema, "--no-color"])
@@ -100,8 +153,10 @@ def task_hooks() -> int:
     """Install the git hooks (refuses a push to the default branch)."""
     rc = _run(["git", "config", "core.hooksPath", ".githooks"])
     if rc == 0:
-        print(">> hooks installed. Override a push to the default branch "
-              "deliberately with ALLOW_PUSH_DEFAULT=1.")
+        print(
+            ">> hooks installed. Override a push to the default branch "
+            "deliberately with ALLOW_PUSH_DEFAULT=1."
+        )
     return rc
 
 
@@ -114,14 +169,17 @@ def task_verify() -> int:
     # architect wires the stack's commands into this runner.
     if _has_make():
         return _run(["make", "lint", "typecheck", "test"])
-    print("\n>> lint/typecheck/test are stack-specific. Once /architect picks the "
-          "stack, wire their commands into task_verify() here (or use `make` on "
-          "macOS/Linux). The fast gate above is cross-platform and always runs.")
+    print(
+        "\n>> lint/typecheck/test are stack-specific. Once /architect picks the "
+        "stack, wire their commands into task_verify() here (or use `make` on "
+        "macOS/Linux). The fast gate above is cross-platform and always runs."
+    )
     return 0
 
 
 def _has_make() -> bool:
     from shutil import which
+
     return which("make") is not None
 
 
@@ -145,7 +203,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if argv else 2
     task = argv[0]
     if task not in TASKS:
-        print(f"run.py: unknown task {task!r}. Known: {', '.join(TASKS)}", file=sys.stderr)
+        print(
+            f"run.py: unknown task {task!r}. Known: {', '.join(TASKS)}", file=sys.stderr
+        )
         return 2
     return TASKS[task]() or 0
 
