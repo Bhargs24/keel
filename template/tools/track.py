@@ -33,6 +33,7 @@ an append-only log. People live in tracker/people.toml.
 Every state change and every log line is timestamped and attributed. Identity
 comes from --as, then $TRACK_USER, then git config user.name via people.toml.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -44,7 +45,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-PROJECT = "Progress"          # your project name, shown in the CLI and the board
 ROOT = Path(__file__).resolve().parent.parent
 TRACKER = ROOT / "tracker"
 TASKS = TRACKER / "tasks"
@@ -53,14 +53,56 @@ BUILD = TRACKER / "build"
 
 STATUSES = ("todo", "doing", "blocked", "review", "done")
 OPEN = ("todo", "doing", "blocked", "review")
-TZ = dt.timezone(dt.timedelta(hours=5, minutes=30))  # change to your team's offset
+
+
+# Timestamps use this machine's local timezone; set TRACK_TZ (e.g. "+05:30")
+# to pin a team-wide offset instead.
+def _tz():
+    spec = os.environ.get("TRACK_TZ", "").strip()
+    m = re.match(r"^([+-])(\d{1,2}):?(\d{2})$", spec)
+    if m:
+        sign = 1 if m.group(1) == "+" else -1
+        return dt.timezone(
+            sign * dt.timedelta(hours=int(m.group(2)), minutes=int(m.group(3)))
+        )
+    return dt.datetime.now().astimezone().tzinfo
+
+
+TZ = _tz()
+
+
+def _project_name() -> str:
+    """The project's display name: the `Project:` line in NOW.md if present,
+    else the repository folder's name."""
+    now_md = ROOT / "docs" / "10-STATUS" / "NOW.md"
+    if now_md.exists():
+        for line in now_md.read_text(encoding="utf-8").splitlines():
+            m = re.match(r"^\*{0,2}Project\*{0,2}\s*:\s*(.+?)\s*$", line.strip())
+            if m:
+                return m.group(1)
+    return ROOT.name
+
+
+PROJECT = _project_name()
 
 LIST_FIELDS = ("depends_on", "blocks")
-FIELDS = ("id", "title", "owner", "area", "milestone", "status",
-          "depends_on", "blocks", "bench", "started", "finished")
+FIELDS = (
+    "id",
+    "title",
+    "owner",
+    "area",
+    "milestone",
+    "status",
+    "depends_on",
+    "blocks",
+    "bench",
+    "started",
+    "finished",
+)
 
 
 # ----------------------------------------------------------------- utilities
+
 
 def now() -> str:
     return dt.datetime.now(TZ).strftime("%Y-%m-%dT%H:%M%z")
@@ -107,16 +149,33 @@ def whoami(explicit: str | None) -> str:
     env = os.environ.get("TRACK_USER")
     if env and env in people:
         return env
-    git_name = subprocess.run(["git", "config", "user.name"], cwd=ROOT,
-                              capture_output=True, text=True).stdout.strip().lower()
+    git_name = (
+        subprocess.run(
+            ["git", "config", "user.name"], cwd=ROOT, capture_output=True, text=True
+        )
+        .stdout.strip()
+        .lower()
+    )
     for key, meta in people.items():
         if key in git_name or meta.get("display", "").lower() in git_name:
             return key
-    die("cannot tell who you are. Use --as NAME, or set TRACK_USER, "
-        "or add yourself to tracker/people.toml")
+    # A one-person roster leaves nothing to disambiguate: it's you.
+    if len(people) == 1:
+        return next(iter(people))
+    if not people:
+        die(
+            "the roster is empty. Add yourself to tracker/people.toml "
+            "(copy a block from people.example.toml), then try again."
+        )
+    die(
+        f"cannot tell which roster entry is you ({', '.join(people)}). "
+        f"Run the command again with --as <name>, or set TRACK_USER, or make "
+        f"sure your git user.name matches your entry in tracker/people.toml."
+    )
 
 
 # --------------------------------------------------------------------- model
+
 
 class Task:
     def __init__(self, path: Path):
@@ -144,7 +203,7 @@ class Task:
 
     @property
     def log_lines(self) -> list[str]:
-        return [l for l in self.body.splitlines() if l.startswith("- 20")]
+        return [line for line in self.body.splitlines() if line.startswith("- 20")]
 
     @property
     def last_activity(self):
@@ -160,9 +219,10 @@ class Task:
         self.body = self.body.rstrip() + f"\n- {now()} · {who} · {text}\n"
 
     def save(self):
-        header = "\n".join(f"{f}: {self.meta.get(f,'')}" for f in FIELDS)
-        self.path.write_text(f"---\n{header}\n---\n\n{self.body.rstrip()}\n",
-                             encoding="utf-8")
+        header = "\n".join(f"{f}: {self.meta.get(f, '')}" for f in FIELDS)
+        self.path.write_text(
+            f"---\n{header}\n---\n\n{self.body.rstrip()}\n", encoding="utf-8"
+        )
 
 
 def load_all() -> dict[str, Task]:
@@ -179,18 +239,28 @@ def get(tasks, tid) -> Task:
 
 def blockers_of(t: Task, tasks) -> list[Task]:
     """Dependencies that are not done yet."""
-    return [tasks[d] for d in t.list_field("depends_on")
-            if d in tasks and tasks[d].status != "done"]
+    return [
+        tasks[d]
+        for d in t.list_field("depends_on")
+        if d in tasks and tasks[d].status != "done"
+    ]
 
 
 # -------------------------------------------------------------------- output
 
-C = {"done": "\033[32m", "doing": "\033[36m", "blocked": "\033[31m",
-     "review": "\033[33m", "todo": "\033[90m", "0": "\033[0m", "b": "\033[1m"}
+C = {
+    "done": "\033[32m",
+    "doing": "\033[36m",
+    "blocked": "\033[31m",
+    "review": "\033[33m",
+    "todo": "\033[90m",
+    "0": "\033[0m",
+    "b": "\033[1m",
+}
 
 
 def paint(s, key):
-    return f"{C.get(key,'')}{s}{C['0']}" if sys.stdout.isatty() else s
+    return f"{C.get(key, '')}{s}{C['0']}" if sys.stdout.isatty() else s
 
 
 def row(t: Task, tasks, show_owner=True):
@@ -198,48 +268,66 @@ def row(t: Task, tasks, show_owner=True):
     blockers = blockers_of(t, tasks)
     note = ""
     if t.status == "blocked" or blockers:
-        note = "  <- waiting on " + ", ".join(
-            f"{b.id} ({b.owner})" for b in blockers) if blockers else "  <- blocked"
+        note = (
+            "  <- waiting on " + ", ".join(f"{b.id} ({b.owner})" for b in blockers)
+            if blockers
+            else "  <- blocked"
+        )
     badge = paint(f"{t.status.upper():<8}", t.status)
     return f"  {badge}{owner}  {t.id:<8}  {t.title[:52]}{note}"
 
 
 # ------------------------------------------------------------------ commands
 
+
 def cmd_status(a):
     tasks = load_all()
     if not tasks:
-        die("no tasks yet. Run /plan to load the build roadmap into tasks, "
-            "or add one: python tools/track.py --as <you> add <ID> --title \"...\"")
+        die(
+            "no tasks yet. Run /plan to load the build roadmap into tasks, "
+            'or add one: python tools/track.py --as <you> add <ID> --title "..."'
+        )
     counts = {s: sum(1 for t in tasks.values() if t.status == s) for s in STATUSES}
     total = len(tasks)
     pct = round(100 * counts["done"] / total) if total else 0
-    print(f"\n{paint(PROJECT, 'b')}   {counts['done']}/{total} done ({pct}%)   "
-          + "  ".join(f"{paint(s, s)} {counts[s]}" for s in STATUSES))
+    print(
+        f"\n{paint(PROJECT, 'b')}   {counts['done']}/{total} done ({pct}%)   "
+        + "  ".join(f"{paint(s, s)} {counts[s]}" for s in STATUSES)
+    )
 
-    for state, label in (("blocked", "Blocked"), ("review", "In review"), ("doing", "In flight")):
+    for state, label in (
+        ("blocked", "Blocked"),
+        ("review", "In review"),
+        ("doing", "In flight"),
+    ):
         group = [t for t in tasks.values() if t.status == state]
         if group:
             print(f"\n{paint(label, 'b')}")
             for t in group:
                 print(row(t, tasks))
 
-    ready = [t for t in tasks.values() if t.status == "todo" and not blockers_of(t, tasks)]
+    ready = [
+        t for t in tasks.values() if t.status == "todo" and not blockers_of(t, tasks)
+    ]
     if ready:
         print(f"\n{paint('Ready to start', 'b')}  (dependencies satisfied)")
         for t in sorted(ready, key=lambda x: (x.milestone, x.id))[:12]:
             print(row(t, tasks))
         if len(ready) > 12:
-            print(f"    ... and {len(ready)-12} more. `track next --for NAME`")
+            print(f"    ... and {len(ready) - 12} more. `track next --for NAME`")
     print()
 
 
 def cmd_next(a):
     tasks = load_all()
     who = a.for_ or None
-    ready = [t for t in tasks.values()
-             if t.status == "todo" and not blockers_of(t, tasks)
-             and (not who or t.owner == who)]
+    ready = [
+        t
+        for t in tasks.values()
+        if t.status == "todo"
+        and not blockers_of(t, tasks)
+        and (not who or t.owner == who)
+    ]
     if not ready:
         print("nothing ready. `track blocked` shows what is in the way.")
         return
@@ -266,8 +354,10 @@ def cmd_blocked(a):
     for owner, pairs in sorted(waiting.items()):
         print(f"\n  {paint(owner, 'b')} is holding up {len(pairs)}:")
         for b, t in sorted(pairs, key=lambda p: p[0].id):
-            print(f"      {b.id} ({paint(b.status, b.status)})  ->  "
-                  f"{t.id} {t.title[:40]}  [{t.owner}]")
+            print(
+                f"      {b.id} ({paint(b.status, b.status)})  ->  "
+                f"{t.id} {t.title[:40]}  [{t.owner}]"
+            )
     print()
 
 
@@ -275,8 +365,10 @@ def cmd_mine(a):
     tasks = load_all()
     who = a.for_ or whoami(a.as_)
     mine = [t for t in tasks.values() if t.owner == who]
-    print(f"\n{paint(who + chr(39) + 's board', 'b')}   "
-          f"{sum(1 for t in mine if t.status=='done')}/{len(mine)} done")
+    print(
+        f"\n{paint(who + chr(39) + 's board', 'b')}   "
+        f"{sum(1 for t in mine if t.status == 'done')}/{len(mine)} done"
+    )
     for state in ("blocked", "review", "doing", "todo"):
         group = [t for t in mine if t.status == state]
         if not group:
@@ -290,14 +382,27 @@ def cmd_mine(a):
 def cmd_show(a):
     t = get(load_all(), a.id)
     print(f"\n{paint(t.id + '  ' + t.title, 'b')}")
-    for f in ("owner", "area", "milestone", "status", "depends_on", "blocks",
-              "bench", "started", "finished"):
+    for f in (
+        "owner",
+        "area",
+        "milestone",
+        "status",
+        "depends_on",
+        "blocks",
+        "bench",
+        "started",
+        "finished",
+    ):
         if t.meta.get(f):
             print(f"  {f:<12} {t.meta[f]}")
     print(f"\n{t.body.rstrip()}\n")
 
 
-GUARDS = {"doing": ("todo", "blocked"), "review": ("doing",), "done": ("doing", "review")}
+GUARDS = {
+    "doing": ("todo", "blocked"),
+    "review": ("doing",),
+    "done": ("doing", "review"),
+}
 
 
 def apply_transition(tasks, t, to, who, extra=None):
@@ -314,8 +419,10 @@ def apply_transition(tasks, t, to, who, extra=None):
     if to == "doing":
         blockers = blockers_of(t, tasks)
         if blockers:
-            return ("depends on unfinished work: "
-                    + ", ".join(f"{b.id} ({b.owner}, {b.status})" for b in blockers)), []
+            return (
+                "depends on unfinished work: "
+                + ", ".join(f"{b.id} ({b.owner}, {b.status})" for b in blockers)
+            ), []
         if not t.started:
             t.meta["started"] = now()
     if to == "done":
@@ -325,9 +432,13 @@ def apply_transition(tasks, t, to, who, extra=None):
     t.save()
     freed = []
     if to == "done":
-        freed = [x for x in tasks.values()
-                 if t.id in x.list_field("depends_on") and x.status == "todo"
-                 and not [b for b in blockers_of(x, tasks) if b.id != t.id]]
+        freed = [
+            x
+            for x in tasks.values()
+            if t.id in x.list_field("depends_on")
+            and x.status == "todo"
+            and not [b for b in blockers_of(x, tasks) if b.id != t.id]
+        ]
     return None, freed
 
 
@@ -370,15 +481,23 @@ def cmd_block(a):
                 deps.append(d)
         t.meta["depends_on"] = ", ".join(deps)
     was, t.meta["status"] = t.status, "blocked"
-    t.append(whoami(a.as_), f"{was} -> blocked" + (f" on {a.on}" if a.on else "")
-             + (f": {a.why}" if a.why else ""))
+    t.append(
+        whoami(a.as_),
+        f"{was} -> blocked"
+        + (f" on {a.on}" if a.on else "")
+        + (f": {a.why}" if a.why else ""),
+    )
     t.save()
     print(f"{t.id}: {was} -> {paint('blocked', 'blocked')}")
 
 
 def cmd_unblock(a):
-    _transition(a, "doing", guard=("blocked",),
-                extra="unblocked" + (f": {a.note}" if a.note else ""))
+    _transition(
+        a,
+        "doing",
+        guard=("blocked",),
+        extra="unblocked" + (f": {a.note}" if a.note else ""),
+    )
 
 
 def cmd_log(a):
@@ -417,13 +536,24 @@ def cmd_add(a):
     p = TASKS / f"{a.id}.md"
     if p.exists():
         die(f"{a.id} already exists")
-    meta = {"id": a.id, "title": a.title, "owner": a.owner, "area": a.area,
-            "milestone": a.milestone, "status": "todo",
-            "depends_on": a.depends or "", "blocks": "", "bench": a.bench or "",
-            "started": "", "finished": ""}
-    header = "\n".join(f"{f}: {meta.get(f,'')}" for f in FIELDS)
-    p.write_text(f"---\n{header}\n---\n\n## Log\n- {now()} · {whoami(a.as_)} · created\n",
-                 encoding="utf-8")
+    meta = {
+        "id": a.id,
+        "title": a.title,
+        "owner": a.owner,
+        "area": a.area,
+        "milestone": a.milestone,
+        "status": "todo",
+        "depends_on": a.depends or "",
+        "blocks": "",
+        "bench": a.bench or "",
+        "started": "",
+        "finished": "",
+    }
+    header = "\n".join(f"{f}: {meta.get(f, '')}" for f in FIELDS)
+    p.write_text(
+        f"---\n{header}\n---\n\n## Log\n- {now()} · {whoami(a.as_)} · created\n",
+        encoding="utf-8",
+    )
     print(f"created {p.relative_to(ROOT)}")
 
 
@@ -448,8 +578,9 @@ def cmd_check(a):
         if t.status == "done":
             open_deps = [b.id for b in blockers_of(t, tasks)]
             if open_deps:
-                fails.append(f"{t.id}: done, but depends on unfinished "
-                             + ", ".join(open_deps))
+                fails.append(
+                    f"{t.id}: done, but depends on unfinished " + ", ".join(open_deps)
+                )
         if t.status in ("doing", "blocked"):
             last = t.last_activity
             if last is None:
@@ -459,8 +590,10 @@ def cmd_check(a):
                 if idle > a.max_idle_days:
                     # A warning, not a failure. Staleness is a nudge to the person,
                     # not a reason to stop a colleague landing unrelated work.
-                    warns.append(f"{t.id}: {t.status} for {idle} days with no update. "
-                                 f"Log progress, block it, or hand it over.")
+                    warns.append(
+                        f"{t.id}: {t.status} for {idle} days with no update. "
+                        f"Log progress, block it, or hand it over."
+                    )
         if t.status == "doing" and not t.started:
             warns.append(f"{t.id}: doing with no started timestamp")
 
@@ -470,9 +603,11 @@ def cmd_check(a):
             in_flight.setdefault(t.owner, []).append(t.id)
     for owner, ids in in_flight.items():
         if len(ids) > a.max_in_flight:
-            warns.append(f"{owner} has {len(ids)} tasks in flight "
-                         f"({', '.join(ids)}). More than {a.max_in_flight} usually "
-                         "means none of them is moving.")
+            warns.append(
+                f"{owner} has {len(ids)} tasks in flight "
+                f"({', '.join(ids)}). More than {a.max_in_flight} usually "
+                "means none of them is moving."
+            )
 
     for w in warns:
         print(f"warn  {w}")
@@ -534,8 +669,10 @@ def detect_mode() -> str:
     """company | project | experiment, from a Mode: line in NOW.md, else inferred."""
     now = ROOT / "docs" / "10-STATUS" / "NOW.md"
     if now.exists():
-        m = re.search(r"(?im)^\**\s*Mode\s*[:=]?\s*\**\s*(company|project|experiment)",
-                      now.read_text(encoding="utf-8", errors="ignore"))
+        m = re.search(
+            r"(?im)^\**\s*Mode\s*[:=]?\s*\**\s*(company|project|experiment)",
+            now.read_text(encoding="utf-8", errors="ignore"),
+        )
         if m:
             return m.group(1).lower()
     # No marker: infer from what's on disk. Company docs present -> company.
@@ -567,28 +704,65 @@ def detect_phase() -> tuple[str, str, str]:
     This is the single source of truth the /status and /next commands lean on, so
     the phase is a fact about the repository, never a guess."""
     if load_all():
+        if not _exists("tools/boundaries.json"):
+            return (
+                "Plan done",
+                "/scaffold",
+                "tasks are loaded but the repo isn't wired to the stack yet; "
+                "until /scaffold runs, the code gates check nothing",
+            )
         return ("Building", "/next", "the tracker has tasks; the build loop is running")
     if _has_audit("feasibility"):
-        return ("Feasibility done", "/plan", "a feasibility audit exists but no tasks are loaded")
+        return (
+            "Feasibility done",
+            "/plan",
+            "a feasibility audit exists but no tasks are loaded",
+        )
     if _exists("spec/03-Technical/BUILD-ROADMAP.md"):
-        return ("Architect done", "/feasibility", "the build roadmap exists but hasn't been audited")
+        return (
+            "Architect done",
+            "/feasibility",
+            "the build roadmap exists but hasn't been audited",
+        )
     if _exists("spec/06-Design/DESIGN-BRIEF.md"):
-        return ("Design done", "/architect", "the design exists; the technical plan is next")
+        return (
+            "Design done",
+            "/architect",
+            "the design exists; the technical plan is next",
+        )
     if _exists("spec/02-Product/PRD.md"):
-        return ("Define done", "/design", "the PRD exists; design is next (or skip to /architect)")
+        return (
+            "Define done",
+            "/design",
+            "the PRD exists; design is next (or skip to /architect)",
+        )
     # Discover is done when its shape-appropriate anchor doc exists.
-    discover_done = _exists("spec/01-Company/CONCEPT.md") or _exists("spec/01-Company/COMPANY-NARRATIVE.md")
+    discover_done = _exists("spec/01-Company/CONCEPT.md") or _exists(
+        "spec/01-Company/COMPANY-NARRATIVE.md"
+    )
     if discover_done:
-        return ("Discover done", "/define", "the concept / business case exists; define the product")
-    if SPEC.exists() and any(SPEC.rglob("*.md")):
-        return ("Discovering", "/discover", "researching what exists and how this is better")
+        return (
+            "Discover done",
+            "/define",
+            "the concept / business case exists; define the product",
+        )
+    # The template ships README stubs in spec/; only real documents count, or
+    # every fresh project would skip the '/keel: tell me your idea' step.
+    if SPEC.exists() and any(p for p in SPEC.rglob("*.md") if p.name != "README.md"):
+        return (
+            "Discovering",
+            "/discover",
+            "researching what exists and how this is better",
+        )
     return ("Pre-Discover", "/keel", "no documents yet; start with the idea")
 
 
 def cmd_phase(a):
     phase, nxt, why = detect_phase()
-    print(f"\n{paint('Phase', 'b')}   {paint(phase, 'doing')}   "
-          f"{paint('(' + detect_mode() + ')', 'todo')}")
+    print(
+        f"\n{paint('Phase', 'b')}   {paint(phase, 'doing')}   "
+        f"{paint('(' + detect_mode() + ')', 'todo')}"
+    )
     print(f"  {why}")
     print(f"  next: {paint(nxt, 'b')}\n")
 
@@ -601,8 +775,10 @@ def cmd_docs(a):
         by_phase.setdefault(phase, []).append((rel, _exists(rel)))
     have = sum(1 for _, rel in rows_all if _exists(rel))
     total = len(rows_all)
-    print(f"\n{paint('Document set', 'b')}   {have}/{total} written   "
-          f"{paint('(' + detect_mode() + ' mode)', 'todo')}")
+    print(
+        f"\n{paint('Document set', 'b')}   {have}/{total} written   "
+        f"{paint('(' + detect_mode() + ' mode)', 'todo')}"
+    )
     for phase in ("Discover", "Define", "Design", "Architect"):
         rows = by_phase.get(phase, [])
         if not rows:
@@ -640,19 +816,26 @@ def cmd_render(a):
         log = t.log_lines[-1][2:] if t.log_lines else ""
         rows.append(
             f'<tr class="{esc(t.status)}"><td><code>{esc(t.id)}</code></td>'
-            f'<td>{esc(t.title)}</td><td>{esc(t.owner)}</td>'
-            f'<td>{esc(t.milestone)}</td>'
+            f"<td>{esc(t.title)}</td><td>{esc(t.owner)}</td>"
+            f"<td>{esc(t.milestone)}</td>"
             f'<td><span class="s {esc(t.status)}">{esc(t.status)}</span></td>'
-            f'<td class="dim">{esc(bl)}</td><td class="dim">{esc(log)}</td></tr>')
+            f'<td class="dim">{esc(bl)}</td><td class="dim">{esc(log)}</td></tr>'
+        )
 
     bars = "".join(
-        f'<div class="seg {s}" style="width:{100*counts[s]/total:.1f}%" title="{s}: {counts[s]}"></div>'
-        for s in STATUSES if counts[s])
+        f'<div class="seg {s}" style="width:{100 * counts[s] / total:.1f}%" title="{s}: {counts[s]}"></div>'
+        for s in STATUSES
+        if counts[s]
+    )
 
-    crossing = "".join(
-        f"<li><code>{esc(b.id)}</code> <span class='dim'>({esc(b.owner)}, {esc(b.status)})</span>"
-        f" blocks <code>{esc(t.id)}</code> <span class='dim'>({esc(t.owner)})</span></li>"
-        for b, t in sorted(cross, key=lambda p: p[0].id)) or "<li class='dim'>Nobody is waiting on anybody.</li>"
+    crossing = (
+        "".join(
+            f"<li><code>{esc(b.id)}</code> <span class='dim'>({esc(b.owner)}, {esc(b.status)})</span>"
+            f" blocks <code>{esc(t.id)}</code> <span class='dim'>({esc(t.owner)})</span></li>"
+            for b, t in sorted(cross, key=lambda p: p[0].id)
+        )
+        or "<li class='dim'>Nobody is waiting on anybody.</li>"
+    )
 
     doc = f"""<!doctype html><meta charset=utf-8>
 <title>{PROJECT}</title>
@@ -683,17 +866,17 @@ ul{{margin:0;padding-left:18px}} li{{margin:4px 0}}
 </style>
 <div class=wrap>
 <h1>{PROJECT}</h1>
-<div class=dim>{counts['done']} of {len(tasks)} done &middot; generated {esc(now())}
-&middot; {esc(', '.join(people))}</div>
+<div class=dim>{counts["done"]} of {len(tasks)} done &middot; generated {esc(now())}
+&middot; {esc(", ".join(people))}</div>
 <div class=bar>{bars}</div>
-<div class=dim>{' &middot; '.join(f'{s} {counts[s]}' for s in STATUSES)}</div>
+<div class=dim>{" &middot; ".join(f"{s} {counts[s]}" for s in STATUSES)}</div>
 
 <h2>Cross-person dependencies</h2>
 <ul>{crossing}</ul>
 
 <h2>All tasks</h2>
 <table><tr><th>ID</th><th>Title</th><th>Owner</th><th>M</th><th>Status</th>
-<th>Waiting on</th><th>Last update</th></tr>{''.join(rows)}</table>
+<th>Waiting on</th><th>Last update</th></tr>{"".join(rows)}</table>
 
 <div class=foot>Generated by <code>tools/track.py render</code> from
 <code>tracker/tasks/</code>. Do not edit this file; edit the tasks.</div>
@@ -705,9 +888,13 @@ ul{{margin:0;padding-left:18px}} li{{margin:4px 0}}
 
 # --------------------------------------------------------------------- entry
 
+
 def main():
-    p = argparse.ArgumentParser(prog="track", description=__doc__,
-                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        prog="track",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("--as", dest="as_", metavar="NAME", help="act as this person")
     sub = p.add_subparsers(dest="cmd", required=True)
 
@@ -728,20 +915,35 @@ def main():
     add("start", cmd_start, (("id",), {}))
     add("review", cmd_review, (("id",), {}))
     add("done", cmd_done, (("id",), {}))
-    add("block", cmd_block, (("id",), {}), (("--on",), dict(default="")),
-        (("why",), dict(nargs="?", default="")))
+    add(
+        "block",
+        cmd_block,
+        (("id",), {}),
+        (("--on",), dict(default="")),
+        (("why",), dict(nargs="?", default="")),
+    )
     add("unblock", cmd_unblock, (("id",), {}), (("note",), dict(nargs="?", default="")))
     add("log", cmd_log, (("id",), {}), (("message",), {}))
     add("comment", cmd_comment, (("id",), {}), (("message",), {}))
     add("assign", cmd_assign, (("id",), {}), (("to",), {}))
-    add("add", cmd_add, (("id",), {}), (("--title",), dict(required=True)),
-        (("--owner",), dict(default="")), (("--area",), dict(default="")),
-        (("--milestone",), dict(default="")), (("--depends",), dict(default="")),
-        (("--bench",), dict(default="")))
+    add(
+        "add",
+        cmd_add,
+        (("id",), {}),
+        (("--title",), dict(required=True)),
+        (("--owner",), dict(default="")),
+        (("--area",), dict(default="")),
+        (("--milestone",), dict(default="")),
+        (("--depends",), dict(default="")),
+        (("--bench",), dict(default="")),
+    )
     add("render", cmd_render)
-    add("check", cmd_check,
+    add(
+        "check",
+        cmd_check,
         (("--max-idle-days",), dict(type=int, default=7)),
-        (("--max-in-flight",), dict(type=int, default=3)))
+        (("--max-in-flight",), dict(type=int, default=3)),
+    )
 
     a = p.parse_args()
     sys.exit(a.fn(a) or 0)

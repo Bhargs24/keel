@@ -17,7 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 def _template_dir() -> Path:
@@ -44,17 +44,30 @@ def _copy_template(dst: Path) -> int:
     return copied
 
 
+def _git_user_name(cwd: Path) -> str:
+    try:
+        out = subprocess.run(["git", "config", "user.name"], cwd=cwd,
+                             capture_output=True, text=True)
+        return out.stdout.strip()
+    except OSError:
+        return ""
+
+
 def _init(args: argparse.Namespace) -> int:
     dst = Path(args.target).expanduser().resolve()
     dst.mkdir(parents=True, exist_ok=True)
     n = _copy_template(dst)
 
+    # The roster is generated, never copied: the template only ships an
+    # example. Your name comes from --name, else your git identity, so the
+    # tracker knows who you are from the very first command.
     roster = dst / "tracker" / "people.toml"
     if not roster.exists():
-        name = (args.name or "you").strip() or "you"
+        name = (args.name or "").strip() or _git_user_name(dst) or "you"
         key = re.sub(r"[^a-z0-9]", "", name.lower()) or "you"
         roster.parent.mkdir(parents=True, exist_ok=True)
         roster.write_text(
+            "# The roster. Add a person by adding a block -- see people.example.toml.\n"
             f'[people.{key}]\ndisplay = "{name.title()}"\nrole    = "founder"\nowns    = ""\n',
             encoding="utf-8")
 

@@ -1,4 +1,6 @@
-# The roster. Adding a person is adding a block: no code change, no migration.
+# EXAMPLE roster -- the real one is tracker/people.toml, written for you by
+# `keel init` (or install.py). Copy a block from here when you add a teammate.
+#
 # The key is also the branch prefix and the ownership role, so keep it short
 # and lowercase: alex/API-004-rate-limiter
 #
