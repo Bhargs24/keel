@@ -1,0 +1,15 @@
+name: Feature request
+description: Something keel should do, or do better
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you were trying to do when you hit the gap.
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: What good would look like

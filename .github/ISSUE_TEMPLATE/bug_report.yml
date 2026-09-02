@@ -1,0 +1,24 @@
+name: Bug report
+description: Something keel did wrong — a crash, a wrong verdict, a broken step
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: keel version
+      description: "`keel --version` (and your OS)"
+      placeholder: "keel 0.2.0, Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran, what you expected, and what you got instead. Paste output verbatim.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Smallest reproduction
+      description: Ideally starting from a fresh `keel init`.

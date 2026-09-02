@@ -28,11 +28,29 @@ Homepage = "https://github.com/Bhargs24/keel"
 Repository = "https://github.com/Bhargs24/keel"
 Issues = "https://github.com/Bhargs24/keel/issues"
 
+[project.optional-dependencies]
+# Test-only. The kit itself runs on the standard library alone.
+dev = ["pytest>=8", "ruff", "z3-solver>=4.12"]
+
 [project.scripts]
 keel = "keel_kit:main"
 
 [tool.hatch.version]
 path = "keel_kit/__init__.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+# The vendored trespass copy stays byte-identical to its upstream pin;
+# never lint or restyle it here.
+extend-exclude = ["template/tools/trespass"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["keel_kit"]
