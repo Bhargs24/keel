@@ -93,8 +93,8 @@ def main():
     base = sys.argv[1] if len(sys.argv) > 1 else "origin/main"
     branch = sh("git", "rev-parse", "--abbrev-ref", "HEAD")
 
-    if branch in ("main", "HEAD", ""):
-        print("ownership: on main or detached, nothing to check.")
+    if branch in ("main", "master", "HEAD", ""):
+        print("ownership: on the default branch or detached, nothing to check.")
         return 0
 
     role = role_from_branch(branch)

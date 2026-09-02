@@ -82,7 +82,7 @@ def test_ownership_quiet_on_default_branch(project: Path) -> None:
     _two_person_setup(project)
     r = tool(project, "tools/ownership_check.py")
     assert r.returncode == 0
-    assert "nothing to check" in r.stdout
+    assert "nothing to check" in r.stdout  # on main OR master (CI git default)
 
 
 def test_ownership_blocks_cross_owner_edit(project: Path) -> None:
