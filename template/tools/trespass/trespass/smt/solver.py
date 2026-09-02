@@ -45,6 +45,7 @@ from .terms import (
     Formula,
     Func,
     IsNull,
+    IsTrue,
     K,
     Not,
     Opaque,
@@ -151,7 +152,7 @@ def _collect(formulas: list[Formula]) -> _Atoms:
             visit_term(f.t)
         elif isinstance(f, Opaque):
             opaques[f.name] = opaques.get(f.name, False) or f.nullable
-        elif isinstance(f, Not):
+        elif isinstance(f, Not | IsTrue):
             visit(f.f)
         elif isinstance(f, And | Or):
             for sub in f.fs:
@@ -181,6 +182,8 @@ def _eval(
         return K.TRUE if f.t in null_terms else K.FALSE
     if isinstance(f, Opaque):
         return opaque_vals[f.name]
+    if isinstance(f, IsTrue):
+        return K.TRUE if _eval(f.f, null_terms, uf, opaque_vals) is K.TRUE else K.FALSE
     if isinstance(f, Not):
         return k_not(_eval(f.f, null_terms, uf, opaque_vals))
     if isinstance(f, And):

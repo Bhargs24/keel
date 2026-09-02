@@ -50,7 +50,11 @@ The gap between declared intent and enforced policy *is* the vulnerability.
 
 ---
 
-*This is the maintained copy that ships with Keel. The tool is written from
-scratch on the standard library: a purpose-built SMT solver for the row-level
-security fragment (equality logic + NULL, three-valued Kleene evaluation),
-validated against Z3 and against a real Postgres. `trespass/` holds the source.*
+*This is a pinned copy of [trespass](https://github.com/Bhargs24/trespass),
+vendored so a Keel project can run its security proof offline with zero
+installs — see [VENDORED.md](VENDORED.md) for the exact version and commit,
+and how it is kept in sync. The canonical project lives upstream and ships on
+PyPI as `trespass-rls`. The tool is written from scratch on the standard
+library: a purpose-built SMT solver for the row-level-security fragment
+(equality logic + NULL, three-valued Kleene evaluation), validated against Z3
+and against a real Postgres. `trespass/` holds the source.*

@@ -93,3 +93,70 @@ def test_comments_are_ignored() -> None:
         "create table t (id uuid); -- trailing"
     )
     assert len(stmts) == 1
+
+
+def test_scalar_subselect_resolves_to_its_expression() -> None:
+    """`(select auth.uid())` with no FROM clause is just `auth.uid()` -- the
+    initplan idiom must produce the real session term, not an opaque blob."""
+    (stmt,) = parse(
+        "create policy p on t for select using ((select auth.uid()) = user_id);"
+    )
+    assert isinstance(stmt, ast.CreatePolicy)
+    assert isinstance(stmt.using, ast.Binary) and stmt.using.op == "="
+    assert isinstance(stmt.using.left, ast.FuncCall)
+    assert stmt.using.left.name == "auth.uid"
+
+
+def test_boolean_tests_and_distinct_from_parse_precisely() -> None:
+    (stmt,) = parse(
+        "create policy p on t for select using (flag is true and a is distinct from b);"
+    )
+    assert isinstance(stmt, ast.CreatePolicy)
+    assert isinstance(stmt.using, ast.Binary) and stmt.using.op == "and"
+    assert isinstance(stmt.using.left, ast.BoolTest)
+    assert stmt.using.left.value == "true" and not stmt.using.left.negated
+    assert isinstance(stmt.using.right, ast.DistinctFrom)
+
+
+def test_unknown_operators_parse_as_generic_binaries() -> None:
+    """`||`, `@>`, `?` and other unmodeled operators must tokenize and parse
+    (the encoder keeps them opaque) instead of aborting the whole file."""
+    (stmt,) = parse(
+        "create policy p on t for select using (tags @> meta or name || suffix = label);"
+    )
+    assert isinstance(stmt, ast.CreatePolicy)
+    assert stmt.using is not None  # parsed, not crashed
+
+
+def test_unparseable_clause_degrades_to_opaque_not_a_crash() -> None:
+    """A CASE expression is outside the grammar; the clause must survive as one
+    opaque span and the rest of the file must still be parsed."""
+    stmts = parse(
+        "create policy p on t for select using "
+        "(case when is_public then true else user_id = auth.uid() end);\n"
+        "create table t (id uuid);"
+    )
+    assert len(stmts) == 2
+    policy = stmts[0]
+    assert isinstance(policy, ast.CreatePolicy)
+    assert isinstance(policy.using, ast.Unparsed)
+    assert "case" in policy.using.text.lower()
+
+
+def test_dollar_parameter_is_not_a_string_start() -> None:
+    """`$1` must not be mistaken for a dollar-quote tag and swallow the file."""
+    stmts = parse(
+        "create policy p on t for select using (current_setting($1) = 'x');\n"
+        "create table t (id uuid);"
+    )
+    tables = [s for s in stmts if isinstance(s, ast.CreateTable)]
+    assert len(tables) == 1
+
+
+def test_non_public_schema_stays_qualified() -> None:
+    schema = build_schema(
+        "create table auth.users (id uuid);\ncreate table users (id uuid, user_id uuid);"
+    )
+    assert schema.table("auth.users") is not None
+    assert schema.table("users") is not None
+    assert schema.table("auth.users") is not schema.table("users")

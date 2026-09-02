@@ -14,11 +14,13 @@ from __future__ import annotations
 from .ast import (
     AlterRLS,
     Binary,
+    BoolTest,
     Cast,
     Col,
     Column,
     CreatePolicy,
     CreateTable,
+    DistinctFrom,
     Expr,
     FuncCall,
     Grant,
@@ -33,6 +35,10 @@ from .ast import (
 from .lexer import Token, tokenize
 
 _CMP_OPS = {"=", "<>", "!=", "<", "<=", ">", ">="}
+# Operators with a dedicated place in the grammar; any other operator token
+# (`||`, `@>`, `?`, ...) is accepted as a generic binary the encoder keeps opaque.
+_GRAMMAR_OPS = _CMP_OPS | {"->", "->>", "::", "+", "-", "*", "/", "%"}
+_STRUCTURAL_OPS = {"(", ")", ",", ";", ".", "[", "]"}
 _CONSTRAINT_STARTS = {"constraint", "primary", "foreign", "unique", "check", "exclude", "like"}
 _COL_CONSTRAINT_KW = {"not", "null", "default", "references", "primary", "unique",
                       "check", "generated", "collate", "constraint"}
@@ -145,12 +151,17 @@ def _parse_name(cur: _Cursor) -> tuple[str | None, str]:
 
 
 def _table_name(cur: _Cursor) -> str:
+    """A table reference, normalized: the default ``public`` schema is dropped
+    (``public.users`` and ``users`` are the same table), any other schema stays
+    in the name (``auth.users`` must not collide with ``users``)."""
     cur.eat_kw("if")  # IF NOT EXISTS
     cur.eat_kw("not")
     cur.eat_kw("exists")
     cur.eat_kw("only")
-    _, name = _parse_name(cur)
-    return name
+    qualifier, name = _parse_name(cur)
+    if qualifier in (None, "public"):
+        return name
+    return f"{qualifier}.{name}"
 
 
 # --------------------------------------------------------------------------- #
@@ -250,14 +261,29 @@ def _parse_create_policy(cur: _Cursor) -> CreatePolicy:
     if cur.eat_kw("to"):
         policy.roles = _parse_role_list(cur)
     if cur.eat_kw("using"):
-        cur.expect_op("(")
-        policy.using = _parse_expr(cur)
-        cur.expect_op(")")
+        policy.using = _parse_clause_body(cur)
     if cur.eat_kw("with") and cur.eat_kw("check"):
-        cur.expect_op("(")
-        policy.check = _parse_expr(cur)
-        cur.expect_op(")")
+        policy.check = _parse_clause_body(cur)
     return policy
+
+
+def _parse_clause_body(cur: _Cursor) -> Expr:
+    """Parse a policy's ``( expression )``.
+
+    If the expression uses syntax outside our grammar (``CASE``, ``ARRAY[...]``,
+    ``BETWEEN``), the whole clause is kept verbatim as one opaque
+    :class:`Unparsed` instead of failing the entire file -- the policy becomes
+    honestly-unknown, and every other statement still gets analyzed.
+    """
+    open_idx = cur.i
+    cur.expect_op("(")
+    try:
+        expr = _parse_expr(cur)
+        cur.expect_op(")")
+        return expr
+    except ParseError:
+        cur.i = open_idx
+        return Unparsed(_consume_balanced(cur))
 
 
 def _parse_role_list(cur: _Cursor) -> list[str]:
@@ -324,19 +350,26 @@ def _parse_not(cur: _Cursor) -> Expr:
 
 
 def _parse_cmp(cur: _Cursor) -> Expr:
-    left = _parse_additive(cur)
-    # IS [NOT] NULL / IS [NOT] DISTINCT FROM
+    left = _parse_generic(cur)
+    # IS [NOT] NULL / DISTINCT FROM / TRUE / FALSE / UNKNOWN
     if cur.eat_kw("is"):
         negated = cur.eat_kw("not")
         if cur.eat_kw("null"):
             return IsNullExpr(left, negated)
         if cur.eat_kw("distinct"):
             cur.eat_kw("from")
-            right = _parse_additive(cur)
-            return Unparsed(_span(cur, left, right, "is distinct from"))
-        # IS TRUE / IS FALSE and similar -> opaque
-        cur.next()
-        return Unparsed("is-predicate")
+            right = _parse_generic(cur)
+            return DistinctFrom(left, right, negated)
+        if cur.at_kw("true", "false"):
+            return BoolTest(left, cur.next().value.lower(), negated)
+        if cur.peek().kind in {"ident", "kw"} and cur.peek().value.lower() == "unknown":
+            cur.next()
+            return BoolTest(left, "unknown", negated)
+        # IS DOCUMENT / IS JSON / ... -> opaque. The source position keeps each
+        # occurrence a *distinct* atom: two different unmodeled predicates must
+        # never share one symbol, or `X AND NOT X` would fake an isolation proof.
+        word = cur.next()
+        return Unparsed(f"is {'not ' if negated else ''}{word.value.lower()} @{word.pos}")
     # [NOT] IN (...)
     negated_in = False
     if cur.at_kw("not") and cur.peek(1).value.lower() == "in":
@@ -356,8 +389,23 @@ def _parse_cmp(cur: _Cursor) -> Expr:
     # binary comparison operators
     if cur.peek().kind == "op" and cur.peek().value in _CMP_OPS:
         op = cur.next().value
-        right = _parse_additive(cur)
+        right = _parse_generic(cur)
         return Binary(op, left, right)
+    return left
+
+
+def _parse_generic(cur: _Cursor) -> Expr:
+    """Any operator without a dedicated grammar rule (`||`, `@>`, `&&`, ...):
+    accepted as a binary node so the file keeps parsing; the encoder treats it
+    as an opaque atom rather than guessing its meaning."""
+    left = _parse_additive(cur)
+    while (
+        cur.peek().kind == "op"
+        and cur.peek().value not in _GRAMMAR_OPS
+        and cur.peek().value not in _STRUCTURAL_OPS
+    ):
+        op = cur.next().value
+        left = Binary(op, left, _parse_additive(cur))
     return left
 
 
@@ -403,8 +451,19 @@ def _parse_primary(cur: _Cursor) -> Expr:
         return Unary("-", _parse_primary(cur))
     if cur.eat_op("("):
         if cur.at_kw("select"):
-            # rewind one so the balanced consumer sees the '('
-            cur.i -= 1
+            # `(select <expr>)` with no FROM clause evaluates to the expression
+            # itself. This is the initplan idiom Supabase's own docs recommend
+            # (`(select auth.uid()) = user_id`), so it must resolve to the real
+            # session term, not degrade to an opaque unknown.
+            open_idx = cur.i - 1
+            cur.next()  # 'select'
+            try:
+                inner = _parse_expr(cur)
+                if cur.eat_op(")"):
+                    return inner
+            except ParseError:
+                pass
+            cur.i = open_idx  # a real subquery: keep it verbatim, stay opaque
             return Unparsed(_consume_balanced(cur))
         inner = _parse_expr(cur)
         cur.expect_op(")")
@@ -486,7 +545,3 @@ def _consume_balanced_body(cur: _Cursor, open_tok: Token) -> str:
                 return cur.sql[open_tok.pos : close.pos + 1]
         cur.next()
     return cur.sql[open_tok.pos :]
-
-
-def _span(cur: _Cursor, left: Expr, right: Expr, label: str) -> str:
-    return label

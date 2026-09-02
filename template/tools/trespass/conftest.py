@@ -1,4 +1,5 @@
 """Put the vendored trespass package on sys.path so its tests run in place."""
+
 import os
 import sys
 

@@ -25,6 +25,7 @@ from .smt import (
     Eq,
     Formula,
     IsNull,
+    IsTrue,
     Lit,
     Not,
     Opaque,
@@ -36,6 +37,7 @@ from .smt import (
     or_,
 )
 from .smt.solver import Model, SolverBudgetExceeded, solve
+from .smt.terms import walk_terms
 from .sql import ast
 
 _READ_COMMANDS = ("select", "update", "delete")
@@ -52,10 +54,56 @@ def analyze(
     if intent is None:
         intent = intent_mod.infer_intent(schema)
     report = Report(tables_analyzed=len(schema.tables))
+    if intent.source == "declared":
+        _check_intent_alignment(report, schema, intent)
     for table in schema.tables.values():
         report.policies_analyzed += len(table.policies)
         _check_table(report, schema, table, intent, assume_default_grants)
     return report
+
+
+def _check_intent_alignment(report: Report, schema: Schema, intent: Intent) -> None:
+    """A declared intent that does not line up with the schema must fail loudly.
+
+    A typo'd table or tenant column would otherwise disable the isolation checks
+    it was meant to power -- the worst possible failure mode for a rigor tool is
+    a green run that verified nothing.
+    """
+    for tname, ti in intent.tables.items():
+        table = schema.table(tname)
+        if table is None:
+            report.add(
+                Finding(
+                    rule="intent-unknown-table",
+                    verdict=Verdict.UNKNOWN,
+                    severity=Severity.MEDIUM,
+                    table=tname,
+                    title=f"Intent declares `{tname}`, which is not in the schema",
+                    detail=(
+                        f"The intent file has a `[{tname}]` section but no such table "
+                        "was found in the analyzed SQL. Nothing was verified for it -- "
+                        "check for a typo or a missing migration file."
+                    ),
+                    intent_source=intent.source,
+                )
+            )
+        elif ti.tenant is not None and not table.has_column(ti.tenant):
+            report.add(
+                Finding(
+                    rule="intent-unknown-column",
+                    verdict=Verdict.UNKNOWN,
+                    severity=Severity.HIGH,
+                    table=tname,
+                    title=f"Intent names tenant column `{ti.tenant}`, which `{tname}` does not have",
+                    detail=(
+                        f"The intent for `{tname}` says rows are owned via `{ti.tenant}`, "
+                        "but the table has no such column. Every isolation check for this "
+                        "table was skipped, not passed -- fix the column name to get real "
+                        "verdicts."
+                    ),
+                    intent_source=intent.source,
+                )
+            )
 
 
 # --------------------------------------------------------------------------- #
@@ -321,8 +369,16 @@ def _hole_finding(
     precondition = _precondition(actual, model)
     conditional = precondition is not None
     inferred = intent.source == "inferred"
+    # A witness resting on something we could not model -- an opaque predicate,
+    # or a value marked unparsed (a subquery in term position, which may well be
+    # correlated with the session) -- asserts a world we cannot prove reachable.
+    # A concrete column flag (`is_public = true`) is a real row that can exist;
+    # the rest honestly degrades the verdict to UNKNOWN.
+    hard_opaque = any(not n.startswith("col:") for n in _opaque_names(actual)) or any(
+        isinstance(t, Var) and t.name.startswith(("~", "?")) for t in _terms_in(actual)
+    )
 
-    if inferred and conditional:
+    if hard_opaque or (inferred and conditional):
         verdict, severity = Verdict.UNKNOWN, Severity.MEDIUM
     else:
         verdict, severity = Verdict.VULNERABLE, (
@@ -364,6 +420,11 @@ def _hole_finding(
     )
     if conditional and precondition:
         detail += f" This holds for {precondition.text}."
+    if hard_opaque:
+        detail += (
+            " The counterexample depends on a predicate that was not modeled "
+            "precisely, so this is reported as UNKNOWN rather than a proven hole."
+        )
 
     return Finding(
         rule=rule,
@@ -493,11 +554,27 @@ def _opaque_names(f: Formula) -> set[str]:
     out: set[str] = set()
     if isinstance(f, Opaque):
         out.add(f.name)
-    elif isinstance(f, Not):
+    elif isinstance(f, Not | IsTrue):
         out |= _opaque_names(f.f)
     elif isinstance(f, And | Or):
         for sub in f.fs:
             out |= _opaque_names(sub)
+    return out
+
+
+def _terms_in(f: Formula) -> set[Term]:
+    """Every term (and sub-term) a formula touches."""
+    out: set[Term] = set()
+    if isinstance(f, Eq):
+        out.update(walk_terms(f.a))
+        out.update(walk_terms(f.b))
+    elif isinstance(f, IsNull):
+        out.update(walk_terms(f.t))
+    elif isinstance(f, Not | IsTrue):
+        out |= _terms_in(f.f)
+    elif isinstance(f, And | Or):
+        for sub in f.fs:
+            out |= _terms_in(sub)
     return out
 
 

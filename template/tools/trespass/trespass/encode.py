@@ -22,6 +22,7 @@ from .smt import (
     Formula,
     Func,
     IsNull,
+    IsTrue,
     Opaque,
     Term,
     Var,
@@ -60,6 +61,25 @@ class Encoder:
         if isinstance(e, ast.IsNullExpr):
             f: Formula = IsNull(self.term(e.operand))
             return not_(f) if e.negated else f
+        if isinstance(e, ast.BoolTest):
+            inner = self.formula(e.operand)
+            if e.value == "true":
+                test: Formula = IsTrue(inner)
+            elif e.value == "false":
+                test = IsTrue(not_(inner))
+            else:  # IS UNKNOWN: neither true nor false
+                test = and_(not_(IsTrue(inner)), not_(IsTrue(not_(inner))))
+            return not_(test) if e.negated else test
+        if isinstance(e, ast.DistinctFrom):
+            a, b = self.term(e.left), self.term(e.right)
+            # Null-safe inequality, two-valued: true when exactly one side is
+            # null, or both are non-null and unequal.
+            distinct = or_(
+                and_(IsNull(a), not_(IsNull(b))),
+                and_(not_(IsNull(a)), IsNull(b)),
+                and_(not_(IsNull(a)), not_(IsNull(b)), not_(Eq(a, b))),
+            )
+            return not_(distinct) if e.negated else distinct
         if isinstance(e, ast.InList):
             eqs = [Eq(self.term(e.operand), self.term(it)) for it in e.items]
             base: Formula = or_(*eqs) if eqs else FALSE
@@ -149,6 +169,11 @@ def render_expr(e: ast.Expr) -> str:
         return f"NOT {render_expr(e.operand)}" if e.op == "not" else f"-{render_expr(e.operand)}"
     if isinstance(e, ast.IsNullExpr):
         return f"{render_expr(e.operand)} IS {'NOT ' if e.negated else ''}NULL"
+    if isinstance(e, ast.BoolTest):
+        return f"{render_expr(e.operand)} IS {'NOT ' if e.negated else ''}{e.value.upper()}"
+    if isinstance(e, ast.DistinctFrom):
+        neg = "NOT " if e.negated else ""
+        return f"{render_expr(e.left)} IS {neg}DISTINCT FROM {render_expr(e.right)}"
     if isinstance(e, ast.InList):
         items = ", ".join(render_expr(i) for i in e.items)
         return f"{render_expr(e.operand)} {'NOT ' if e.negated else ''}IN ({items})"

@@ -157,6 +157,19 @@ class Opaque(Formula):
 
 
 @dataclass(frozen=True)
+class IsTrue(Formula):
+    """``f IS TRUE`` -- the two-valued projection of a three-valued formula.
+
+    Postgres's boolean tests (``IS TRUE``, ``IS FALSE``, ``IS UNKNOWN``) never
+    yield NULL: ``IsTrue(f)`` is TRUE exactly when ``f`` is TRUE, and FALSE when
+    ``f`` is FALSE *or* NULL. The other tests are derived: ``x IS FALSE`` is
+    ``IsTrue(Not(x))``, ``x IS UNKNOWN`` is "neither of those".
+    """
+
+    f: Formula
+
+
+@dataclass(frozen=True)
 class Not(Formula):
     f: Formula
 

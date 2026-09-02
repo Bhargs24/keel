@@ -28,6 +28,7 @@ from trespass.smt import (
     Formula,
     Func,
     IsNull,
+    IsTrue,
     Lit,
     Not,
     Opaque,
@@ -57,7 +58,9 @@ def _rand_formula(rng: random.Random, depth: int) -> Formula:
     if depth <= 0:
         kind = rng.choice(["eq", "isnull", "opaque", "bool"])
     else:
-        kind = rng.choice(["eq", "isnull", "opaque", "not", "and", "or", "eq", "eq"])
+        kind = rng.choice(
+            ["eq", "isnull", "opaque", "not", "and", "or", "istrue", "eq", "eq"]
+        )
     if kind == "eq":
         return Eq(_rand_term(rng, 1), _rand_term(rng, 1))
     if kind == "isnull":
@@ -68,6 +71,8 @@ def _rand_formula(rng: random.Random, depth: int) -> Formula:
         return BoolF(rng.random() < 0.5)
     if kind == "not":
         return Not(_rand_formula(rng, depth - 1))
+    if kind == "istrue":
+        return IsTrue(_rand_formula(rng, depth - 1))
     n = rng.randint(2, 3)
     fs = tuple(_rand_formula(rng, depth - 1) for _ in range(n))
     return And(fs) if kind == "and" else Or(fs)
@@ -146,6 +151,9 @@ class _Z3Encoder:
         if isinstance(f, Not):
             it, iff = self.eval(f.f)
             return iff, it
+        if isinstance(f, IsTrue):
+            it, _ = self.eval(f.f)
+            return it, z3.Not(it)  # two-valued: false whenever not true
         if isinstance(f, And):
             parts = [self.eval(x) for x in f.fs]
             is_true = z3.And([t for t, _ in parts])

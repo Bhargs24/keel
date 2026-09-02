@@ -76,8 +76,15 @@ class Schema:
         says otherwise. That default is exactly why missing RLS is catastrophic;
         turning it off (``assume_default_grants=False``) makes the analysis rely
         only on grants written in the file.
+
+        Tables in any other schema (a dotted name, e.g. ``audit.log``) are not
+        exposed by PostgREST by default, so they get no assumed grants -- only
+        explicit ``GRANT`` statements make them internet-reachable.
         """
-        allowed: set[str] = set(API_ROLES) if assume_default_grants else set()
+        in_public_schema = "." not in table
+        allowed: set[str] = (
+            set(API_ROLES) if assume_default_grants and in_public_schema else set()
+        )
         for tname, g in self.grants:
             if tname != table or g.role not in API_ROLES:
                 if g.role in ("public",) and tname == table:

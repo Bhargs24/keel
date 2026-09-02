@@ -62,6 +62,26 @@ class IsNullExpr(Expr):
 
 
 @dataclass(frozen=True)
+class BoolTest(Expr):
+    """``operand IS [NOT] TRUE | FALSE | UNKNOWN`` -- Postgres's two-valued
+    boolean tests. Unlike ``=``, these never yield NULL, which is exactly why
+    policies use them on nullable boolean columns."""
+
+    operand: Expr
+    value: str  # "true" | "false" | "unknown"
+    negated: bool
+
+
+@dataclass(frozen=True)
+class DistinctFrom(Expr):
+    """``left IS [NOT] DISTINCT FROM right`` -- null-safe (two-valued) equality."""
+
+    left: Expr
+    right: Expr
+    negated: bool  # True for IS NOT DISTINCT FROM
+
+
+@dataclass(frozen=True)
 class InList(Expr):
     operand: Expr
     items: tuple[Expr, ...]

@@ -11,31 +11,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-# Multi-character operators, longest first so the scanner is greedy.
-_OPERATORS = [
-    "->>",
-    "->",
-    "::",
-    "<>",
-    "!=",
-    "<=",
-    ">=",
-    "=",
-    "<",
-    ">",
-    "(",
-    ")",
-    ",",
-    ";",
-    ".",
-    "+",
-    "-",
-    "*",
-    "/",
-    "%",
-    "[",
-    "]",
-]
+# Punctuation that is always a single-character token, never part of an operator.
+_STRUCTURAL = "(),;.[]"
+
+# Characters an operator token may be built from. Any maximal run of these is
+# one operator -- so `||`, `@>`, `?|`, `#>>` and friends tokenize instead of
+# crashing the lexer, and the parser decides what it can model.
+_OPCHARS = frozenset("+-*/<>=~!@#%^&|?:$")
+
+# Postgres's trailing-sign rule: a multi-char operator may end in `+` or `-`
+# only if it also contains one of these. Otherwise the sign starts the next
+# token (`a=-1` is `=` then `-1`, but `@-` stays one operator).
+_SIGN_KEEPERS = frozenset("~!@#%^&|?")
 
 _KEYWORDS = {
     "create", "table", "policy", "on", "as", "permissive", "restrictive",
@@ -84,10 +71,12 @@ def tokenize(sql: str) -> list[Token]:
                 else:
                     i += 1
             continue
-        # dollar-quoted string: $tag$ ... $tag$
+        # dollar-quoted string: $tag$ ... $tag$ (tag must look like an
+        # identifier, so a positional parameter such as `$1` is not mistaken
+        # for the start of a string and swallowed up to the next `$`)
         if c == "$":
             end_tag = sql.find("$", i + 1)
-            if end_tag != -1:
+            if end_tag != -1 and _is_dollar_tag(sql[i + 1 : end_tag]):
                 tag = sql[i : end_tag + 1]
                 close = sql.find(tag, end_tag + 1)
                 if close != -1:
@@ -142,13 +131,37 @@ def tokenize(sql: str) -> list[Token]:
             toks.append(Token(kind, word, i))
             i = j
             continue
-        # operators / punctuation
-        for op in _OPERATORS:
-            if sql.startswith(op, i):
-                toks.append(Token("op", op, i))
-                i += len(op)
-                break
-        else:
-            raise LexError(f"unexpected character {c!r} at {i}")
+        # structural punctuation: one character, one token
+        if c in _STRUCTURAL:
+            toks.append(Token("op", c, i))
+            i += 1
+            continue
+        # operator: a maximal run of operator characters, Postgres-style
+        if c in _OPCHARS:
+            j = i
+            while j < n and sql[j] in _OPCHARS:
+                j += 1
+            run = sql[i:j]
+            # a comment marker inside the run ends the operator before it
+            for marker in ("--", "/*"):
+                k = run.find(marker)
+                if k > 0:
+                    run = run[:k]
+            if not any(ch in _SIGN_KEEPERS for ch in run):
+                while len(run) > 1 and run[-1] in "+-":
+                    run = run[:-1]
+            toks.append(Token("op", run, i))
+            i += len(run)
+            continue
+        raise LexError(f"unexpected character {c!r} at {i}")
     toks.append(Token("eof", "", n))
     return toks
+
+
+def _is_dollar_tag(body: str) -> bool:
+    """Whether the text between two ``$`` signs is a valid dollar-quote tag."""
+    if body == "":
+        return True
+    return (body[0].isalpha() or body[0] == "_") and all(
+        ch.isalnum() or ch == "_" for ch in body
+    )

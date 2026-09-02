@@ -10,7 +10,20 @@ from __future__ import annotations
 
 import pytest
 
-from trespass.smt import NULL, And, Eq, Func, IsNull, Lit, Opaque, Var, not_, or_, solve
+from trespass.smt import (
+    NULL,
+    And,
+    Eq,
+    Func,
+    IsNull,
+    IsTrue,
+    Lit,
+    Opaque,
+    Var,
+    not_,
+    or_,
+    solve,
+)
 from trespass.smt.solver import SolverBudgetExceeded, is_sat
 
 
@@ -51,6 +64,19 @@ def test_congruence_of_functions() -> None:
     assert not is_sat([Eq(a, b), not_(Eq(fa, fb))])
     # without a=b, f(a) and f(b) may differ.
     assert is_sat([not_(Eq(fa, fb))])
+
+
+def test_is_true_is_two_valued() -> None:
+    x = Var("x")
+    # x = NULL evaluates to NULL, so (x = NULL) IS TRUE is FALSE -- unsatisfiable.
+    assert not is_sat([IsTrue(Eq(x, NULL))])
+    # ...but its negation is then TRUE, hence satisfiable.
+    assert is_sat([not_(IsTrue(Eq(x, NULL)))])
+    # IsTrue passes a genuinely-true formula through.
+    assert is_sat([IsTrue(IsNull(x))])
+    # x IS FALSE (encoded as IsTrue(not x)) rejects the null case too:
+    # both `x is true` and `x is false` can be false at once (x null).
+    assert is_sat([not_(IsTrue(Eq(x, NULL))), not_(IsTrue(not_(Eq(x, NULL))))])
 
 
 def test_nonnull_hint_sharpens_but_stays_sound() -> None:
