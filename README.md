@@ -41,8 +41,6 @@ Keel is a free, open-source system that turns a one-sentence idea into a complet
 
 Most AI tools help you generate a prototype in minutes. Keel helps you build a **real product**: one that is planned, designed, tested, secure, and grounded in an actual business case, using the AI coding tool you already pay for as the engine. You bring the idea and the decisions. Keel does everything else and tells you the single next step at every point.
 
-**Keywords:** AI app builder, idea to MVP, idea to production, build a startup with AI, AI product manager, spec-driven development, AI market research, PRD generator, vibe coding done right, Claude Code workflow, Cursor workflow, open-source AI developer tool.
-
 ---
 
 ## The magic-wand loop
@@ -161,7 +159,7 @@ python install.py ~/my-product
 Then open the **guide**, which shows you the next step at every point:
 
 ```bash
-cd ~/my-product
+cd my-product
 python tools/keel.py
 ```
 
