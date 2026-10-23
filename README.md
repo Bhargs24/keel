@@ -419,7 +419,7 @@ That is exactly who it is built for, alongside professional teams. The installer
 
 ## Why I built Keel
 
-I'm **Bhargav**, and I have taken a product from an empty folder to real users on my own. Over the past year I shipped an edtech product end to end and largely solo: two mobile apps, a Go backend, a teacher dashboard and an admin console, and the Python content engine behind them, across five languages, in the hands of real Grade 8 students. Not a prototype. A deployed product with everything a real one has, and I built every side of it myself: the business case, the product, the design, and the engineering.
+I'm **Bhargav**, and I have taken a product from an empty folder to real users, largely on my own. Over the past year I shipped an edtech product end to end and largely solo: two mobile apps, a Go backend, a teacher dashboard and an admin console, and the Python content engine behind them, across five languages, in the hands of real Grade 8 students. Not a prototype. A deployed product with everything a real one has, and I covered every side of it: the business case, the product, the design, and the engineering.
 
 Then I did the part almost everyone skips. Before a line of the next version existed, I wrote its specification: a product spec of **180 screens, each with its real states** (loading, empty, error, permission-denied, not just the happy path); **290 build steps put in dependency order** so nothing is ever built before the thing it needs, checked mechanically to **zero ordering violations**; and **every screen traced end to end** to the step that builds it, so nothing gets discovered missing in production. Around half a million words of it. I rebuilt the financial model from prices I checked that day and caught my own earlier numbers understating the true cost to run by **6.7x**.
 
@@ -449,7 +449,7 @@ So I built Keel to be the thing I wish I had had: it does that thinking with you
 
 Open source (MIT). Star it, use it, contribute.
 
-Built by **[Bhargav](#why-i-built-keel)**, who took a product from idea to real users, solo, end to end, and built Keel so the next person does not have to learn it the slow way.
+Built by **[Bhargav](#why-i-built-keel)**, who took a product from idea to real users, largely solo, end to end, and built Keel so the next person does not have to learn it the slow way.
 
 *AI product builder · idea to production · AI founding team · spec-driven development · works with Claude Code and Cursor*
 
